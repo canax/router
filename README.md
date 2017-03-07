@@ -8,8 +8,9 @@ Anax Router
 [![Build Status](https://scrutinizer-ci.com/g/canax/router/badges/build.png?b=master)](https://scrutinizer-ci.com/g/canax/router/build-status/master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/canax/router/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/canax/router/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/canax/router/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/canax/router/?branch=master)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/f525d26b-16a0-414e-b587-ce10728a380b/mini.png)](https://insight.sensiolabs.com/projects/f525d26b-16a0-414e-b587-ce10728a380b)
 
-Anax Router moduler.
+Anax Router module.
 
 
 

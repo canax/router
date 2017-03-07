@@ -6,12 +6,8 @@ namespace Anax\Route;
  * A container for routes.
  *
  */
-class RouterBasic implements \Anax\DI\IInjectionAware
+class RouterInjectable
 {
-    use \Anax\DI\TInjectionAware;
-
-
-
     /**
      * Properties
      *
@@ -56,7 +52,7 @@ class RouterBasic implements \Anax\DI\IInjectionAware
      */
     public function add($rule, $action = null)
     {
-        $route = $this->di->get('route');
+        $route = new Route();
         $route->set($rule, $action);
         $this->routes[] = $route;
 
@@ -64,7 +60,26 @@ class RouterBasic implements \Anax\DI\IInjectionAware
         if ($rule == "*") {
             $this->defaultRoute = $route;
         }
-        
+
+        return $route;
+    }
+
+
+
+    /**
+     * Add a default route to the router, to use when all other routes fail.
+     *
+     * @param mixed  $action null, string or callable to implement a controller for the route
+     *
+     * @return class as new route
+     */
+    public function addDefault($action)
+    {
+        $route = new Route();
+        $route->set("*", $action);
+        $this->routes[] = $route;
+        $this->defaultRoute = $route;
+
         return $route;
     }
 
@@ -80,7 +95,7 @@ class RouterBasic implements \Anax\DI\IInjectionAware
      */
     public function addInternal($rule, $action = null)
     {
-        $route = $this->di->get('route');
+        $route = new Route();
         $route->set($rule, $action);
         $this->internalRoutes[$rule] = $route;
         return $route;
@@ -92,57 +107,38 @@ class RouterBasic implements \Anax\DI\IInjectionAware
      * Add an internal (not exposed to url-matching) route to the router.
      *
      * @param string $rule   for this route
-     * @param mixed  $action null, string or callable to implement a controller for the route
+     * @param mixed  $action null, string or callable to implement a
+     *                       controller for the route
      *
-     * @return class as new route
+     * @return void
      */
     public function handleInternal($rule)
     {
-        if (isset($this->internalRoutes[$rule])) {
-            $route = $this->internalRoutes[$rule];
-            $route->handle();
-        } else {
-            throw new \Anax\Exception\NotFoundException("No internal route to handle: " . $rule);
+        if (!isset($this->internalRoutes[$rule])) {
+            throw new NotFoundException("No internal route to handle: " . $rule);
         }
+        $route = $this->internalRoutes[$rule];
+        $route->handle();
     }
 
 
 
     /**
-     * Handle the routes and match them towards the request, dispatch them when a match is made.
+     * Handle the routes and match them towards the request, dispatch them
+     * when a match is made. Each route handler may throw exceptions that
+     * may redirect to an internal route for error handling.
      *
-     * @return $this
+     * @param string $query   the query/route to match a handler for.
+     *
+     * @return mixed content returned from route.
      */
-    public function handle()
+    public function handle($query)
     {
         try {
-            $query = $this->di->request->getRoute();
-            $parts = $this->di->request->getRouteParts();
-
             // Match predefined routes
             foreach ($this->routes as $route) {
                 if ($route->match($query)) {
                     return $route->handle();
-                }
-            }
-
-            // Default handling route as :controller/:action/:params using the dispatcher
-            $dispatcher = $this->di->dispatcher;
-            $dispatcher->setControllerName(isset($parts[0]) ? $parts[0] : 'index');
-
-            if ($dispatcher->isValidController()) {
-                $dispatcher->setActionName(isset($parts[1]) ? $parts[1] : 'index');
-
-                $params = [];
-                if (isset($parts[2])) {
-                    $params = $parts;
-                    array_shift($params);
-                    array_shift($params);
-                }
-                $dispatcher->setParams($params);
-
-                if ($dispatcher->isCallable()) {
-                    return $dispatcher->dispatch();
                 }
             }
 
@@ -152,17 +148,13 @@ class RouterBasic implements \Anax\DI\IInjectionAware
             }
 
             // No route was matched
-            $this->handleInternal('404');
-        } catch (\Exception $e) {
-            // Exception codes can match a route for a http status code
-            $code = $e->getCode();
-            $statusCodes = [403, 404, 500];
-            if (in_array($code, $statusCodes)) {
-                $this->di->flash->setMessage($e->getMessage());
-                $this->handleInternal($code);
-            } else {
-                throw $e;
-            }
+            $this->handleInternal("404");
+        } catch (ForbiddenException $e) {
+            $this->handleInternal("403");
+        } catch (NotFoundException $e) {
+            $this->handleInternal("404");
+        } catch (InternalErrorException $e) {
+            $this->handleInternal("500");
         }
     }
 }

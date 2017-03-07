@@ -6,7 +6,7 @@ namespace Anax\Route;
  * A container for routes.
  *
  */
-class RouteBasic
+class Route
 {
 
     /**
@@ -48,14 +48,19 @@ class RouteBasic
     {
         $ruleParts  = explode('/', $this->rule);
         $queryParts = explode('/', $query);
+        $ruleCount = max(count($ruleParts), count($queryParts));
 
-        $ruleCount = count($ruleParts);
+        // If default route, match anything
+        if ($this->rule == "*") {
+            return true;
+        }
 
         $match = false;
         for ($i = 0; $i < $ruleCount; $i++) {
-            $rulePart = $ruleParts[$i];
+            $rulePart  = isset($ruleParts[$i])  ? $ruleParts[$i]  : null;
             $queryPart = isset($queryParts[$i]) ? $queryParts[$i] : null;
 
+            // Support various rules for matching the parts
             $first = isset($rulePart[0]) ? $rulePart[0] : '';
             switch ($first) {
                 case '*':
@@ -67,6 +72,7 @@ class RouteBasic
                     break;
             }
 
+            // Continue as long as each part matches
             if (!$match) {
                 return false;
             }

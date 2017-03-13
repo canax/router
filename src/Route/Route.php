@@ -39,6 +39,72 @@ class Route
 
 
     /**
+     * Check if part of route is a argument and optionally match type
+     * as a requirement {argument:type}.
+     *
+     * @param string $rulePart   the rule part to check.
+     * @param string $queryPart  the query part to check.
+     * @param array  &$args      add argument to args array if matched
+     *
+     * @return boolean
+     */
+    private function checkPartAsArgument($rulePart, $queryPart, &$args)
+    {
+        if (substr($rulePart, -1) == "}"
+            && !is_null($queryPart)
+        ) {
+            $part = substr($rulePart, 1, -1);
+            $pos = strpos($part, ":");
+            if ($pos !== false) {
+                $type = substr($part, $pos + 1);
+                if (! $this->checkPartMatchingType($queryPart, $type)) {
+                    return false;
+                }
+            }
+            $args[] = $queryPart;
+            return true;
+        }
+        return false;
+    }
+
+
+
+    /**
+     * Check if value is matching a certain type of values.
+     *
+     * @param string $rulePart   the rule part to check.
+     * @param string $queryPart  the query part to check.
+     * @param array  &$args      add argument to args array if matched
+     *
+     * @return boolean
+     */
+    private function checkPartMatchingType($value, $type)
+    {
+        switch ($type) {
+            case "digit":
+                return ctype_digit($value);
+                break;
+
+            case "hex":
+                return ctype_xdigit($value);
+                break;
+
+            case "alpha":
+                return ctype_alpha($value);
+                break;
+
+            case "alphanum":
+                return ctype_alnum($value);
+                break;
+
+            default:
+                return false;
+        }
+    }
+
+
+
+    /**
      * Check if the route matches a query
      *
      * @param string $query to match against
@@ -70,13 +136,7 @@ class Route
                     break;
 
                 case '{':
-                    $match = false;
-                    if (substr($rulePart, -1) == "}"
-                        && !is_null($queryPart)
-                    ) {
-                        $args[] = $queryPart;
-                        $match = true;
-                    }
+                    $match = $this->checkPartAsArgument($rulePart, $queryPart, $args);
                     break;
 
                 default:

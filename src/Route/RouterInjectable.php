@@ -15,6 +15,7 @@ class RouterInjectable
     private $routes         = [];    // All the routes
     private $internalRoutes = [];    // All internal routes
     private $defaultRoute   = null;  // A default route to catch all
+    private $lastRoute      = null;  // Last route that was callbacked
 
 
 
@@ -118,7 +119,20 @@ class RouterInjectable
             throw new NotFoundException("No internal route to handle: " . $rule);
         }
         $route = $this->internalRoutes[$rule];
+        $this->lastRoute = $rule;
         $route->handle();
+    }
+
+
+
+    /**
+     * Get the route for the last route that was handled.
+     *
+     * @return mixed
+     */
+    public function getLastRoute()
+    {
+        return $this->lastRoute;
     }
 
 
@@ -138,12 +152,14 @@ class RouterInjectable
             // Match predefined routes
             foreach ($this->routes as $route) {
                 if ($route->match($query)) {
+                    $this->lastRoute = $route->getRule();
                     return $route->handle();
                 }
             }
 
             // Use the "catch-all" route
             if ($this->defaultRoute) {
+                $this->lastRoute = $route->getRule();
                 return $this->defaultRoute->handle();
             }
 

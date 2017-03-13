@@ -49,15 +49,6 @@ class RouterInjectableTest extends \PHPUnit_Framework_TestCase
         });
         $res = $router->handle("some/route");
         $this->assertEquals("*", $res);
-
-        $router = new RouterInjectable();
-
-        // Another way to add default route
-        $router->addDefault(function () {
-            return "default";
-        });
-        $res = $router->handle("some/route");
-        $this->assertEquals("default", $res);
     }
 
 

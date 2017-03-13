@@ -14,6 +14,7 @@ class Route
     *
     */
     private $name;           // A name for this route
+    private $method;         // The methods to support
     private $rule;           // The rule for this route
     private $action;         // The callback to handle this route
     private $arguments = []; // Arguments for the callback
@@ -23,15 +24,18 @@ class Route
     /**
      * Set values for route.
      *
-     * @param string   $rule   for this route
-     * @param callable $action callable to implement a controller for the route
+     * @param string     $rule   for this route
+     * @param callable   $action callable to implement a controller for
+     *                           the route
+     * @param null|array $method as request method to support
      *
      * @return $this
      */
-    public function set($rule, $action)
+    public function set($rule, $action, $method = null)
     {
         $this->rule = $rule;
         $this->action = $action;
+        $this->method = $method;
 
         return $this;
     }
@@ -105,47 +109,85 @@ class Route
 
 
     /**
-     * Check if the route matches a query
+     * Match part of rule and query.
      *
-     * @param string $query to match against
+     * @param string $rulePart   the rule part to check.
+     * @param string $queryPart  the query part to check.
+     * @param array  &$args      add argument to args array if matched
+     *
+     * @return boolean
+     */
+    private function matchPart($rulePart, $queryPart, &$args)
+    {
+        $match = false;
+        $first = isset($rulePart[0]) ? $rulePart[0] : '';
+        switch ($first) {
+            case '*':
+                $match = true;
+                break;
+
+            case '{':
+                $match = $this->checkPartAsArgument($rulePart, $queryPart, $args);
+                break;
+
+            default:
+                $match = ($rulePart == $queryPart);
+                break;
+        }
+        return $match;
+    }
+
+
+
+    /**
+     * Check if the request method matches.
+     *
+     * @param string $method as request method
+     *
+     * @return boolean true if request method matches
+     */
+    public function matchRequestMethod($method)
+    {
+        if ($method && $this->method && !in_array($method, $this->method)
+            || (is_null($method) && !empty($this->method))
+        ) {
+            return false;
+        }
+        return true;
+    }
+
+
+
+    /**
+     * Check if the route matches a query and request method.
+     *
+     * @param string $query  to match against
+     * @param string $method as request method
      *
      * @return boolean true if query matches the route
      */
-    public function match($query)
+    public function match($query, $method = null)
     {
-        $ruleParts  = explode('/', $this->rule);
-        $queryParts = explode('/', $query);
-        $ruleCount = max(count($ruleParts), count($queryParts));
-        $args = [];
+        if (!$this->matchRequestMethod($method)) {
+            return false;
+        }
 
         // If default route, match anything
         if ($this->rule == "*") {
             return true;
         }
 
-        $match = false;
+        // Check all parts to see if they matches
+        $ruleParts  = explode('/', $this->rule);
+        $queryParts = explode('/', $query);
+        $ruleCount = max(count($ruleParts), count($queryParts));
+        $args = [];
+
         for ($i = 0; $i < $ruleCount; $i++) {
             $rulePart  = isset($ruleParts[$i])  ? $ruleParts[$i]  : null;
             $queryPart = isset($queryParts[$i]) ? $queryParts[$i] : null;
 
-            // Support various rules for matching the parts
-            $first = isset($rulePart[0]) ? $rulePart[0] : '';
-            switch ($first) {
-                case '*':
-                    $match = true;
-                    break;
-
-                case '{':
-                    $match = $this->checkPartAsArgument($rulePart, $queryPart, $args);
-                    break;
-
-                default:
-                    $match = ($rulePart == $queryPart);
-                    break;
-            }
-
-            // Continue as long as each part matches
-            if (!$match) {
+            if (!$this->matchPart($rulePart, $queryPart, $args)) {
                 return false;
             }
         }

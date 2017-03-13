@@ -14,7 +14,6 @@ class RouterInjectable
      */
     private $routes         = [];    // All the routes
     private $internalRoutes = [];    // All internal routes
-    private $defaultRoute   = null;  // A default route to catch all
     private $lastRoute      = null;  // Last route that was callbacked
 
 
@@ -47,20 +46,16 @@ class RouterInjectable
      * Add a route to the router.
      *
      * @param string $rule   for this route
-     * @param mixed  $action null, string or callable to implement a controller for the route
+     * @param mixed  $action null, string or callable to implement a
+     *                       controller for the route
      *
      * @return class as new route
      */
     public function add($rule, $action = null)
     {
         $route = new Route();
-        $route->set($rule, $action);
+        $route->set($rule, $action, []);
         $this->routes[] = $route;
-
-        // Set as default route
-        if ($rule == "*") {
-            $this->defaultRoute = $route;
-        }
 
         return $route;
     }
@@ -68,20 +63,86 @@ class RouterInjectable
 
 
     /**
-     * Add a default route to the router, to use when all other routes fail.
+     * Add aroute to the router with specific request method.
      *
-     * @param mixed  $action null, string or callable to implement a controller for the route
+     * @param array  $method as array of strings of request methods
+     * @param string $rule   for this route
+     * @param mixed  $action null, string or callable to implement a
+     *                       controller for the route
      *
      * @return class as new route
      */
-    public function addDefault($action)
+    public function any($method, $rule, $action = null)
     {
         $route = new Route();
-        $route->set("*", $action);
+        $route->set($rule, $action, $method);
         $this->routes[] = $route;
-        $this->defaultRoute = $route;
 
         return $route;
+    }
+
+
+
+    /**
+     * Add a GET route to the router.
+     *
+     * @param string $rule   for this route
+     * @param mixed  $action null, string or callable to implement a
+     *                       controller for the route
+     *
+     * @return class as new route
+     */
+    public function get($rule, $action = null)
+    {
+        return $this->any(["GET"], $rule, $action);
+    }
+
+
+
+    /**
+     * Add a POST route to the router.
+     *
+     * @param string $rule   for this route
+     * @param mixed  $action null, string or callable to implement a
+     *                       controller for the route
+     *
+     * @return class as new route
+     */
+    public function post($rule, $action = null)
+    {
+        return $this->any(["POST"], $rule, $action);
+    }
+
+
+
+    /**
+     * Add a PUT route to the router.
+     *
+     * @param string $rule   for this route
+     * @param mixed  $action null, string or callable to implement a
+     *                       controller for the route
+     *
+     * @return class as new route
+     */
+    public function put($rule, $action = null)
+    {
+        return $this->any(["PUT"], $rule, $action);
+    }
+
+
+
+    /**
+     * Add a DELETE route to the router.
+     *
+     * @param string $rule   for this route
+     * @param mixed  $action null, string or callable to implement a
+     *                       controller for the route
+     *
+     * @return class as new route
+     */
+    public function delete($rule, $action = null)
+    {
+        return $this->any(["DELETE"], $rule, $action);
     }
 
 
@@ -143,24 +204,19 @@ class RouterInjectable
      * may redirect to an internal route for error handling.
      *
      * @param string $query   the query/route to match a handler for.
+     * @param string $method  the request method to match.
      *
      * @return mixed content returned from route.
      */
-    public function handle($query)
+    public function handle($query, $method = null)
     {
         try {
             // Match predefined routes
             foreach ($this->routes as $route) {
-                if ($route->match($query)) {
+                if ($route->match($query, $method)) {
                     $this->lastRoute = $route->getRule();
                     return $route->handle();
                 }
-            }
-
-            // Use the "catch-all" route
-            if ($this->defaultRoute) {
-                $this->lastRoute = $route->getRule();
-                return $this->defaultRoute->handle();
             }
 
             // No route was matched

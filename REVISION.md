@@ -5,7 +5,7 @@ v1.0.1 (2017-03-13)
 ---------------------------------
 
 * Add arguments as part of route.
-* Arguments can be validated as alpha, alphanum, digt, hex.
+* Arguments can be validated as alpha, alphanum, digit, hex.
 * Support different routes per request methods.
 
 

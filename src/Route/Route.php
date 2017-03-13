@@ -13,9 +13,10 @@ class Route
     * Properties
     *
     */
-    private $name;   // A name for this route
-    private $rule;   // The rule for this route
-    private $action; // The controller action to handle this route
+    private $name;           // A name for this route
+    private $rule;           // The rule for this route
+    private $action;         // The callback to handle this route
+    private $arguments = []; // Arguments for the callback
 
 
 
@@ -49,6 +50,7 @@ class Route
         $ruleParts  = explode('/', $this->rule);
         $queryParts = explode('/', $query);
         $ruleCount = max(count($ruleParts), count($queryParts));
+        $args = [];
 
         // If default route, match anything
         if ($this->rule == "*") {
@@ -66,7 +68,17 @@ class Route
                 case '*':
                     $match = true;
                     break;
-                
+
+                case '{':
+                    $match = false;
+                    if (substr($rulePart, -1) == "}"
+                        && !is_null($queryPart)
+                    ) {
+                        $args[] = $queryPart;
+                        $match = true;
+                    }
+                    break;
+
                 default:
                     $match = ($rulePart == $queryPart);
                     break;
@@ -78,6 +90,7 @@ class Route
             }
         }
 
+        $this->arguments = $args;
         return true;
     }
 
@@ -90,7 +103,7 @@ class Route
      */
     public function handle()
     {
-        return call_user_func($this->action);
+        return call_user_func($this->action, ...$this->arguments);
     }
 
 

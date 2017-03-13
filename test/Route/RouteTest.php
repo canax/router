@@ -90,4 +90,55 @@ class RouteTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($route->match('doc/index/index'));
         $this->assertFalse($route->match('doc/index/index/index'));
     }
+
+
+
+    /**
+     * Test
+     *
+     * @return void
+     */
+    public function testRouteWithArguments()
+    {
+        $route = new Route();
+
+        //
+        $route->set('search/{arg1}', function ($arg1) {
+            return $arg1;
+        });
+
+        $this->assertFalse($route->match('search'));
+        $this->assertFalse($route->match('search/1/2'));
+        $this->assertFalse($route->match('search/1/2/3'));
+
+        $this->assertTrue($route->match('search/1'));
+        $this->assertEquals("1", $route->handle());
+
+
+        //
+        $route->set('search/{arg1}/{arg2}', function ($arg1, $arg2) {
+            return "$arg1$arg2";
+        });
+
+        $this->assertFalse($route->match('search'));
+        $this->assertFalse($route->match('search/1'));
+        $this->assertFalse($route->match('search/1/2/3'));
+
+        $this->assertTrue($route->match('search/1/2'));
+        $this->assertEquals("12", $route->handle());
+
+        //
+        $route->set('search/{arg1}/what/{arg2}', function ($arg1, $arg2) {
+            return "$arg1$arg2";
+        });
+
+        $this->assertFalse($route->match('search'));
+        $this->assertFalse($route->match('search/1/2'));
+        $this->assertFalse($route->match('search/1/what'));
+        $this->assertFalse($route->match('search/1/what/2/3'));
+        $this->assertFalse($route->match('search/1/2/3'));
+
+        $this->assertTrue($route->match('search/1/what/2'));
+        $this->assertEquals("12", $route->handle());
+    }
 }

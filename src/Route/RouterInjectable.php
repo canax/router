@@ -202,6 +202,9 @@ class RouterInjectable
      * Handle the routes and match them towards the request, dispatch them
      * when a match is made. Each route handler may throw exceptions that
      * may redirect to an internal route for error handling.
+     * Several routes can match and if the routehandler does not break
+     * execution flow, the route matching will carry on.
+     * Only the last routehandler will get its return value returned further.
      *
      * @param string $query   the query/route to match a handler for.
      * @param string $method  the request method to match.
@@ -211,12 +214,17 @@ class RouterInjectable
     public function handle($query, $method = null)
     {
         try {
-            // Match predefined routes
+            $match = false;
             foreach ($this->routes as $route) {
                 if ($route->match($query, $method)) {
                     $this->lastRoute = $route->getRule();
-                    return $route->handle();
+                    $match = true;
+                    $results = $route->handle();
                 }
+            }
+
+            if ($match) {
+                return $results;
             }
 
             // No route was matched

@@ -33,10 +33,6 @@ class RouterInjectableMethodTest extends \PHPUnit_Framework_TestCase
             return "DELETE about";
         });
 
-        $router->add("about", function () {
-            return "about";
-        });
-
         $res = $router->handle("about", "GET");
         $this->assertEquals("GET about", $res);
 
@@ -48,9 +44,6 @@ class RouterInjectableMethodTest extends \PHPUnit_Framework_TestCase
 
         $res = $router->handle("about", "DELETE");
         $this->assertEquals("DELETE about", $res);
-
-        $res = $router->handle("about");
-        $this->assertEquals("about", $res);
     }
 
 
@@ -72,10 +65,6 @@ class RouterInjectableMethodTest extends \PHPUnit_Framework_TestCase
             return "PUT/DELETE about";
         });
 
-        $router->add("about", function () {
-            return "about";
-        });
-
         $res = $router->handle("about", "GET");
         $this->assertEquals("GET/POST about", $res);
 
@@ -87,9 +76,6 @@ class RouterInjectableMethodTest extends \PHPUnit_Framework_TestCase
 
         $res = $router->handle("about", "DELETE");
         $this->assertEquals("PUT/DELETE about", $res);
-
-        $res = $router->handle("about");
-        $this->assertEquals("about", $res);
     }
 
 
@@ -103,27 +89,35 @@ class RouterInjectableMethodTest extends \PHPUnit_Framework_TestCase
     {
         $router = new RouterInjectable();
 
-        $router->add("about", function () {
-            return "about";
+        $remember = "";
+
+        $router->add("about", function () use (&$remember) {
+            $remember = "about ";
+            return $remember;
         });
 
-        $router->any(["GET", "POST", "PUT", "DELETE"], "about", function () {
-            return "any about";
-        });
+        $router->any(
+            ["GET", "POST", "PUT", "DELETE"],
+            "about",
+            function () use (&$remember) {
+                $remember .= "any about";
+                return $remember;
+            }
+        );
 
         $res = $router->handle("about", "GET");
-        $this->assertEquals("about", $res);
+        $this->assertEquals("about any about", $res);
 
         $res = $router->handle("about", "POST");
-        $this->assertEquals("about", $res);
+        $this->assertEquals("about any about", $res);
 
         $res = $router->handle("about", "PUT");
-        $this->assertEquals("about", $res);
+        $this->assertEquals("about any about", $res);
 
         $res = $router->handle("about", "DELETE");
-        $this->assertEquals("about", $res);
+        $this->assertEquals("about any about", $res);
 
         $res = $router->handle("about");
-        $this->assertEquals("about", $res);
+        $this->assertEquals("about ", $res);
     }
 }

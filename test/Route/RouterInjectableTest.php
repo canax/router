@@ -10,8 +10,6 @@ class RouterInjectableTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Test
-     *
-     * @return void
      */
     public function testRouter()
     {
@@ -36,8 +34,30 @@ class RouterInjectableTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test
-     *
-     * @return void
+     */
+    public function testRouterWithSeveralMatches()
+    {
+        $router = new RouterInjectable();
+
+        $router->add("", function () {
+            echo "1";
+        });
+
+        $router->add("", function () {
+            echo "2";
+        });
+
+        ob_start();
+        $res = $router->handle("");
+        $res = ob_get_contents();
+        ob_end_clean();
+        $this->assertEquals("12", $res);
+    }
+
+
+
+    /**
+     * Test
      */
     public function testRouterDefault()
     {

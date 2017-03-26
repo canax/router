@@ -146,4 +146,35 @@ class RouteTest extends \PHPUnit_Framework_TestCase
         $route->set("", null, ["GET"]);
         $this->assertTrue($route->match("", "GET"));
     }
+
+
+
+    /**
+     * Test
+     */
+    public function testAddMethodAsString()
+    {
+        $route = new Route();
+
+        $route->set("", null, "GET|POST");
+        $this->assertFalse($route->match(""));
+        $this->assertTrue($route->match("", "GET"));
+        $this->assertTrue($route->match("", "POST"));
+        $this->assertFalse($route->match("", "PUT"));
+        $this->assertFalse($route->match("", "DELETE"));
+
+        $route->set("", null, "GET|POST | PUT | DEL");
+        $this->assertFalse($route->match(""));
+        $this->assertTrue($route->match("", "GET"));
+        $this->assertTrue($route->match("", "POST"));
+        $this->assertTrue($route->match("", "PUT"));
+        $this->assertFalse($route->match("", "DELETE"));
+
+        $route->set("", null, "GET|POST | PUT | DELETE");
+        $this->assertFalse($route->match(""));
+        $this->assertTrue($route->match("", "GET"));
+        $this->assertTrue($route->match("", "POST"));
+        $this->assertTrue($route->match("", "PUT"));
+        $this->assertTrue($route->match("", "DELETE"));
+    }
 }

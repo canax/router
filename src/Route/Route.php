@@ -38,7 +38,7 @@ class Route
 
         $this->method = $method;
         if (is_string($method)) {
-            $this->method = [$method];
+            $this->method = array_map("trim", explode("|", $method));
         }
 
         return $this;

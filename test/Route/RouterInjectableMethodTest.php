@@ -10,8 +10,6 @@ class RouterInjectableMethodTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Test
-     *
-     * @return void
      */
     public function testRequestMethods()
     {
@@ -50,8 +48,6 @@ class RouterInjectableMethodTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test
-     *
-     * @return void
      */
     public function testRequestMethodAny()
     {
@@ -82,8 +78,6 @@ class RouterInjectableMethodTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test
-     *
-     * @return void
      */
     public function testRequestMethodDefault()
     {

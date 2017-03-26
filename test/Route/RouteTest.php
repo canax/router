@@ -177,4 +177,35 @@ class RouteTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($route->match("", "PUT"));
         $this->assertTrue($route->match("", "DELETE"));
     }
+
+
+
+    /**
+     * Test
+     */
+    public function testNullRoute()
+    {
+        $route = new Route();
+
+        $route->set(null, null, null);
+        $this->assertTrue($route->match("whatever/any"));
+        $this->assertTrue($route->match("whatever/any", "GET"));
+        $this->assertTrue($route->match("whatever/any", "POST"));
+        $this->assertTrue($route->match("whatever/any", "PUT"));
+        $this->assertTrue($route->match("whatever/any", "DELETE"));
+
+        $route->set(null, null, "GET|POST");
+        $this->assertFalse($route->match("whatever/any"));
+        $this->assertTrue($route->match("whatever/any", "GET"));
+        $this->assertTrue($route->match("whatever/any", "POST"));
+        $this->assertFalse($route->match("whatever/any", "PUT"));
+        $this->assertFalse($route->match("whatever/any", "DELETE"));
+
+        $route->set(null, null, "GET | POST | PUT | DELETE");
+        $this->assertFalse($route->match("whatever/any"));
+        $this->assertTrue($route->match("whatever/any", "GET"));
+        $this->assertTrue($route->match("whatever/any", "POST"));
+        $this->assertTrue($route->match("whatever/any", "PUT"));
+        $this->assertTrue($route->match("whatever/any", "DELETE"));
+    }
 }

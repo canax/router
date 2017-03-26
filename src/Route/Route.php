@@ -24,14 +24,14 @@ class Route
     /**
      * Set values for route.
      *
-     * @param string            $rule   for this route
+     * @param null|string       $rule   for this route
      * @param callable          $action callable to implement a controller for
      *                                  the route
      * @param null|string|array $method as request method to support
      *
      * @return $this
      */
-    public function set($rule = null, $action = null, $method = null)
+    public function set($rule, $action = null, $method = null)
     {
         $this->rule = $rule;
         $this->action = $action;
@@ -176,8 +176,11 @@ class Route
             return false;
         }
 
-        // If default route, match anything
-        if ($this->rule == "*") {
+        // If any/default */** route, match anything
+        if (is_null($this->rule)
+            || $this->rule == "*"
+            || $this->rule == "**"
+        ) {
             return true;
         }
 

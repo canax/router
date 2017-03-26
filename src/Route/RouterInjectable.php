@@ -45,13 +45,12 @@ class RouterInjectable
     /**
      * Add a route to the router.
      *
-     * @param string $rule   for this route
-     * @param mixed  $action null, string or callable to implement a
-     *                       controller for the route
+     * @param null|string          $rule   for this route
+     * @param null|string|callable $action to implement a handler for the route
      *
      * @return class as new route
      */
-    public function add($rule, $action = null)
+    public function add($rule, $action)
     {
         return $this->any(null, $rule, $action);
     }
@@ -61,14 +60,13 @@ class RouterInjectable
     /**
      * Add aroute to the router with specific request method.
      *
-     * @param array  $method as array of strings of request methods
-     * @param string $rule   for this route
-     * @param mixed  $action null, string or callable to implement a
-     *                       controller for the route
+     * @param null|string|array    $method as request methods
+     * @param null|string          $rule   for this route
+     * @param null|string|callable $action to implement a handler for the route
      *
      * @return class as new route
      */
-    public function any($method, $rule, $action = null)
+    public function any($method, $rule, $action)
     {
         $route = new Route();
         $route->set($rule, $action, $method);
@@ -80,15 +78,30 @@ class RouterInjectable
 
 
     /**
-     * Add a GET route to the router.
+     * Add a route to the router which will be applied for any route, if the
+     * method is matching.
      *
-     * @param string $rule   for this route
-     * @param mixed  $action null, string or callable to implement a
-     *                       controller for the route
+     * @param null|string|array    $method as request methods
+     * @param null|string|callable $action to implement a handler for the route
      *
      * @return class as new route
      */
-    public function get($rule, $action = null)
+    public function all($method, $action = null)
+    {
+        return $this->any($method, null, $action);
+    }
+
+
+
+    /**
+     * Add a GET route to the router.
+     *
+     * @param null|string|array    $method as request methods
+     * @param null|string|callable $action to implement a handler for the route
+     *
+     * @return class as new route
+     */
+    public function get($rule, $action)
     {
         return $this->any(["GET"], $rule, $action);
     }
@@ -98,13 +111,12 @@ class RouterInjectable
     /**
      * Add a POST route to the router.
      *
-     * @param string $rule   for this route
-     * @param mixed  $action null, string or callable to implement a
-     *                       controller for the route
+     * @param null|string|array    $method as request methods
+     * @param null|string|callable $action to implement a handler for the route
      *
      * @return class as new route
      */
-    public function post($rule, $action = null)
+    public function post($rule, $action)
     {
         return $this->any(["POST"], $rule, $action);
     }
@@ -114,13 +126,12 @@ class RouterInjectable
     /**
      * Add a PUT route to the router.
      *
-     * @param string $rule   for this route
-     * @param mixed  $action null, string or callable to implement a
-     *                       controller for the route
+     * @param null|string|array    $method as request methods
+     * @param null|string|callable $action to implement a handler for the route
      *
      * @return class as new route
      */
-    public function put($rule, $action = null)
+    public function put($rule, $action)
     {
         return $this->any(["PUT"], $rule, $action);
     }
@@ -130,13 +141,12 @@ class RouterInjectable
     /**
      * Add a DELETE route to the router.
      *
-     * @param string $rule   for this route
-     * @param mixed  $action null, string or callable to implement a
-     *                       controller for the route
+     * @param null|string|array    $method as request methods
+     * @param null|string|callable $action to implement a handler for the route
      *
      * @return class as new route
      */
-    public function delete($rule, $action = null)
+    public function delete($rule, $action)
     {
         return $this->any(["DELETE"], $rule, $action);
     }
@@ -146,12 +156,12 @@ class RouterInjectable
     /**
      * Add an internal (not exposed to url-matching) route to the router.
      *
-     * @param string $rule   for this route
-     * @param mixed  $action null, string or callable to implement a controller for the route
+     * @param string               $rule   for this route
+     * @param null|string|callable $action to implement a handler for the route
      *
      * @return class as new route
      */
-    public function addInternal($rule, $action = null)
+    public function addInternal($rule, $action)
     {
         $route = new Route();
         $route->set($rule, $action);
@@ -162,13 +172,13 @@ class RouterInjectable
 
 
     /**
-     * Add an internal (not exposed to url-matching) route to the router.
+     * Handle an internal route.
      *
      * @param string $rule   for this route
-     * @param mixed  $action null, string or callable to implement a
-     *                       controller for the route
      *
      * @return void
+     *
+     * @throws \Anax\Route\NotFoundException
      */
     public function handleInternal($rule)
     {

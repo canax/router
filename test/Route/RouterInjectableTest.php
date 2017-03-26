@@ -59,16 +59,47 @@ class RouterInjectableTest extends \PHPUnit_Framework_TestCase
     /**
      * Test
      */
-    public function testRouterDefault()
+    public function testRouterOneStar()
     {
         $router = new RouterInjectable();
 
-        // One way to add default route
         $router->add("*", function () {
             return "*";
         });
         $res = $router->handle("some/route");
         $this->assertEquals("*", $res);
+    }
+
+
+
+    /**
+     * Test
+     */
+    public function testRouterDoubleStar()
+    {
+        $router = new RouterInjectable();
+
+        $router->add("**", function () {
+            return "**";
+        });
+        $res = $router->handle("some/route");
+        $this->assertEquals("**", $res);
+    }
+
+
+
+    /**
+     * Test
+     */
+    public function testRouterForAll()
+    {
+        $router = new RouterInjectable();
+
+        $router->all(null, function () {
+            return "all";
+        });
+        $res = $router->handle("some/route");
+        $this->assertEquals("all", $res);
     }
 
 

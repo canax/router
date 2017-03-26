@@ -31,7 +31,7 @@ class Route
      *
      * @return $this
      */
-    public function set($rule, $action, $method = null)
+    public function set($rule = null, $action = null, $method = null)
     {
         $this->rule = $rule;
         $this->action = $action;

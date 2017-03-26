@@ -53,11 +53,7 @@ class RouterInjectable
      */
     public function add($rule, $action = null)
     {
-        $route = new Route();
-        $route->set($rule, $action, []);
-        $this->routes[] = $route;
-
-        return $route;
+        return $this->any(null, $rule, $action);
     }
 
 

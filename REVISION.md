@@ -1,10 +1,11 @@
 Revision history
 =================================
 
-v1.0.2* (2017-03-26)
+v1.0.2 (2017-03-26)
 ---------------------------------
 
 * Allow matching of several routehandlers having the same path.
+* Add testcases.
 
 
 v1.0.1 (2017-03-13)

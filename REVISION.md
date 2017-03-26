@@ -1,9 +1,10 @@
 Revision history
 =================================
 
-v1.0.2* (2017-03-26)
+v1.0.3 (2017-03-26)
 ---------------------------------
 
+* Extending support for default routes to partly include "\*\*" and null, matching any route. 
 * Support adding request method as string separated by |
 
 

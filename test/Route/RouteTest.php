@@ -10,8 +10,6 @@ class RouteTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Test
-     *
-     * @return void
      */
     public function testHomeRoute()
     {
@@ -26,8 +24,6 @@ class RouteTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test
-     *
-     * @return void
      */
     public function testDefaultRoute()
     {
@@ -43,8 +39,6 @@ class RouteTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test
-     *
-     * @return void
      */
     public function testGeneralRoute()
     {
@@ -69,8 +63,6 @@ class RouteTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Test
-     *
-     * @return void
      */
     public function testStarRoute()
     {
@@ -89,5 +81,69 @@ class RouteTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($route->match("doc/index/index1"));
         $this->assertTrue($route->match("doc/index/index"));
         $this->assertFalse($route->match("doc/index/index/index"));
+    }
+
+
+
+    /**
+     * Test
+     */
+    public function testRequestMethod()
+    {
+        $route = new Route();
+
+        $route->set("", null);
+        $this->assertTrue($route->match(""));
+        $this->assertTrue($route->match("", "GET"));
+        $this->assertTrue($route->match("", "POST"));
+        $this->assertTrue($route->match("", "PUT"));
+        $this->assertTrue($route->match("", "DELETE"));
+
+        $route->set("", null, ["GET"]);
+        $this->assertFalse($route->match(""));
+        $this->assertTrue($route->match("", "GET"));
+        $this->assertFalse($route->match("", "POST"));
+        $this->assertFalse($route->match("", "PUT"));
+        $this->assertFalse($route->match("", "DELETE"));
+
+        $route->set("", null, ["POST"]);
+        $this->assertFalse($route->match(""));
+        $this->assertFalse($route->match("", "GET"));
+        $this->assertTrue($route->match("", "POST"));
+        $this->assertFalse($route->match("", "PUT"));
+        $this->assertFalse($route->match("", "DELETE"));
+
+        $route->set("", null, ["PUT"]);
+        $this->assertFalse($route->match(""));
+        $this->assertFalse($route->match("", "GET"));
+        $this->assertFalse($route->match("", "POST"));
+        $this->assertTrue($route->match("", "PUT"));
+        $this->assertFalse($route->match("", "DELETE"));
+
+        $route->set("", null, ["DELETE"]);
+        $this->assertFalse($route->match(""));
+        $this->assertFalse($route->match("", "GET"));
+        $this->assertFalse($route->match("", "POST"));
+        $this->assertFalse($route->match("", "PUT"));
+        $this->assertTrue($route->match("", "DELETE"));
+    }
+
+
+
+    /**
+     * Test
+     */
+    public function testSettingRequestMethod()
+    {
+        $route = new Route();
+
+        $route->set("", null, null);
+        $this->assertTrue($route->match(""));
+
+        $route->set("", null, "GET");
+        $this->assertTrue($route->match("", "GET"));
+
+        $route->set("", null, ["GET"]);
+        $this->assertTrue($route->match("", "GET"));
     }
 }

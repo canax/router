@@ -24,10 +24,10 @@ class Route
     /**
      * Set values for route.
      *
-     * @param string     $rule   for this route
-     * @param callable   $action callable to implement a controller for
-     *                           the route
-     * @param null|array $method as request method to support
+     * @param string            $rule   for this route
+     * @param callable          $action callable to implement a controller for
+     *                                  the route
+     * @param null|string|array $method as request method to support
      *
      * @return $this
      */
@@ -35,7 +35,11 @@ class Route
     {
         $this->rule = $rule;
         $this->action = $action;
+
         $this->method = $method;
+        if (is_string($method)) {
+            $this->method = [$method];
+        }
 
         return $this;
     }
@@ -148,7 +152,7 @@ class Route
      */
     public function matchRequestMethod($method)
     {
-        if ($method && $this->method && !in_array($method, $this->method)
+        if ($method && is_array($this->method) && !in_array($method, $this->method)
             || (is_null($method) && !empty($this->method))
         ) {
             return false;

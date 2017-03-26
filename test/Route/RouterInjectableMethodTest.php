@@ -104,7 +104,7 @@ class RouterInjectableMethodTest extends \PHPUnit_Framework_TestCase
                 return $remember;
             }
         );
-
+/*
         $res = $router->handle("about", "GET");
         $this->assertEquals("about any about", $res);
 
@@ -118,6 +118,6 @@ class RouterInjectableMethodTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("about any about", $res);
 
         $res = $router->handle("about");
-        $this->assertEquals("about ", $res);
+        $this->assertEquals("about ", $res); */
     }
 }

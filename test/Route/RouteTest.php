@@ -88,6 +88,31 @@ class RouteTest extends \PHPUnit_Framework_TestCase
     /**
      * Test
      */
+    public function testDoubleStarRoute()
+    {
+        $route = new Route();
+
+        $route->set("doc/**", null);
+        $this->assertFalse($route->match("docs"));
+        $this->assertTrue($route->match("doc"));
+        $this->assertTrue($route->match("doc/"));
+        $this->assertTrue($route->match("doc/index"));
+        $this->assertTrue($route->match("doc/index/index"));
+
+        $route->set("doc/**/index", null);
+        $this->assertFalse($route->match("docs"));
+        $this->assertTrue($route->match("doc"));
+        $this->assertTrue($route->match("doc/index"));
+        $this->assertTrue($route->match("doc/index/index1"));
+        $this->assertTrue($route->match("doc/index/index"));
+        $this->assertTrue($route->match("doc/index/index/index"));
+    }
+
+
+
+    /**
+     * Test
+     */
     public function testRequestMethod()
     {
         $route = new Route();

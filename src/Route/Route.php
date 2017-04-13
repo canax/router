@@ -194,6 +194,10 @@ class Route
             $rulePart  = isset($ruleParts[$i])  ? $ruleParts[$i]  : null;
             $queryPart = isset($queryParts[$i]) ? $queryParts[$i] : null;
 
+            if ($rulePart === "**") {
+                break;
+            }
+
             if (!$this->matchPart($rulePart, $queryPart, $args)) {
                 return false;
             }

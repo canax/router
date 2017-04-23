@@ -4,55 +4,80 @@ namespace Anax\Route;
 
 /**
  * A container for routes.
- *
  */
 class RouterInjectable
 {
     /**
-     * Properties
-     *
+     * @var array       $routes         all the routes.
+     * @var array       $internalRoutes all internal routes.
+     * @var null|string $lastRoute      last route that was callbacked.
      */
-    private $routes         = [];    // All the routes
-    private $internalRoutes = [];    // All internal routes
-    private $lastRoute      = null;  // Last route that was callbacked
+    private $routes         = [];
+    private $internalRoutes = [];
+    private $lastRoute      = null;
 
 
 
     /**
-     * Get all routes.
+     * Handle the routes and match them towards the request, dispatch them
+     * when a match is made. Each route handler may throw exceptions that
+     * may redirect to an internal route for error handling.
+     * Several routes can match and if the routehandler does not break
+     * execution flow, the route matching will carry on.
+     * Only the last routehandler will get its return value returned further.
      *
-     * @return array with all routes.
+     * @param string $path    the path to find a matching handler for.
+     * @param string $method  the request method to match.
+     *
+     * @return mixed content returned from route.
      */
-    public function getAll()
+    public function handle($path, $method = null)
     {
-        return $this->routes;
+        try {
+            $match = false;
+            foreach ($this->routes as $route) {
+                if ($route->match($path, $method)) {
+                    $this->lastRoute = $route->getRule();
+                    $match = true;
+                    $results = $route->handle();
+                }
+            }
+
+            if ($match) {
+                return $results;
+            }
+
+            // No route was matched
+            $this->handleInternal("404");
+        } catch (ForbiddenException $e) {
+            $this->handleInternal("403");
+        } catch (NotFoundException $e) {
+            $this->handleInternal("404");
+        } catch (InternalErrorException $e) {
+            $this->handleInternal("500");
+        }
     }
 
 
 
     /**
-     * Get all internal routes.
+     * Handle an internal route, the internal routes are not exposed to the
+     * end user.
      *
-     * @return array with internal routes.
+     * @param string $rule for this route
+     *
+     * @return void
+     *
+     * @throws \Anax\Route\NotFoundException
      */
-    public function getInternal()
+    public function handleInternal($rule)
     {
-        return $this->internalRoutes;
-    }
-
-
-
-    /**
-     * Add a route to the router.
-     *
-     * @param null|string          $rule   for this route
-     * @param null|string|callable $action to implement a handler for the route
-     *
-     * @return class as new route
-     */
-    public function add($rule, $action)
-    {
-        return $this->any(null, $rule, $action);
+        if (!isset($this->internalRoutes[$rule])) {
+            throw new NotFoundException("No internal route to handle: " . $rule);
+        }
+        $route = $this->internalRoutes[$rule];
+        $this->lastRoute = $rule;
+        $route->handle();
     }
 
 
@@ -73,6 +98,21 @@ class RouterInjectable
         $this->routes[] = $route;
 
         return $route;
+    }
+
+
+
+    /**
+     * Add a route to the router.
+     *
+     * @param null|string          $rule   for this route
+     * @param null|string|callable $action to implement a handler for the route
+     *
+     * @return class as new route
+     */
+    public function add($rule, $action)
+    {
+        return $this->any(null, $rule, $action);
     }
 
 
@@ -172,27 +212,6 @@ class RouterInjectable
 
 
     /**
-     * Handle an internal route.
-     *
-     * @param string $rule   for this route
-     *
-     * @return void
-     *
-     * @throws \Anax\Route\NotFoundException
-     */
-    public function handleInternal($rule)
-    {
-        if (!isset($this->internalRoutes[$rule])) {
-            throw new NotFoundException("No internal route to handle: " . $rule);
-        }
-        $route = $this->internalRoutes[$rule];
-        $this->lastRoute = $rule;
-        $route->handle();
-    }
-
-
-
-    /**
      * Get the route for the last route that was handled.
      *
      * @return mixed
@@ -205,42 +224,24 @@ class RouterInjectable
 
 
     /**
-     * Handle the routes and match them towards the request, dispatch them
-     * when a match is made. Each route handler may throw exceptions that
-     * may redirect to an internal route for error handling.
-     * Several routes can match and if the routehandler does not break
-     * execution flow, the route matching will carry on.
-     * Only the last routehandler will get its return value returned further.
+     * Get all routes.
      *
-     * @param string $query   the query/route to match a handler for.
-     * @param string $method  the request method to match.
-     *
-     * @return mixed content returned from route.
+     * @return array with all routes.
      */
-    public function handle($query, $method = null)
+    public function getAll()
     {
-        try {
-            $match = false;
-            foreach ($this->routes as $route) {
-                if ($route->match($query, $method)) {
-                    $this->lastRoute = $route->getRule();
-                    $match = true;
-                    $results = $route->handle();
-                }
-            }
+        return $this->routes;
+    }
 
-            if ($match) {
-                return $results;
-            }
 
-            // No route was matched
-            $this->handleInternal("404");
-        } catch (ForbiddenException $e) {
-            $this->handleInternal("403");
-        } catch (NotFoundException $e) {
-            $this->handleInternal("404");
-        } catch (InternalErrorException $e) {
-            $this->handleInternal("500");
-        }
+
+    /**
+     * Get all internal routes.
+     *
+     * @return array with internal routes.
+     */
+    public function getInternal()
+    {
+        return $this->internalRoutes;
     }
 }

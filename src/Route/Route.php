@@ -8,16 +8,19 @@ namespace Anax\Route;
  */
 class Route
 {
-
     /**
-    * Properties
-    *
-    */
-    private $name;           // A name for this route
-    private $method;         // The methods to support
-    private $rule;           // The rule for this route
-    private $action;         // The callback to handle this route
-    private $arguments = []; // Arguments for the callback
+     * @var string     $name      a name for this route.
+     * @var string     $method    the methods to support
+     * @var string     $rule      the path rule for this route
+     * @var callable   $action    the callback to handle this route
+     * @var null|array $arguments arguments for the callback, extracted
+     *                            from path
+     */
+    private $name;
+    private $method;
+    private $rule;
+    private $action;
+    private $arguments = [];
 
 
 

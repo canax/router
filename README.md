@@ -12,9 +12,11 @@ Anax Router
 
 Anax Router module.
 
-A standalone router supporting request methods and extracting and validating arguments from path.
+A standalone router supporting request methods and dynamic routes matching, extracting and validating arguments from path.
 
-The router will try matching routes by the order they were added and execute all matching routes, one after the other. Use `exit()` to prevent further routes from being matched.
+The router will try matching routes by the order they were added and execute all matching routes, one after the other.
+
+Use `exit()` to prevent further routes from being matched.
 
 
 

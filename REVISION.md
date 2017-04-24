@@ -8,7 +8,7 @@ Notes for development v1.1.0*
 * Mark RouterInjectable as obsolete and implement it as extending Router.
 
 
-v1.0.4* (2017-04-23)
+v1.0.5 (2017-04-24)
 ---------------------------------
 
 * Adding documentation and testcases for documentation.

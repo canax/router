@@ -12,6 +12,61 @@ Anax Router
 
 Anax Router module.
 
+A standalone router supporting request methods, extracting arguments from path, validating arguments.
+
+The router will try all routes, by the order they were added and execute all matching routes. Usine `exit()` will prevent futher routes from being matched.
+
+
+
+Install
+------------------
+
+```bash
+$ composer require anax/router
+```
+
+
+
+Usage
+------------------
+
+This is how you can use the router.
+
+
+
+### Add a route with a handler
+
+```php
+$router = new \Anax\Router\RouterInjectable();
+
+$router->add("about", function() {
+    echo "about";
+});
+
+// try it out
+$router->match("about");
+// about
+```
+
+
+
+### Add several routes with one handler
+
+```php
+$router = new \Anax\Router\RouterInjectable();
+
+$router->add(["info", "about"], function() {
+    echo "info or about";
+});
+
+// try it out
+$router->match("info");
+$router->match("about");
+// info or about
+// info or about
+```
+
+
 
 
 License

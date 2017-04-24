@@ -1,6 +1,13 @@
 Revision history
 =================================
 
+Notes for development v1.1.0*
+---------------------------------
+
+* Rename RouterInjectable to Router.
+* Mark RouterInjectable as obsolete and implement it as extending Router.
+
+
 v1.0.4* (2017-04-23)
 ---------------------------------
 

@@ -11,3 +11,12 @@ test:
 
     override:
     - make test
+
+
+
+notify:
+    webhooks:
+        # canax
+        - url: https://webhooks.gitter.im/e/c8ff44f50de935adf880
+        # canax/router
+        - url: https://webhooks.gitter.im/e/0d20dbff4b6994c0a406

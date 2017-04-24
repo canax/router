@@ -163,7 +163,7 @@ class RouterInjectableMethodTest extends \PHPUnit_Framework_TestCase
     {
         $router = new RouterInjectable();
 
-        $routes = $router->add(
+        $router->add(
             ["info", "info1/hej", "info2/{arg}"],
             function ($arg = null) {
                 return "info $arg";

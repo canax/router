@@ -11,7 +11,8 @@ Notes for development v1.1.0*
 v1.0.4* (2017-04-23)
 ---------------------------------
 
-* Adding methdod RouterInjectable::always() as a default routehandler matching any route and request method.
+* Adding documentation and testcases for documentation.
+* Adding method RouterInjectable::always() as a default routehandler matching any route and request method.
 * Rearrange methods to improve readability.
 * Add docblocks for properties.
 * Add support for adding several path rules with one route->add().

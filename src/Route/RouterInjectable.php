@@ -117,9 +117,23 @@ class RouterInjectable
      *
      * @return class|array as new route(s), class if one added, else array.
      */
-    public function add($rule, $action)
+    public function add($rule, $action = null)
     {
         return $this->any(null, $rule, $action);
+    }
+
+
+
+    /**
+    * Add a default route which will be applied for any path.
+     *
+     * @param string|callable $action a callback handler for the route.
+     *
+     * @return class as new route.
+     */
+    public function always($action)
+    {
+        return $this->any(null, null, $action);
     }
 
 

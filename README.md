@@ -2,9 +2,7 @@ Anax Router
 ==================================
 
 [![Join the chat at https://gitter.im/canax/router](https://badges.gitter.im/canax/router.svg)](https://gitter.im/canax/router?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [![Latest Stable Version](https://poser.pugx.org/anax/router/v/stable)](https://packagist.org/packages/anax/router)
-[![Join the chat at https://gitter.im/mosbth/anax](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/canax?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/canax/router.svg?branch=master)](https://travis-ci.org/canax/router)
 [![CircleCI](https://circleci.com/gh/canax/router.svg?style=svg)](https://circleci.com/gh/canax/router)
 [![Build Status](https://scrutinizer-ci.com/g/canax/router/badges/build.png?b=master)](https://scrutinizer-ci.com/g/canax/router/build-status/master)

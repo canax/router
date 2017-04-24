@@ -10,7 +10,7 @@ class RouterInjectable
     /**
      * @var array       $routes         all the routes.
      * @var array       $internalRoutes all internal routes.
-     * @var null|string $lastRoute      last route that was callbacked.
+     * @var null|string $lastRoute      last route that was matched and called.
      */
     private $routes         = [];
     private $internalRoutes = [];
@@ -47,7 +47,6 @@ class RouterInjectable
                 return $results;
             }
 
-            // No route was matched
             $this->handleInternal("404");
         } catch (ForbiddenException $e) {
             $this->handleInternal("403");
@@ -64,7 +63,7 @@ class RouterInjectable
      * Handle an internal route, the internal routes are not exposed to the
      * end user.
      *
-     * @param string $rule for this route
+     * @param string $rule for this route.
      *
      * @return void
      *
@@ -83,30 +82,38 @@ class RouterInjectable
 
 
     /**
-     * Add aroute to the router with specific request method.
+     * Add a route with a request method, a path rule to match and an action
+     * as the callback. Adding several path rules (array) results in several
+     * routes being created.
      *
-     * @param null|string|array    $method as request methods
-     * @param null|string          $rule   for this route
-     * @param null|string|callable $action to implement a handler for the route
+     * @param null|string|array    $method as a valid request method.
+     * @param null|string|array    $rule   path rule for this route.
+     * @param null|string|callable $action to implement a handler for the route.
      *
-     * @return class as new route
+     * @return class|array as new route(s), class if one added, else array.
      */
     public function any($method, $rule, $action)
     {
-        $route = new Route();
-        $route->set($rule, $action, $method);
-        $this->routes[] = $route;
+        $rules = is_array($rule) ? $rule : [$rule];
 
-        return $route;
+        $routes = [];
+        foreach ($rules as $val) {
+            $route = new Route();
+            $route->set($val, $action, $method);
+            $routes[] = $route;
+            $this->routes[] = $route;
+        }
+
+        return count($routes) === 1 ? $routes[0] : $routes;
     }
 
 
 
     /**
-     * Add a route to the router.
+     * Add a route to the router by rule(s) and a callback.
      *
-     * @param null|string          $rule   for this route
-     * @param null|string|callable $action to implement a handler for the route
+     * @param null|string|array    $rule   for this route.
+     * @param null|string|callable $action a callback handler for the route.
      *
      * @return class as new route
      */

@@ -3,13 +3,12 @@
 namespace Anax\Route;
 
 /**
- * Routes.
- *
+ * Testcases.
  */
 class RouterInjectableMethodTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Test
+     * Test shortcuts for adding route with specific request methdod.
      */
     public function testRequestMethods()
     {
@@ -47,7 +46,7 @@ class RouterInjectableMethodTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * Test
+     * Test adding request methods usind any().
      */
     public function testRequestMethodAny()
     {
@@ -77,7 +76,7 @@ class RouterInjectableMethodTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * Test
+     * Test variants of default handlers independent of request method.
      */
     public function testRequestMethodDefault()
     {
@@ -113,5 +112,71 @@ class RouterInjectableMethodTest extends \PHPUnit_Framework_TestCase
 
         $res = $router->handle("about");
         $this->assertEquals("about ", $res);
+    }
+
+
+
+    /**
+     * Test adding singel path rule or array of rules.
+     */
+    public function testAddingSinglePathRule()
+    {
+        $router = new RouterInjectable();
+
+        // add as string
+        $routes = $router->add(
+            "info",
+            function () {
+                return "info";
+            }
+        );
+
+        $this->assertTrue(is_object($routes));
+
+        // add as single in array
+        $routes = $router->add(
+            ["info"],
+            function () {
+                return "info";
+            }
+        );
+
+        $this->assertTrue(is_object($routes));
+
+        // add multiple in array
+        $routes = $router->add(
+            ["info", "info1/hej", "info2/{arg}"],
+            function ($arg = null) {
+                return "info $arg";
+            }
+        );
+
+        $this->assertTrue(is_array($routes));
+    }
+
+
+
+    /**
+     * Test adding array of path rules to extend to several routes.
+     */
+    public function testAddingArrayOfPathRules()
+    {
+        $router = new RouterInjectable();
+
+        $routes = $router->add(
+            ["info", "info1/hej", "info2/{arg}"],
+            function ($arg = null) {
+                return "info $arg";
+            }
+        );
+
+        $res = $router->handle("info");
+        $this->assertEquals("info ", $res);
+
+        $res = $router->handle("info1/hej");
+        $this->assertEquals("info ", $res);
+
+        $res = $router->handle("info2/hej2");
+        $this->assertEquals("info hej2", $res);
     }
 }

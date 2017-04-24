@@ -9,12 +9,12 @@ namespace Anax\Route;
 class Route
 {
     /**
-     * @var string     $name      a name for this route.
-     * @var string     $method    the methods to support
-     * @var string     $rule      the path rule for this route
-     * @var callable   $action    the callback to handle this route
-     * @var null|array $arguments arguments for the callback, extracted
-     *                            from path
+     * @var string       $name      a name for this route.
+     * @var string|array $method    the method(s) to support
+     * @var string       $rule      the path rule for this route
+     * @var callable     $action    the callback to handle this route
+     * @var null|array   $arguments arguments for the callback, extracted
+     *                              from path
      */
     private $name;
     private $method;

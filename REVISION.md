@@ -1,6 +1,14 @@
 Revision history
 =================================
 
+v1.0.4* (2017-04-23)
+---------------------------------
+
+* Rearrange methods to improve readability.
+* Add docblocks for properties.
+* Add support for adding several path rules with one route->add().
+
+
 v1.0.4 (2017-04-13)
 ---------------------------------
 

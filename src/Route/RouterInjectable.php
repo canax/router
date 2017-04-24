@@ -115,7 +115,7 @@ class RouterInjectable
      * @param null|string|array    $rule   for this route.
      * @param null|string|callable $action a callback handler for the route.
      *
-     * @return class as new route
+     * @return class|array as new route(s), class if one added, else array.
      */
     public function add($rule, $action)
     {
@@ -125,15 +125,15 @@ class RouterInjectable
 
 
     /**
-     * Add a route to the router which will be applied for any route, if the
-     * method is matching.
+     * Add a default route which will be applied for any path, if the choosen
+     * request method is matching.
      *
      * @param null|string|array    $method as request methods
-     * @param null|string|callable $action to implement a handler for the route
+     * @param null|string|callable $action a callback handler for the route.
      *
-     * @return class as new route
+     * @return class|array as new route(s), class if one added, else array.
      */
-    public function all($method, $action = null)
+    public function all($method, $action)
     {
         return $this->any($method, null, $action);
     }
@@ -141,12 +141,12 @@ class RouterInjectable
 
 
     /**
-     * Add a GET route to the router.
+     * Shortcut to add a GET route.
      *
      * @param null|string|array    $method as request methods
-     * @param null|string|callable $action to implement a handler for the route
+     * @param null|string|callable $action a callback handler for the route.
      *
-     * @return class as new route
+     * @return class|array as new route(s), class if one added, else array.
      */
     public function get($rule, $action)
     {
@@ -156,12 +156,12 @@ class RouterInjectable
 
 
     /**
-     * Add a POST route to the router.
+    * Shortcut to add a POST route.
      *
      * @param null|string|array    $method as request methods
-     * @param null|string|callable $action to implement a handler for the route
+     * @param null|string|callable $action a callback handler for the route.
      *
-     * @return class as new route
+     * @return class|array as new route(s), class if one added, else array.
      */
     public function post($rule, $action)
     {
@@ -171,12 +171,12 @@ class RouterInjectable
 
 
     /**
-     * Add a PUT route to the router.
+    * Shortcut to add a PUT route.
      *
      * @param null|string|array    $method as request methods
-     * @param null|string|callable $action to implement a handler for the route
+     * @param null|string|callable $action a callback handler for the route.
      *
-     * @return class as new route
+     * @return class|array as new route(s), class if one added, else array.
      */
     public function put($rule, $action)
     {
@@ -186,12 +186,12 @@ class RouterInjectable
 
 
     /**
-     * Add a DELETE route to the router.
+    * Shortcut to add a DELETE route.
      *
      * @param null|string|array    $method as request methods
-     * @param null|string|callable $action to implement a handler for the route
+     * @param null|string|callable $action a callback handler for the route.
      *
-     * @return class as new route
+     * @return class|array as new route(s), class if one added, else array.
      */
     public function delete($rule, $action)
     {
@@ -201,12 +201,13 @@ class RouterInjectable
 
 
     /**
-     * Add an internal (not exposed to url-matching) route to the router.
+     * Add an internal route to the router, this route is not exposed to the
+     * browser and the end user.
      *
      * @param string               $rule   for this route
-     * @param null|string|callable $action to implement a handler for the route
+     * @param null|string|callable $action a callback handler for the route.
      *
-     * @return class as new route
+     * @return class|array as new route(s), class if one added, else array.
      */
     public function addInternal($rule, $action)
     {

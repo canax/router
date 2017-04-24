@@ -181,8 +181,7 @@ class Route
 
         // If any/default */** route, match anything
         if (is_null($this->rule)
-            || $this->rule == "*"
-            || $this->rule == "**"
+            || in_array($this->rule, ["*", "**"])
         ) {
             return true;
         }

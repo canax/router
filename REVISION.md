@@ -6,6 +6,8 @@ Notes for development v1.1.0*
 
 * Rename RouterInjectable to Router.
 * Mark RouterInjectable as obsolete and implement it as extending Router.
+* Review the test suite.
+* Add route length (max, min) as a feature like type.
 
 
 v1.0.5 (2017-04-24)

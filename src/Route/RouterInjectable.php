@@ -2,11 +2,16 @@
 
 namespace Anax\Route;
 
+use \Anax\Common\AppInjectableInterface;
+use \Anax\Common\AppInjectableTrait;
+
 /**
  * A container for routes.
  */
-class RouterInjectable
+class RouterInjectable implements AppInjectableInterface
 {
+    use AppInjectableTrait;
+
     /**
      * @var array       $routes         all the routes.
      * @var array       $internalRoutes all internal routes.
@@ -39,7 +44,7 @@ class RouterInjectable
                 if ($route->match($path, $method)) {
                     $this->lastRoute = $route->getRule();
                     $match = true;
-                    $results = $route->handle();
+                    $results = $route->handle($this->app);
                 }
             }
 
@@ -77,6 +82,29 @@ class RouterInjectable
         $route = $this->internalRoutes[$rule];
         $this->lastRoute = $rule;
         $route->handle();
+    }
+
+
+
+    /**
+     * Load routes from a config file, the file should return an array with
+     * routes.
+     *
+     * @param string $file to load routes from.
+     *
+     * @return self
+     */
+    public function load($file)
+    {
+        $config = require $file;
+        foreach ($config["routes"] as $route) {
+            $this->any(
+                $route["requestMethod"],
+                $route["path"],
+                $route["callable"]
+            );
+        }
+        return $this;
     }
 
 

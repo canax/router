@@ -236,11 +236,30 @@ class Route
     /**
      * Handle the action for the route.
      *
+     * @param string $app container with services
+     * 
      * @return void
      */
-    public function handle()
+    public function handle($app = null)
     {
-        return call_user_func($this->action, ...$this->arguments);
+        if (is_callable($this->action)) {
+            return call_user_func($this->action, ...$this->arguments);
+        }
+
+        // Try to load service from app injected container
+        if ($app
+            && is_array($this->action)
+            && isset($this->action[0])
+            && isset($this->action[1])
+            && is_string($this->action[0])
+            && is_object($app->{$this->action[0]})
+            && is_callable([$app->{$this->action[0]}, $this->action[1]])
+        ) {
+            return call_user_func(
+                [$app->{$this->action[0]}, $this->action[1]],
+                ...$this->arguments
+            );
+        }
     }
 
 
@@ -268,5 +287,21 @@ class Route
     public function getRule()
     {
         return $this->rule;
+    }
+
+
+
+    /**
+     * Get the request method for the route.
+     *
+     * @return string representing the request method supported
+     */
+    public function getRequestMethod()
+    {
+        if (is_array($this->method)) {
+            return implode("|", $this->method);
+        }
+
+        return $this->method;
     }
 }

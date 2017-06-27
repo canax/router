@@ -43,6 +43,9 @@ class Route
         if (is_string($method)) {
             $this->method = array_map("trim", explode("|", $method));
         }
+        if (is_array($this->method)) {
+            $this->method = array_map("strtoupper", $this->method);
+        }
 
         return $this;
     }
@@ -237,7 +240,7 @@ class Route
      * Handle the action for the route.
      *
      * @param string $app container with services
-     * 
+     *
      * @return void
      */
     public function handle($app = null)

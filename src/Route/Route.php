@@ -69,6 +69,7 @@ class Route
         ) {
             $part = substr($rulePart, 1, -1);
             $pos = strpos($part, ":");
+            $type = null;
             if ($pos !== false) {
                 $type = substr($part, $pos + 1);
                 if (! $this->checkPartMatchingType($queryPart, $type)) {

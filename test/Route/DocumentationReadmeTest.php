@@ -306,7 +306,7 @@ class DocumentationReadmeTest extends \PHPUnit_Framework_TestCase
         // 404, 2017-03-07, 1990-06-20, 20 june 1990,
         $res = ob_get_contents();
         ob_end_clean();
-        $this->assertEquals($res, "404, 2017-03-07, 1990-06-20, 20 june 1990, ");
+        $this->assertEquals($res, "404, 2017-3-7, 1990-6-20, 20 june 1990, ");
     }
 
 

@@ -14,7 +14,7 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
-v1.0.* (2017-06-27)
+v1.0.7 (2017-06-27)
 ---------------------------------
 
 * Add Route::getRequestMethod() to show information on request method for route.

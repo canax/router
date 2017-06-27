@@ -14,6 +14,13 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
+v1.0.8 (2017-06-27)
+---------------------------------
+
+* Fix unittest passing.
+* Fix Route::checkPartAsArgument missing type vvariable.
+
+
 v1.0.7 (2017-06-27)
 ---------------------------------
 

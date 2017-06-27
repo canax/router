@@ -72,7 +72,7 @@ class Route
                     return false;
                 }
             }
-            $args[] = $queryPart;
+            $args[] = $this->typeConvertArgument($queryPart, $type);
             return true;
         }
         return false;
@@ -83,9 +83,8 @@ class Route
     /**
      * Check if value is matching a certain type of values.
      *
-     * @param string $rulePart   the rule part to check.
-     * @param string $queryPart  the query part to check.
-     * @param array  &$args      add argument to args array if matched
+     * @param string $value   the value to check.
+     * @param array  $type    the expected type to check against.
      *
      * @return boolean
      */
@@ -110,6 +109,29 @@ class Route
 
             default:
                 return false;
+        }
+    }
+
+
+
+    /**
+     * Check if value is matching a certain type and do type
+     * conversion accordingly.
+     *
+     * @param string $value   the value to check.
+     * @param array  $type    the expected type to check against.
+     *
+     * @return boolean
+     */
+    private function typeConvertArgument($value, $type)
+    {
+        switch ($type) {
+            case "digit":
+                return (int) $value;
+                break;
+
+            default:
+                return $value;
         }
     }
 

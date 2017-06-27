@@ -4,6 +4,7 @@ Revision history
 Notes for development v1.1.0*
 ---------------------------------
 
+* Rename add to any when adding routes without request method?
 * Rename RouterInjectable to Router.
 * Mark RouterInjectable as obsolete and implement it as extending Router.
 * Review the test suite.
@@ -11,6 +12,12 @@ Notes for development v1.1.0*
 * Add (MV)C as route and dispatch to controller, with before and after methods.
 * Add forward to enable forwarding to another route handler, like MVC triads.
 * (Use regexp to match route).
+
+
+v1.0.6 (2017-06-27)
+---------------------------------
+
+* Modify type of integer argument when validatet using digit.
 
 
 v1.0.5 (2017-04-24)

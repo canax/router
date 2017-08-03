@@ -14,6 +14,12 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
+v1.0.9 (2017-08-03)
+---------------------------------
+
+* Adding config/ with some default routes.
+
+
 v1.0.8 (2017-06-27)
 ---------------------------------
 

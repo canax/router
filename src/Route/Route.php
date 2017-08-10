@@ -286,6 +286,18 @@ class Route
 
 
     /**
+     * Get the name of the route.
+     *
+     * @return string as the route name.
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+
+
+    /**
      * Get the rule for the route.
      *
      * @return string

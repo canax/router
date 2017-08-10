@@ -128,7 +128,7 @@ class Router implements InjectionAwareInterface
         $routes = [];
         foreach ($rules as $val) {
             $route = new Route();
-            $route->set($val, $action, $method);
+            $route->set($val, $action, $method, $info);
             $routes[] = $route;
             $this->routes[] = $route;
         }

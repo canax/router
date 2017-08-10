@@ -14,6 +14,13 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
+v1.0.12* (2017-08-10)
+---------------------------------
+
+* Removing getName() and replacing with getInfo().
+* Adding member info to the Route.
+
+
 v1.0.11 (2017-08-10)
 ---------------------------------
 

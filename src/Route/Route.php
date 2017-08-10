@@ -10,6 +10,7 @@ class Route
 {
     /**
      * @var string       $name      a name for this route.
+     * @var string       $info      description of route.
      * @var string|array $method    the method(s) to support
      * @var string       $rule      the path rule for this route
      * @var callable     $action    the callback to handle this route
@@ -17,6 +18,7 @@ class Route
      *                              from path
      */
     private $name;
+    private $info;
     private $method;
     private $rule;
     private $action;
@@ -31,13 +33,15 @@ class Route
      * @param callable          $action callable to implement a controller for
      *                                  the route
      * @param null|string|array $method as request method to support
+     * @param null|string       $info   description of the route
      *
      * @return $this
      */
-    public function set($rule, $action = null, $method = null)
+    public function set($rule, $action = null, $method = null, $info = null)
     {
         $this->rule = $rule;
         $this->action = $action;
+        $this->info = $info;
 
         $this->method = $method;
         if (is_string($method)) {
@@ -286,13 +290,13 @@ class Route
 
 
     /**
-     * Get the name of the route.
+     * Get information of the route.
      *
-     * @return string as the route name.
+     * @return null|string as route information.
      */
-    public function getName()
+    public function getInfo()
     {
-        return $this->name;
+        return $this->info;
     }
 
 

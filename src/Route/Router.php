@@ -117,10 +117,11 @@ class Router implements InjectionAwareInterface
      * @param null|string|array    $method as a valid request method.
      * @param null|string|array    $rule   path rule for this route.
      * @param null|string|callable $action to implement a handler for the route.
+     * @param null|string          $info   about the route.
      *
      * @return class|array as new route(s), class if one added, else array.
      */
-    public function any($method, $rule, $action)
+    public function any($method, $rule, $action, $info = null)
     {
         $rules = is_array($rule) ? $rule : [$rule];
 

@@ -14,6 +14,12 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
+v1.0.10 (2017-08-10)
+---------------------------------
+
+* Add comment in route file to make 404 last in sequence.
+
+
 v1.0.9 (2017-08-03)
 ---------------------------------
 

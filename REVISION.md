@@ -14,6 +14,12 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
+v1.0.11* (2017-08-10)
+---------------------------------
+
+* Adding class Router as a DI enabled version.
+
+
 v1.0.10 (2017-08-10)
 ---------------------------------
 

@@ -240,29 +240,31 @@ class Route
     /**
      * Handle the action for the route.
      *
-     * @param string $app container with services
+     * @param string $di container with services
      *
-     * @return void
+     * @return mixed
      */
-    public function handle($app = null)
+    public function handle($di = null)
     {
         if (is_callable($this->action)) {
             return call_user_func($this->action, ...$this->arguments);
         }
 
-        // Try to load service from app injected container
-        if ($app
+        // Try to load service from app/di injected container
+        if ($di
             && is_array($this->action)
             && isset($this->action[0])
             && isset($this->action[1])
             && is_string($this->action[0])
-            && is_object($app->{$this->action[0]})
-            && is_callable([$app->{$this->action[0]}, $this->action[1]])
+            && $di->has($this->action[0])
         ) {
-            return call_user_func(
-                [$app->{$this->action[0]}, $this->action[1]],
-                ...$this->arguments
-            );
+            $service = $di->get($this->action[0]);
+            if (is_callable([$service, $this->action[1]])) {
+                return call_user_func(
+                    [$service, $this->action[1]],
+                    ...$this->arguments
+                );
+            }
         }
     }
 

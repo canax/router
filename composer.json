@@ -24,5 +24,8 @@
     "require": {
         "php": ">=5.6",
         "anax/common": "1.0.*"
+    },
+    "suggests": {
+        "anax/di": "1.0.*"
     }
 }

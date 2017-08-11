@@ -4,13 +4,22 @@ namespace Anax\Route;
 
 use Anax\DI\InjectionAwareInterface;
 use Anax\DI\InjectionAwareTrait;
+use \Anax\Configure\ConfigureInterface;
+use \Anax\Configure\ConfigureTrait;
 
 /**
  * A container for routes.
  */
-class Router implements InjectionAwareInterface
+class Router implements
+    InjectionAwareInterface,
+    ConfigureInterface
 {
     use InjectionAwareTrait;
+    use ConfigureTrait {
+        configure as protected loadConfiguration;
+    }
+
+
 
     /**
      * @var array       $routes         all the routes.
@@ -20,6 +29,29 @@ class Router implements InjectionAwareInterface
     private $routes         = [];
     private $internalRoutes = [];
     private $lastRoute      = null;
+
+
+
+    /**
+     * Load and apply configurations.
+     *
+     * @param array|string $what is an array with key/value config options
+     *                           or a file to be included which returns such
+     *                           an array.
+     *
+     * @throws Anax\Configure\Exception when template file is missing
+     *
+     * @return string as path to the template file
+     */
+    public function configure($what)
+    {
+        $this->loadConfiguration($what);
+
+        $includes = $this->getConfig("include", []);
+        foreach ($includes as $include) {
+            require $include;
+        }
+    }
 
 
 

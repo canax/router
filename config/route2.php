@@ -13,10 +13,12 @@ return [
             "file" => __DIR__ . "/route2/internal.php",
         ],
         [
+            // For debugging and development details on Anax
             "mount" => "debug/",
             "file" => __DIR__ . "/route2/debug.php",
         ],
         [
+            // To read flat file content in Markdown from content/
             "mount" => null,
             "file" => __DIR__ . "/route2/flat-file-content.php",
         ],

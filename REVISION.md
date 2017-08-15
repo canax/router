@@ -14,7 +14,7 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
-v1.0.12* (2017-08-10)
+v1.0.12 (2017-08-15)
 ---------------------------------
 
 * Removing getName() and replacing with getInfo().

@@ -8,9 +8,7 @@ return [
             "info" => "Catch all and send 404.",
             "requestMethod" => null,
             "path" => null,
-            "callable" => function () {
-                throw new \Anax\Route\NotFoundException();
-            }
+            "callable" => ["errorController", "page404"],
         ],
     ]
 ];

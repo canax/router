@@ -47,9 +47,9 @@ class Router implements
     {
         $this->loadConfiguration($what);
 
-        $includes = $this->getConfig("include", []);
+        $includes = $this->getConfig("routeFiles", []);
         foreach ($includes as $include) {
-            require $include;
+            $this->load($include);
         }
     }
 
@@ -120,20 +120,33 @@ class Router implements
 
     /**
      * Load routes from a config file, the file should return an array with
-     * routes.
+     * details of the routes. These details are used to create the routes.
      *
-     * @param string $file to load routes from.
+     * @param array $route details on the route.
      *
      * @return self
      */
-    public function load($file)
+    public function load($route)
     {
-        $config = require $file;
+        $mount = isset($route["mount"]) ? rtrim($route["mount"], "/") : null;
+        $file = $route["file"];
+
+        $config = require($file);
         foreach ($config["routes"] as $route) {
+            $path = isset($mount)
+                ? $mount . "/" . $route["path"]
+                : $route["path"];
+
+            if (isset($route["internal"]) && $route["internal"]) {
+                $this->addInternal($path, $route["callable"]);
+                continue;
+            }
+
             $this->any(
                 $route["requestMethod"],
-                $route["path"],
-                $route["callable"]
+                $path,
+                $route["callable"],
+                $route["info"]
             );
         }
         return $this;

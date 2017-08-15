@@ -2,6 +2,18 @@
 /**
  * Routes for flat file content.
  */
+return [
+    "routes" => [
+        [
+            "info" => "Flat file content.",
+            "requestMethod" => null,
+            "path" => null,
+            "callable" => ["flatFileContentController", "render"],
+        ],
+    ]
+];
+
+/*
 $app->router->always(function () use ($app) {
     // Get the current route and see if it matches a content/file
     $path = $app->request->getRoute();
@@ -32,3 +44,4 @@ $app->router->always(function () use ($app) {
     ]);
     $app->renderPage($content->frontmatter);
 });
+*/

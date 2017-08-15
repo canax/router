@@ -5,7 +5,6 @@
 return [
     // Load these routefiles in order specified and optionally mount them
     // onto a base route.
-    // The mount route should end with a slash.
     "routeFiles" => [
         [
             // These are for internal error handling and exceptions
@@ -14,7 +13,7 @@ return [
         ],
         [
             // For debugging and development details on Anax
-            "mount" => "debug/",
+            "mount" => "debug",
             "file" => __DIR__ . "/route2/debug.php",
         ],
         [

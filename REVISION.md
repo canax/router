@@ -20,6 +20,7 @@ v1.0.12* (2017-08-10)
 * Removing getName() and replacing with getInfo().
 * Adding member info to the Route.
 * Adding module anax/di as required in composer.json.
+* Loading routes from configuration file.
 
 
 v1.0.11 (2017-08-10)

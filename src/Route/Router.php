@@ -39,9 +39,7 @@ class Router implements
      *                           or a file to be included which returns such
      *                           an array.
      *
-     * @throws Anax\Configure\Exception when template file is missing
-     *
-     * @return string as path to the template file
+     * @return void
      */
     public function configure($what)
     {

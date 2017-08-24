@@ -14,6 +14,12 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
+v1.0.13* (2017-08-24)
+---------------------------------
+
+* Minor edit in docblock in Router.
+
+
 v1.0.12 (2017-08-15)
 ---------------------------------
 

@@ -39,7 +39,7 @@ class Router implements
      *                           or a file to be included which returns such
      *                           an array.
      *
-     * @return void
+     * @return self
      */
     public function configure($what)
     {
@@ -49,6 +49,7 @@ class Router implements
         foreach ($includes as $include) {
             $this->load($include);
         }
+        return $this;
     }
 
 

@@ -5,7 +5,7 @@ namespace Anax\Route;
 use Anax\DI\InjectionAwareInterface;
 use Anax\DI\InjectionAwareTrait;
 use \Anax\Configure\ConfigureInterface;
-use \Anax\Configure\ConfigureTrait;
+use \Anax\Configure\Configure2Trait;
 
 /**
  * A container for routes.
@@ -15,8 +15,8 @@ class Router implements
     ConfigureInterface
 {
     use InjectionAwareTrait;
-    use ConfigureTrait {
-        configure as protected loadConfiguration;
+    use Configure2Trait {
+        configure as protected configure2;
     }
 
 
@@ -43,12 +43,30 @@ class Router implements
      */
     public function configure($what)
     {
-        $this->loadConfiguration($what);
-
+        $this->configure2($what);
         $includes = $this->getConfig("routeFiles", []);
-        foreach ($includes as $include) {
-            $this->load($include);
+        $items    = $this->getConfig("items", []);
+        $config = array_merge($includes, $items);
+
+        // Add a sort field if missing, to maintain order
+        // when sorting
+        $sort = 1;
+        array_walk($config, function(&$item) use(&$sort) {
+            $item["sort"] = (isset($item["sort"]))
+                ? $item["sort"]
+                : $sort++;
+        });
+        uasort($config, function($item1, $item2) {
+            if ($item1["sort"] === $item2["sort"]) {
+                return 0;
+            }
+            return ($item1["sort"] < $item2["sort"]) ? -1 : 1;
+        });
+
+        foreach ($config as $route) {
+            $this->load($route);
         }
+
         return $this;
     }
 
@@ -128,10 +146,21 @@ class Router implements
     public function load($route)
     {
         $mount = isset($route["mount"]) ? rtrim($route["mount"], "/") : null;
-        $file = $route["file"];
+        if (!array_key_exists("mount", $route)) {
+            // To fix compatibility with new configuration
+            // where configuration item needs "mount" to be
+            // used and not ignored.
+            return $this;
+        }
 
-        $config = require($file);
-        foreach ($config["routes"] as $route) {
+        $config = $route;
+        $file = isset($route["file"]) ? $route["file"] : null;
+        if ($file && is_readable($file)) {
+            $config = require($file);
+        }
+
+        $routes = isset($config["routes"]) ? $config["routes"] : [];
+        foreach ($routes as $route) {
             $path = isset($mount)
                 ? $mount . "/" . $route["path"]
                 : $route["path"];
@@ -148,6 +177,7 @@ class Router implements
                 $route["info"]
             );
         }
+
         return $this;
     }
 

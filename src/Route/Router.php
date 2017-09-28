@@ -6,6 +6,10 @@ use Anax\DI\InjectionAwareInterface;
 use Anax\DI\InjectionAwareTrait;
 use \Anax\Configure\ConfigureInterface;
 use \Anax\Configure\Configure2Trait;
+use \Anax\Route\Exception\ForbiddenException;
+use \Anax\Route\Exception\NotFoundException;
+use \Anax\Route\Exception\InternalErrorException;
+use \Anax\Route\Exception\ConfigurationException;
 
 /**
  * A container for routes.
@@ -29,6 +33,15 @@ class Router implements
     private $routes         = [];
     private $internalRoutes = [];
     private $lastRoute      = null;
+
+
+
+    /**
+     * @const DEVELOPMENT Verbose with exceptions.
+     * @const PRODUCTION  Exceptions turns into 500.
+     */
+    const DEVELOPMENT = 0;
+    const PRODUCTION  = 1;
 
 
 
@@ -108,6 +121,11 @@ class Router implements
             $this->handleInternal("404");
         } catch (InternalErrorException $e) {
             $this->handleInternal("500");
+        } catch (ConfigurationException $e) {
+            if ($this->getConfig("mode", Router::DEVELOPMENT) === Router::PRODUCTION) {
+                $this->handleInternal("500");
+            }
+            throw $e;
         }
     }
 
@@ -119,9 +137,9 @@ class Router implements
      *
      * @param string $rule for this route.
      *
-     * @return void
+     * @throws \Anax\Route\Exception\NotFoundException
      *
-     * @throws \Anax\Route\NotFoundException
+     * @return void
      */
     public function handleInternal($rule)
     {
@@ -130,7 +148,7 @@ class Router implements
         }
         $route = $this->internalRoutes[$rule];
         $this->lastRoute = $rule;
-        $route->handle();
+        $route->handle($this->di);
     }
 
 

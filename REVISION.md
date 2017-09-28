@@ -17,6 +17,7 @@ Notes for development v1.1.0*
 v1.0.15* (2017-09-28)
 ---------------------------------
 
+* A route handler returning a non empty value will be the last handler to be called.
 * Enhance error handling when the route callback is misconfigured.
 * Move exceptions to subnamespace and own directory.
 * Add ConfigurationException when configuration is incorrect.

@@ -174,7 +174,11 @@ class DocumentationReadmeTest extends \PHPUnit_Framework_TestCase
     {
         $router = new RouterInjectable();
 
-        $router->add("about/**", function () {
+        $router->addInternal("404", function () {
+            echo "404 ";
+        });
+
+        $router->add("about/*", function () {
             echo "about ";
         });
 
@@ -184,10 +188,9 @@ class DocumentationReadmeTest extends \PHPUnit_Framework_TestCase
         $router->handle("about/me");
         $router->handle("about/you");
         $router->handle("about/some/other");
-        // about about about about
         $res = ob_get_contents();
         ob_end_clean();
-        $this->assertEquals($res, "about about about about ");
+        $this->assertEquals($res, "about about about 404 ");
     }
 
 
@@ -203,20 +206,19 @@ class DocumentationReadmeTest extends \PHPUnit_Framework_TestCase
             echo "404 ";
         });
 
-        $router->add("about/{arg}", function ($arg) {
-            echo "$arg ";
+        $router->add("about/**", function () {
+            echo "about ";
         });
 
         ob_start();
         // try it out using some paths
-        $router->handle("about");            // not matched
+        $router->handle("about");
         $router->handle("about/me");
         $router->handle("about/you");
-        $router->handle("about/some/other"); // not matched
-        // 404 me you 404
+        $router->handle("about/some/other");
         $res = ob_get_contents();
         ob_end_clean();
-        $this->assertEquals($res, "404 me you 404 ");
+        $this->assertEquals($res, "about about about about ");
     }
 
 
@@ -242,7 +244,6 @@ class DocumentationReadmeTest extends \PHPUnit_Framework_TestCase
         $router->handle("about/me");
         $router->handle("about/you");
         $router->handle("about/some/other"); // not matched
-        // 404 me you 404
         $res = ob_get_contents();
         ob_end_clean();
         $this->assertEquals($res, "404 me you 404 ");

@@ -107,11 +107,14 @@ class Router implements
                     $this->lastRoute = $route->getRule();
                     $match = true;
                     $results = $route->handle($this->di);
+                    if ($results) {
+                        return $results;
+                    }
                 }
             }
 
             if ($match) {
-                return $results;
+                return;
             }
 
             $this->handleInternal("404");

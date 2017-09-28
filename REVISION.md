@@ -14,7 +14,7 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
-v1.0.15* (2017-09-28)
+v1.0.15 (2017-09-28)
 ---------------------------------
 
 * A route handler returning a non empty value will be the last handler to be called.

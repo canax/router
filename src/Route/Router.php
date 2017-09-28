@@ -64,12 +64,12 @@ class Router implements
         // Add a sort field if missing, to maintain order
         // when sorting
         $sort = 1;
-        array_walk($config, function(&$item) use(&$sort) {
+        array_walk($config, function (&$item) use (&$sort) {
             $item["sort"] = (isset($item["sort"]))
                 ? $item["sort"]
                 : $sort++;
         });
-        uasort($config, function($item1, $item2) {
+        uasort($config, function ($item1, $item2) {
             if ($item1["sort"] === $item2["sort"]) {
                 return 0;
             }

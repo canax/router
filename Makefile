@@ -1,12 +1,14 @@
+# ------------------------------------------------------------------------
 #
+# General stuff
 #
-#
+SHELL := /bin/bash
 
 # Detect OS
 OS = $(shell uname -s)
 
 # Defaults
-ECHO = echo
+ECHO = echo -e
 
 # Make adjustments based on OS
 # http://stackoverflow.com/questions/3466166/how-to-check-if-running-in-cygwin-mac-or-linux/27776822#27776822
@@ -15,11 +17,11 @@ ifneq (, $(findstring CYGWIN, $(OS)))
 endif
 
 # Colors and helptext
-NO_COLOR	= \033[0m
-ACTION		= \033[32;01m
-OK_COLOR	= \033[32;01m
-ERROR_COLOR	= \033[31;01m
-WARN_COLOR	= \033[33;01m
+NO_COLOR	= \e[0m
+ACTION		= \e[32;01m
+OK_COLOR	= \e[32;01m
+ERROR_COLOR	= \e[31;01m
+WARN_COLOR	= \e[33;01m
 
 # Which makefile am I in?
 WHERE-AM-I = $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
@@ -28,16 +30,23 @@ THIS_MAKEFILE := $(call WHERE-AM-I)
 # Echo some nice helptext based on the target comment
 HELPTEXT = $(ECHO) "$(ACTION)--->" `egrep "^\# target: $(1) " $(THIS_MAKEFILE) | sed "s/\# target: $(1)[ ]*-[ ]* / /g"` "$(NO_COLOR)"
 
-# Add local bin path for test tools
-#PATH := "./.bin:./vendor/bin:./node_modules/.bin:$(PATH)"
-#SHELL := env PATH=$(PATH) $(SHELL)
-PHPUNIT := .bin/phpunit
-PHPLOC 	:= .bin/phploc
-PHPCS   := .bin/phpcs
-PHPCBF  := .bin/phpcbf
-PHPMD   := .bin/phpmd
-PHPDOC  := .bin/phpdoc
-BEHAT   := .bin/behat
+
+
+# ------------------------------------------------------------------------
+#
+# Specifics
+#
+BIN     := .bin
+PHPUNIT := $(BIN)/phpunit
+PHPLOC 	:= $(BIN)/phploc
+PHPCS   := $(BIN)/phpcs
+PHPCBF  := $(BIN)/phpcbf
+PHPMD   := $(BIN)/phpmd
+PHPCPD  := $(BIN)/phpcpd
+PHPDOC  := $(BIN)/phpdoc
+BEHAT   := $(BIN)/behat
+SHELLCHECK := $(BIN)/shellcheck
+BATS := $(BIN)/bats
 
 
 
@@ -63,31 +72,39 @@ prepare:
 
 
 # target: clean              - Removes generated files and directories.
-.PHONY:  clean
+.PHONY: clean
 clean:
 	@$(call HELPTEXT,$@)
 	rm -rf build
 
 
 
+# target: clean-cache        - Clean the cache.
+.PHONY:  clean-cache
+clean-cache:
+	@$(call HELPTEXT,$@)
+	rm -rf cache/*/*
+
+
+
 # target: clean-all          - Removes generated files and directories.
 .PHONY:  clean-all
-clean-all:
+clean-all: clean clean-cache
 	@$(call HELPTEXT,$@)
-	rm -rf .bin build vendor composer.lock
+	rm -rf .bin vendor
 
 
 
 # target: check              - Check version of installed tools.
 .PHONY:  check
-check: check-tools-php
+check: check-tools-bash check-tools-php
 	@$(call HELPTEXT,$@)
 
 
 
 # target: test               - Run all tests.
 .PHONY:  test
-test: phpunit phpcs phpmd phploc behat
+test: phpunit phpcs phpmd phpcpd phploc behat shellcheck bats
 	@$(call HELPTEXT,$@)
 	composer validate
 
@@ -102,14 +119,14 @@ doc: phpdoc
 
 # target: build              - Do all build
 .PHONY:  build
-build: test doc #less-compile less-minify js-minify
+build: test doc #theme less-compile less-minify js-minify
 	@$(call HELPTEXT,$@)
 
 
 
 # target: install            - Install all tools
 .PHONY:  install
-install: prepare install-tools-php
+install: prepare install-tools-php install-tools-bash
 	@$(call HELPTEXT,$@)
 
 
@@ -118,7 +135,7 @@ install: prepare install-tools-php
 .PHONY:  update
 update:
 	@$(call HELPTEXT,$@)
-	git pull
+	[ ! -d .git ] || git pull
 	composer update
 
 
@@ -139,7 +156,8 @@ tag-prepare:
 .PHONY: install-tools-php
 install-tools-php:
 	@$(call HELPTEXT,$@)
-	curl -Lso $(PHPDOC) https://www.phpdoc.org/phpDocumentor.phar && chmod 755 $(PHPDOC)
+	#curl -Lso $(PHPDOC) https://www.phpdoc.org/phpDocumentor.phar && chmod 755 $(PHPDOC)
+	curl -Lso $(PHPDOC) https://github.com/phpDocumentor/phpDocumentor2/releases/download/v2.9.0/phpDocumentor.phar && chmod 755 $(PHPDOC)
 
 	curl -Lso $(PHPCS) https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar && chmod 755 $(PHPCS)
 
@@ -147,14 +165,15 @@ install-tools-php:
 
 	curl -Lso $(PHPMD) http://static.phpmd.org/php/latest/phpmd.phar && chmod 755 $(PHPMD)
 
-	curl -Lso $(PHPUNIT) https://phar.phpunit.de/phpunit-5.7.9.phar && chmod 755 $(PHPUNIT)
+	curl -Lso $(PHPCPD) https://phar.phpunit.de/phpcpd.phar && chmod 755 $(PHPCPD)
 
 	curl -Lso $(PHPLOC) https://phar.phpunit.de/phploc.phar && chmod 755 $(PHPLOC)
 
 	curl -Lso $(BEHAT) https://github.com/Behat/Behat/releases/download/v3.3.0/behat.phar && chmod 755 $(BEHAT)
 
-	composer install
+	curl -Lso $(PHPUNIT) https://phar.phpunit.de/phpunit-5.7.9.phar && chmod 755 $(PHPUNIT)
 
+	[ ! -f composer.json ] || composer install
 
 
 
@@ -162,11 +181,13 @@ install-tools-php:
 .PHONY: check-tools-php
 check-tools-php:
 	@$(call HELPTEXT,$@)
+	php --version && echo
 	which $(PHPUNIT) && $(PHPUNIT) --version
 	which $(PHPLOC) && $(PHPLOC) --version
 	which $(PHPCS) && $(PHPCS) --version && echo
-	which $(PHPMD) && $(PHPMD) --version && echo
 	which $(PHPCBF) && $(PHPCBF) --version && echo
+	which $(PHPMD) && $(PHPMD) --version && echo
+	which $(PHPCPD) && $(PHPCPD) --version && echo
 	which $(PHPDOC) && $(PHPDOC) --version && echo
 	which $(BEHAT) && $(BEHAT) --version && echo
 
@@ -176,7 +197,7 @@ check-tools-php:
 .PHONY: phpunit
 phpunit: prepare
 	@$(call HELPTEXT,$@)
-	$(PHPUNIT) --configuration .phpunit.xml
+	[ ! -d "test" ] || $(PHPUNIT) --configuration .phpunit.xml
 
 
 
@@ -184,7 +205,7 @@ phpunit: prepare
 .PHONY: phpcs
 phpcs: prepare
 	@$(call HELPTEXT,$@)
-	$(PHPCS) --standard=.phpcs.xml | tee build/phpcs
+	- [ ! -f .phpcs.xml ] || $(PHPCS) --standard=.phpcs.xml | tee build/phpcs; exit "$${PIPESTATUS[0]}"
 
 
 
@@ -192,7 +213,11 @@ phpcs: prepare
 .PHONY: phpcbf
 phpcbf:
 	@$(call HELPTEXT,$@)
-	$(PHPCBF) --standard=.phpcs.xml
+ifneq ($(wildcard test),)
+	[ ! -f .phpcs.xml ] || $(PHPCBF) --standard=.phpcs.xml
+else
+	[ ! -f .phpcs.xml ] || $(PHPCBF) --standard=.phpcs.xml src
+endif
 
 
 
@@ -200,7 +225,16 @@ phpcbf:
 .PHONY: phpmd
 phpmd: prepare
 	@$(call HELPTEXT,$@)
-	- $(PHPMD) . text .phpmd.xml | tee build/phpmd
+	- [ ! -f .phpmd.xml ] || $(PHPMD) . text .phpmd.xml | tee build/phpmd; exit "$${PIPESTATUS[0]}"
+
+
+
+# target: phpcpd             - Copy paste detector for PHP.
+.PHONY: phpcpd
+phpcpd: prepare
+	@$(call HELPTEXT,$@)
+	@ #- [ ! -f .phpcpd.xml ] || $(PHPCPD) . text .phpcpd.xml | tee build/phpcpd
+	- [ ! -d src ] || $(PHPCPD) --fuzzy --min-lines=3 --min-tokens=20 src | tee build/phpcpd; exit "$${PIPESTATUS[0]}"
 
 
 
@@ -216,7 +250,7 @@ phploc: prepare
 .PHONY: phpdoc
 phpdoc:
 	@$(call HELPTEXT,$@)
-	$(PHPDOC) --config=.phpdoc.xml
+	[ ! -d doc ] || $(PHPDOC) --config=.phpdoc.xml
 
 
 
@@ -225,3 +259,98 @@ phpdoc:
 behat:
 	@$(call HELPTEXT,$@)
 	[ ! -d features ] || $(BEHAT)
+
+
+# ------------------------------------------------------------------------
+#
+# Bash
+#
+
+# target: install-tools-bash - Install Bash development tools.
+.PHONY: install-tools-bash
+install-tools-bash:
+	@$(call HELPTEXT,$@)
+	# Shellcheck
+	curl -s https://storage.googleapis.com/shellcheck/shellcheck-latest.linux.x86_64.tar.xz | tar -xJ -C build/ && rm -f .bin/shellcheck && ln build/shellcheck-latest/shellcheck .bin/
+
+	# Bats
+	curl -Lso $(BIN)/bats-exec-suite https://raw.githubusercontent.com/sstephenson/bats/master/libexec/bats-exec-suite
+	curl -Lso $(BIN)/bats-exec-test https://raw.githubusercontent.com/sstephenson/bats/master/libexec/bats-exec-test
+	curl -Lso $(BIN)/bats-format-tap-stream https://raw.githubusercontent.com/sstephenson/bats/master/libexec/bats-format-tap-stream
+	curl -Lso $(BIN)/bats-preprocess https://raw.githubusercontent.com/sstephenson/bats/master/libexec/bats-preprocess
+	curl -Lso $(BATS) https://raw.githubusercontent.com/sstephenson/bats/master/libexec/bats
+	chmod 755 $(BIN)/bats*
+
+
+
+# target: check-tools-bash   - Check versions of Bash tools.
+.PHONY: check-tools-bash
+check-tools-bash:
+	@$(call HELPTEXT,$@)
+	which $(SHELLCHECK) && $(SHELLCHECK) --version
+	which $(BATS) && $(BATS) --version
+
+
+
+# target: shellcheck         - Run shellcheck for bash files.
+.PHONY: shellcheck
+shellcheck:
+	@$(call HELPTEXT,$@)
+	[ ! -f src/*.bash ] || $(SHELLCHECK) --shell=bash src/*.bash
+
+
+
+# target: bats               - Run bats for unit testing bash files.
+.PHONY: bats
+bats:
+	@$(call HELPTEXT,$@)
+	[ ! -d bats ] || $(BATS) bats/
+
+
+
+# ------------------------------------------------------------------------
+#
+# Theme
+#
+# target: theme              - Do make build install in theme/ if available.
+.PHONY: theme
+theme:
+	@$(call HELPTEXT,$@)
+	[ ! -d theme ] || $(MAKE) --directory=theme build install
+	#[ ! -d theme ] || ( cd theme && make build install )
+
+
+
+# ------------------------------------------------------------------------
+#
+# Cimage
+#
+
+define CIMAGE_CONFIG
+<?php
+return [
+    "mode"         => "development",
+    "image_path"   =>  __DIR__ . "/../img/",
+    "cache_path"   =>  __DIR__ . "/../../cache/cimage/",
+    "autoloader"   =>  __DIR__ . "/../../vendor/autoload.php",
+];
+endef
+export CIMAGE_CONFIG
+
+# target: cimage-update           - Install/update Cimage to latest version.
+.PHONY: cimage-update
+cimage-update:
+	@$(call HELPTEXT,$@)
+	composer require mos/cimage
+	install -d htdocs/cimage cache/cimage
+	chmod 777 cache/cimage
+	cp vendor/mos/cimage/webroot/img.php htdocs/cimage
+	cp vendor/mos/cimage/webroot/img/car.png htdocs/img/
+	touch htdocs/cimage/img_config.php
+
+# target: cimage-config-create    - Create configfile for Cimage.
+.PHONY: cimage-config-create
+cimage-config-create:
+	@$(call HELPTEXT,$@)
+	$(ECHO) "$$CIMAGE_CONFIG" | bash -c 'cat > htdocs/cimage/img_config.php'
+	cat htdocs/cimage/img_config.php

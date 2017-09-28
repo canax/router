@@ -269,7 +269,9 @@ class Route
 
             $service = $di->get($this->action[0]);
             if (!is_callable([$service, $this->action[1]])) {
-                throw new ConfigurationException("Routehandler '{$this->action[0]}' does not have a callable method '{$this->action[1]}'.");
+                throw new ConfigurationException(
+                    "Routehandler '{$this->action[0]}' does not have a callable method '{$this->action[1]}'."
+                );
             }
 
             return call_user_func(

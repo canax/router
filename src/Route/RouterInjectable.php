@@ -4,6 +4,9 @@ namespace Anax\Route;
 
 use \Anax\Common\AppInjectableInterface;
 use \Anax\Common\AppInjectableTrait;
+use \Anax\Route\Exception\ForbiddenException;
+use \Anax\Route\Exception\InternalErrorException;
+use \Anax\Route\Exception\NotFoundException;
 
 /**
  * A container for routes.

@@ -2,6 +2,10 @@
 
 namespace Anax\Route;
 
+use \Anax\Route\Exception\ForbiddenException;
+use \Anax\Route\Exception\InternalErrorException;
+use \Anax\Route\Exception\NotFoundException;
+
 /**
  * Testcases.
  */

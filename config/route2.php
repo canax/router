@@ -1,8 +1,14 @@
 <?php
+
+use \Anax\Route\Router;
+
 /**
  * Configuration file for routes.
  */
 return [
+    //"mode" => Router::DEVELOPMENT, // default, verbose execeptions
+    //"mode" => Router::PRODUCTION,  // exceptions turn into 500
+
     // Load these routefiles in order specified and optionally mount them
     // onto a base route.
     "routeFiles" => [
@@ -24,6 +30,7 @@ return [
         [
             // Keep this last since its a catch all
             "mount" => null,
+            "sort" => 999,
             "file" => __DIR__ . "/route2/404.php",
         ],
     ],

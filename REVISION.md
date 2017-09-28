@@ -14,6 +14,14 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
+v1.0.15* (2017-09-28)
+---------------------------------
+
+* Enhance error handling when the route callback is misconfigured.
+* Move exceptions to subnamespace and own directory.
+* Add ConfigurationException when configuration is incorrect.
+
+
 v1.0.14 (2017-09-26)
 ---------------------------------
 

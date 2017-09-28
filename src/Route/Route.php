@@ -2,6 +2,8 @@
 
 namespace Anax\Route;
 
+use \Anax\Route\Exception\ConfigurationException;
+
 /**
  * A container for routes.
  *
@@ -260,15 +262,24 @@ class Route
             && isset($this->action[0])
             && isset($this->action[1])
             && is_string($this->action[0])
-            && $di->has($this->action[0])
         ) {
-            $service = $di->get($this->action[0]);
-            if (is_callable([$service, $this->action[1]])) {
-                return call_user_func(
-                    [$service, $this->action[1]],
-                    ...$this->arguments
-                );
+            if (!$di->has($this->action[0])) {
+                throw new ConfigurationException("Routehandler '{$this->action[0]}' not loaded in di.");
             }
+
+            $service = $di->get($this->action[0]);
+            if (!is_callable([$service, $this->action[1]])) {
+                throw new ConfigurationException("Routehandler '{$this->action[0]}' does not have a callable method '{$this->action[1]}'.");
+            }
+
+            return call_user_func(
+                [$service, $this->action[1]],
+                ...$this->arguments
+            );
+        }
+
+        if (!is_null($this->action)) {
+            throw new ConfigurationException("Routehandler '{$this->rule}' does not have a callable action.");
         }
     }
 

@@ -5,7 +5,7 @@ namespace Anax\Route;
 /**
  * Routes.
  */
-class RouterTest extends \PHPUnit_Framework_TestCase
+class RouterTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Check that the route can return a value.

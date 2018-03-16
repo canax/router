@@ -5,7 +5,7 @@ namespace Anax\Route;
 /**
  * Routes.
  */
-class RouterInjectableTest extends \PHPUnit_Framework_TestCase
+class RouterInjectableTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test

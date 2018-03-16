@@ -9,7 +9,7 @@ use \Anax\Route\Exception\NotFoundException;
 /**
  * Testcases.
  */
-class DocumentationReadmeTest extends \PHPUnit_Framework_TestCase
+class DocumentationReadmeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test Add some routes with handlers

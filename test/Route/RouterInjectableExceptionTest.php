@@ -9,7 +9,7 @@ use \Anax\Route\Exception\NotFoundException;
 /**
  * Routes.
  */
-class RouterInjectableExceptionTest extends \PHPUnit_Framework_TestCase
+class RouterInjectableExceptionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Test

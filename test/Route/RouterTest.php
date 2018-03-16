@@ -44,6 +44,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         $router->add("", function () {
             echo "2";
+            return true;
         });
 
         ob_start();
@@ -98,6 +99,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         $router->add("about/*", function () {
             echo "about ";
+            return true;
         });
 
         ob_start();
@@ -127,6 +129,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
         $router->add("about/**", function () {
             echo "about ";
+            return 1;
         });
 
         ob_start();

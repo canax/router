@@ -160,9 +160,13 @@ class Router implements
      * Load routes from a config file, the file should return an array with
      * details of the routes. These details are used to create the routes.
      *
+     * @throws \Anax\Route\Exception\ConfigurationException
+     *
      * @param array $route details on the route.
      *
      * @return self
+     *
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     public function load($route)
     {
@@ -176,27 +180,40 @@ class Router implements
 
         $config = $route;
         $file = isset($route["file"]) ? $route["file"] : null;
-        if ($file && is_readable($file)) {
-            $config = require($file);
+        if ($file && !is_readable($file)) {
+            throw new ConfigurationException("Route configuration file '$file' is missing.");
         }
 
-        $routes = isset($config["routes"]) ? $config["routes"] : [];
-        foreach ($routes as $route) {
-            $path = isset($mount)
-                ? $mount . "/" . $route["path"]
-                : $route["path"];
+        $include = isset($route["include"]) ? $route["include"] : null;
+        if ($include && !is_readable($include)) {
+            throw new ConfigurationException("Route include file '$include' is missing.");
+        }
 
-            if (isset($route["internal"]) && $route["internal"]) {
-                $this->addInternal($path, $route["callable"]);
-                continue;
+        if ($include) {
+            // Expose $app and include routes
+            $app = $this->di->get("app");
+            require($include);
+        } elseif ($file) {
+            // Include the config file and load its routes
+            $config = require($file);
+            $routes = isset($config["routes"]) ? $config["routes"] : [];
+            foreach ($routes as $route) {
+                $path = isset($mount)
+                    ? $mount . "/" . $route["path"]
+                    : $route["path"];
+
+                if (isset($route["internal"]) && $route["internal"]) {
+                    $this->addInternal($path, $route["callable"]);
+                    continue;
+                }
+
+                $this->any(
+                    $route["requestMethod"],
+                    $path,
+                    $route["callable"],
+                    $route["info"]
+                );
             }
-
-            $this->any(
-                $route["requestMethod"],
-                $path,
-                $route["callable"],
-                $route["info"]
-            );
         }
 
         return $this;

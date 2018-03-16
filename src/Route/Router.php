@@ -113,10 +113,6 @@ class Router implements
                 }
             }
 
-            if ($match) {
-                return;
-            }
-
             $this->handleInternal("404");
         } catch (ForbiddenException $e) {
             $this->handleInternal("403");
@@ -184,36 +180,25 @@ class Router implements
             throw new ConfigurationException("Route configuration file '$file' is missing.");
         }
 
-        $include = isset($route["include"]) ? $route["include"] : null;
-        if ($include && !is_readable($include)) {
-            throw new ConfigurationException("Route include file '$include' is missing.");
-        }
+        // Include the config file and load its routes
+        $config = require($file);
+        $routes = isset($config["routes"]) ? $config["routes"] : [];
+        foreach ($routes as $route) {
+            $path = isset($mount)
+                ? $mount . "/" . $route["path"]
+                : $route["path"];
 
-        if ($include) {
-            // Expose $app and include routes
-            $app = $this->di->get("app");
-            require($include);
-        } elseif ($file) {
-            // Include the config file and load its routes
-            $config = require($file);
-            $routes = isset($config["routes"]) ? $config["routes"] : [];
-            foreach ($routes as $route) {
-                $path = isset($mount)
-                    ? $mount . "/" . $route["path"]
-                    : $route["path"];
-
-                if (isset($route["internal"]) && $route["internal"]) {
-                    $this->addInternal($path, $route["callable"]);
-                    continue;
-                }
-
-                $this->any(
-                    $route["requestMethod"],
-                    $path,
-                    $route["callable"],
-                    $route["info"]
-                );
+            if (isset($route["internal"]) && $route["internal"]) {
+                $this->addInternal($path, $route["callable"]);
+                continue;
             }
+
+            $this->any(
+                $route["requestMethod"],
+                $path,
+                $route["callable"],
+                $route["info"]
+            );
         }
 
         return $this;

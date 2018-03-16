@@ -14,10 +14,14 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
-v1.0.16 (2018-03-16)
+v1.1.0 (2018-03-16)
 ---------------------------------
 
+* Update to require PHP 7.0 and over.
+* Move to circlesi v2.
 * Add support for including $app centered routes through 'include'.
+* Remove composer.lock.
+* Show 404 when no route returns true nor does exit.
 
 
 v1.0.15 (2017-09-28)

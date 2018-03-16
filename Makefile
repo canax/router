@@ -1,59 +1,52 @@
+#!/usr/bin/env make
+#
+# An Anax module.
+# See organisation on GitHub: https://github.com/canax
+
 # ------------------------------------------------------------------------
 #
-# General stuff
+# General stuff, reusable for all Makefiles.
 #
-SHELL := /bin/bash
 
 # Detect OS
 OS = $(shell uname -s)
 
 # Defaults
-ECHO = echo -e
+ECHO = echo
 
 # Make adjustments based on OS
-# http://stackoverflow.com/questions/3466166/how-to-check-if-running-in-cygwin-mac-or-linux/27776822#27776822
 ifneq (, $(findstring CYGWIN, $(OS)))
 	ECHO = /bin/echo -e
 endif
 
 # Colors and helptext
-NO_COLOR	= \e[0m
-ACTION		= \e[32;01m
-OK_COLOR	= \e[32;01m
-ERROR_COLOR	= \e[31;01m
-WARN_COLOR	= \e[33;01m
+NO_COLOR	= \033[0m
+ACTION		= \033[32;01m
+OK_COLOR	= \033[32;01m
+ERROR_COLOR	= \033[31;01m
+WARN_COLOR	= \033[33;01m
+
+# Print out colored action message
+ACTION_MESSAGE = $(ECHO) "$(ACTION)---> $(1)$(NO_COLOR)"
 
 # Which makefile am I in?
 WHERE-AM-I = $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
 THIS_MAKEFILE := $(call WHERE-AM-I)
 
 # Echo some nice helptext based on the target comment
-HELPTEXT = $(ECHO) "$(ACTION)--->" `egrep "^\# target: $(1) " $(THIS_MAKEFILE) | sed "s/\# target: $(1)[ ]*-[ ]* / /g"` "$(NO_COLOR)"
+HELPTEXT = $(call ACTION_MESSAGE, $(shell egrep "^\# target: $(1) " $(THIS_MAKEFILE) | sed "s/\# target: $(1)[ ]*-[ ]* / /g"))
 
+# Check version  and path to command and display on one line
+CHECK_VERSION = printf "%-15s %-10s %s\n" "`basename $(1)`" "`$(1) --version $(2)`" "`which $(1)`"
 
+# Get current working directory, it may not exist as environment variable.
+PWD = $(shell pwd)
 
-# ------------------------------------------------------------------------
-#
-# Specifics
-#
-BIN     := .bin
-PHPUNIT := $(BIN)/phpunit
-PHPLOC 	:= $(BIN)/phploc
-PHPCS   := $(BIN)/phpcs
-PHPCBF  := $(BIN)/phpcbf
-PHPMD   := $(BIN)/phpmd
-PHPCPD  := $(BIN)/phpcpd
-PHPDOC  := $(BIN)/phpdoc
-BEHAT   := $(BIN)/behat
-SHELLCHECK := $(BIN)/shellcheck
-BATS := $(BIN)/bats
-
-
-
-# target: help               - Displays help.
+# target: help                    - Displays help.
 .PHONY:  help
 help:
 	@$(call HELPTEXT,$@)
+	@sed '/^$$/q' $(THIS_MAKEFILE) | tail +3 | sed 's/#\s*//g'
 	@$(ECHO) "Usage:"
 	@$(ECHO) " make [target] ..."
 	@$(ECHO) "target:"
@@ -61,7 +54,27 @@ help:
 
 
 
-# target: prepare            - Prepare for tests and build
+# ------------------------------------------------------------------------
+#
+# Specifics for this project.
+#
+# Default values for arguments
+container ?= latest
+
+BIN     := .bin
+PHPUNIT := $(BIN)/phpunit
+PHPLOC 	:= $(BIN)/phploc
+PHPCS   := $(BIN)/phpcs
+PHPCBF  := $(BIN)/phpcbf
+PHPMD   := $(BIN)/phpmd
+PHPDOC  := $(BIN)/phpdoc
+BEHAT   := $(BIN)/behat
+SHELLCHECK := $(BIN)/shellcheck
+BATS := $(BIN)/bats
+
+
+
+# target: prepare                 - Prepare for tests and build
 .PHONY:  prepare
 prepare:
 	@$(call HELPTEXT,$@)
@@ -71,7 +84,7 @@ prepare:
 
 
 
-# target: clean              - Removes generated files and directories.
+# target: clean                   - Removes generated files and directories.
 .PHONY: clean
 clean:
 	@$(call HELPTEXT,$@)
@@ -79,7 +92,7 @@ clean:
 
 
 
-# target: clean-cache        - Clean the cache.
+# target: clean-cache             - Clean the cache.
 .PHONY:  clean-cache
 clean-cache:
 	@$(call HELPTEXT,$@)
@@ -87,51 +100,51 @@ clean-cache:
 
 
 
-# target: clean-all          - Removes generated files and directories.
+# target: clean-all               - Removes generated files and directories.
 .PHONY:  clean-all
 clean-all: clean clean-cache
 	@$(call HELPTEXT,$@)
-	rm -rf .bin vendor
+	rm -rf .bin vendor composer.lock
 
 
 
-# target: check              - Check version of installed tools.
+# target: check                   - Check version of installed tools.
 .PHONY:  check
-check: check-tools-bash check-tools-php
+check: check-tools-bash check-tools-php check-docker
 	@$(call HELPTEXT,$@)
 
 
 
-# target: test               - Run all tests.
+# target: test                    - Run all tests.
 .PHONY:  test
-test: phpunit phpcs phpmd phpcpd phploc behat shellcheck bats
+test: phpunit phpcs phpmd phploc behat shellcheck bats
 	@$(call HELPTEXT,$@)
 	composer validate
 
 
 
-# target: doc                - Generate documentation.
+# target: doc                     - Generate documentation.
 .PHONY:  doc
 doc: phpdoc
 	@$(call HELPTEXT,$@)
 
 
 
-# target: build              - Do all build
+# target: build                   - Do all build
 .PHONY:  build
 build: test doc #theme less-compile less-minify js-minify
 	@$(call HELPTEXT,$@)
 
 
 
-# target: install            - Install all tools
+# target: install                 - Install all tools
 .PHONY:  install
 install: prepare install-tools-php install-tools-bash
 	@$(call HELPTEXT,$@)
 
 
 
-# target: update             - Update the codebase and tools.
+# target: update                  - Update the codebase and tools.
 .PHONY:  update
 update:
 	@$(call HELPTEXT,$@)
@@ -140,10 +153,79 @@ update:
 
 
 
-# target: tag-prepare        - Prepare to tag new version.
+# target: tag-prepare             - Prepare to tag new version.
 .PHONY: tag-prepare
 tag-prepare:
 	@$(call HELPTEXT,$@)
+
+
+
+# ----------------------------------------------------------------------------
+#
+# docker
+#
+# target: docker-up               - Start all docker container="", or specific, default "latest".
+.PHONY: docker-up
+docker-up:
+	@$(call HELPTEXT,$@)
+	[ ! -f docker-compose.yaml ] || docker-compose -f docker-compose.yaml up -d $(container)
+
+
+
+# target: docker-stop             - Stop running docker containers.
+.PHONY: docker-stop
+docker-stop:
+	@$(call HELPTEXT,$@)
+	[ ! -f docker-compose.yaml ] || docker-compose -f docker-compose.yaml stop
+
+
+
+# target: docker-run              - Run container="" with what="" one off command.
+.PHONY: docker-run
+docker-run:
+	@$(call HELPTEXT,$@)
+	[ ! -f docker-compose.yaml ] || docker-compose -f docker-compose.yaml run $(container) $(what)
+
+
+
+# target: docker-bash             - Run container="" with what="bash" one off command.
+.PHONY: docker-bash
+docker-bash:
+	@$(call HELPTEXT,$@)
+	[ ! -f docker-compose.yaml ] || docker-compose -f docker-compose.yaml run $(container) bash
+
+
+
+# target: docker-exec             - Run container="" with what="" command in running container.
+.PHONY: docker-exec
+docker-exec:
+	@$(call HELPTEXT,$@)
+	[ ! -f docker-compose.yaml ] || docker-compose -f docker-compose.yaml exec $(container) $(what)
+
+
+
+# target: docker-install          - Run make install in container="".
+.PHONY: docker-install
+docker-install:
+	@$(call HELPTEXT,$@)
+	[ ! -f docker-compose.yaml ] || docker-compose -f docker-compose.yaml run $(container) make install
+
+
+
+# target: docker-test             - Run make test in container="".
+.PHONY: docker-test
+docker-test:
+	@$(call HELPTEXT,$@)
+	[ ! -f docker-compose.yaml ] || docker-compose -f docker-compose.yaml run $(container) make test
+
+
+
+# target: check-docker            - Check versions of docker.
+.PHONY: check-docker
+check-docker:
+	@$(call HELPTEXT,$@)
+	@$(call CHECK_VERSION, docker, | cut -d" " -f3-)
+	@$(call CHECK_VERSION, docker-compose, | cut -d" " -f3-)
 
 
 
@@ -152,7 +234,7 @@ tag-prepare:
 # PHP
 #
 
-# target: install-tools-php  - Install PHP development tools.
+# target: install-tools-php       - Install PHP development tools.
 .PHONY: install-tools-php
 install-tools-php:
 	@$(call HELPTEXT,$@)
@@ -165,35 +247,41 @@ install-tools-php:
 
 	curl -Lso $(PHPMD) http://static.phpmd.org/php/latest/phpmd.phar && chmod 755 $(PHPMD)
 
-	curl -Lso $(PHPCPD) https://phar.phpunit.de/phpcpd.phar && chmod 755 $(PHPCPD)
-
 	curl -Lso $(PHPLOC) https://phar.phpunit.de/phploc.phar && chmod 755 $(PHPLOC)
 
 	curl -Lso $(BEHAT) https://github.com/Behat/Behat/releases/download/v3.3.0/behat.phar && chmod 755 $(BEHAT)
 
-	curl -Lso $(PHPUNIT) https://phar.phpunit.de/phpunit-5.7.9.phar && chmod 755 $(PHPUNIT)
+	# Get PHPUNIT depending on current PHP installation
+	curl -Lso $(PHPUNIT) https://phar.phpunit.de/phpunit-$(shell \
+	 	php -r "echo version_compare(PHP_VERSION, '7.0', '<') \
+			? '5' \
+			: (version_compare(PHP_VERSION, '7.1', '>=') \
+				? '7' \
+				: '6'\
+		);" \
+		).phar && chmod 755 $(PHPUNIT)
 
 	[ ! -f composer.json ] || composer install
 
 
 
-# target: check-tools-php    - Check versions of PHP tools.
+# target: check-tools-php         - Check versions of PHP tools.
 .PHONY: check-tools-php
 check-tools-php:
 	@$(call HELPTEXT,$@)
 	php --version && echo
-	which $(PHPUNIT) && $(PHPUNIT) --version
-	which $(PHPLOC) && $(PHPLOC) --version
-	which $(PHPCS) && $(PHPCS) --version && echo
-	which $(PHPCBF) && $(PHPCBF) --version && echo
-	which $(PHPMD) && $(PHPMD) --version && echo
-	which $(PHPCPD) && $(PHPCPD) --version && echo
-	which $(PHPDOC) && $(PHPDOC) --version && echo
-	which $(BEHAT) && $(BEHAT) --version && echo
+	composer show && echo
+	@$(call CHECK_VERSION, $(PHPUNIT))
+	@$(call CHECK_VERSION, $(PHPLOC))
+	@$(call CHECK_VERSION, $(PHPCS))
+	@$(call CHECK_VERSION, $(PHPMD))
+	@$(call CHECK_VERSION, $(PHPCBF))
+	@$(call CHECK_VERSION, $(PHPDOC))
+	@$(call CHECK_VERSION, $(BEHAT))
 
 
 
-# target: phpunit            - Run unit tests for PHP.
+# target: phpunit                 - Run unit tests for PHP.
 .PHONY: phpunit
 phpunit: prepare
 	@$(call HELPTEXT,$@)
@@ -201,15 +289,15 @@ phpunit: prepare
 
 
 
-# target: phpcs              - Codestyle for PHP.
+# target: phpcs                   - Codestyle for PHP.
 .PHONY: phpcs
 phpcs: prepare
 	@$(call HELPTEXT,$@)
-	- [ ! -f .phpcs.xml ] || $(PHPCS) --standard=.phpcs.xml | tee build/phpcs; exit "$${PIPESTATUS[0]}"
+	[ ! -f .phpcs.xml ] || $(PHPCS) --standard=.phpcs.xml | tee build/phpcs
 
 
 
-# target: phpcbf             - Fix codestyle for PHP.
+# target: phpcbf                  - Fix codestyle for PHP.
 .PHONY: phpcbf
 phpcbf:
 	@$(call HELPTEXT,$@)
@@ -221,24 +309,15 @@ endif
 
 
 
-# target: phpmd              - Mess detector for PHP.
+# target: phpmd                   - Mess detector for PHP.
 .PHONY: phpmd
 phpmd: prepare
 	@$(call HELPTEXT,$@)
-	- [ ! -f .phpmd.xml ] || $(PHPMD) . text .phpmd.xml | tee build/phpmd; exit "$${PIPESTATUS[0]}"
+	- [ ! -f .phpmd.xml ] || $(PHPMD) . text .phpmd.xml | tee build/phpmd
 
 
 
-# target: phpcpd             - Copy paste detector for PHP.
-.PHONY: phpcpd
-phpcpd: prepare
-	@$(call HELPTEXT,$@)
-	@ #- [ ! -f .phpcpd.xml ] || $(PHPCPD) . text .phpcpd.xml | tee build/phpcpd
-	- [ ! -d src ] || $(PHPCPD) --fuzzy --min-lines=3 --min-tokens=20 src | tee build/phpcpd; exit "$${PIPESTATUS[0]}"
-
-
-
-# target: phploc             - Code statistics for PHP.
+# target: phploc                  - Code statistics for PHP.
 .PHONY: phploc
 phploc: prepare
 	@$(call HELPTEXT,$@)
@@ -246,7 +325,7 @@ phploc: prepare
 
 
 
-# target: phpdoc             - Create documentation for PHP.
+# target: phpdoc                  - Create documentation for PHP.
 .PHONY: phpdoc
 phpdoc:
 	@$(call HELPTEXT,$@)
@@ -254,7 +333,7 @@ phpdoc:
 
 
 
-# target: behat              - Run behat for feature tests.
+# target: behat                   - Run behat for feature tests.
 .PHONY: behat
 behat:
 	@$(call HELPTEXT,$@)
@@ -266,7 +345,7 @@ behat:
 # Bash
 #
 
-# target: install-tools-bash - Install Bash development tools.
+# target: install-tools-bash      - Install Bash development tools.
 .PHONY: install-tools-bash
 install-tools-bash:
 	@$(call HELPTEXT,$@)
@@ -283,7 +362,7 @@ install-tools-bash:
 
 
 
-# target: check-tools-bash   - Check versions of Bash tools.
+# target: check-tools-bash        - Check versions of Bash tools.
 .PHONY: check-tools-bash
 check-tools-bash:
 	@$(call HELPTEXT,$@)
@@ -292,7 +371,7 @@ check-tools-bash:
 
 
 
-# target: shellcheck         - Run shellcheck for bash files.
+# target: shellcheck              - Run shellcheck for bash files.
 .PHONY: shellcheck
 shellcheck:
 	@$(call HELPTEXT,$@)
@@ -300,7 +379,7 @@ shellcheck:
 
 
 
-# target: bats               - Run bats for unit testing bash files.
+# target: bats                    - Run bats for unit testing bash files.
 .PHONY: bats
 bats:
 	@$(call HELPTEXT,$@)
@@ -312,7 +391,7 @@ bats:
 #
 # Theme
 #
-# target: theme              - Do make build install in theme/ if available.
+# target: theme                   - Do make build install in theme/ if available.
 .PHONY: theme
 theme:
 	@$(call HELPTEXT,$@)
@@ -337,13 +416,22 @@ return [
 endef
 export CIMAGE_CONFIG
 
+define GIT_IGNORE_FILES
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore
+endef
+export GIT_IGNORE_FILES
+
 # target: cimage-update           - Install/update Cimage to latest version.
 .PHONY: cimage-update
 cimage-update:
 	@$(call HELPTEXT,$@)
 	composer require mos/cimage
-	install -d htdocs/cimage cache/cimage
+	install -d htdocs/img htdocs/cimage cache/cimage
 	chmod 777 cache/cimage
+	$(ECHO) "$$GIT_IGNORE_FILES" | bash -c 'cat > cache/cimage/.gitignore'
 	cp vendor/mos/cimage/webroot/img.php htdocs/cimage
 	cp vendor/mos/cimage/webroot/img/car.png htdocs/img/
 	touch htdocs/cimage/img_config.php

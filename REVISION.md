@@ -14,6 +14,15 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
+v2.0.0-alpha.2 (2018-08-01)
+---------------------------------
+
+* Set requirement of PHP 7.2 in composer.json.
+* Mark anax/common as obsolete and prepare to remove it and traces of $app constructions.
+* Move composer.json require anax/di to suggests, eventually try to remove dependency to real version. 
+
+
+
 v2.0.0-alpha.1 (2018-08-01)
 ---------------------------------
 

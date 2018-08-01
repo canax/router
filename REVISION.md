@@ -14,6 +14,13 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
+v2.0.0-alpha.1 (2018-08-01)
+---------------------------------
+
+* Prepare to go through code and remove some waist and potentially breaking backward compatibility.
+
+
+
 v1.1.0 (2018-03-16)
 ---------------------------------
 
@@ -22,6 +29,7 @@ v1.1.0 (2018-03-16)
 * Add support for including $app centered routes through 'include'.
 * Remove composer.lock.
 * Show 404 when no route returns true nor does exit.
+
 
 
 v1.0.15 (2017-09-28)
@@ -33,10 +41,12 @@ v1.0.15 (2017-09-28)
 * Add ConfigurationException when configuration is incorrect.
 
 
+
 v1.0.14 (2017-09-26)
 ---------------------------------
 
 * Router::configure now uses Configure2Trait and can read from directory and files and support "sort".
+
 
 
 v1.0.13 (2017-09-14)
@@ -44,6 +54,7 @@ v1.0.13 (2017-09-14)
 
 * Router::configure shall return self.
 * Minor edit in docblock in Router.
+
 
 
 v1.0.12 (2017-08-15)
@@ -55,11 +66,13 @@ v1.0.12 (2017-08-15)
 * Loading routes from configuration file.
 
 
+
 v1.0.11 (2017-08-10)
 ---------------------------------
 
 * Adding class Router as a DI enabled version.
 * Add getName() for Route.
+
 
 
 v1.0.10 (2017-08-10)
@@ -68,10 +81,12 @@ v1.0.10 (2017-08-10)
 * Add comment in route file to make 404 last in sequence.
 
 
+
 v1.0.9 (2017-08-03)
 ---------------------------------
 
 * Adding config/ with some default routes.
+
 
 
 v1.0.8 (2017-06-27)
@@ -79,6 +94,7 @@ v1.0.8 (2017-06-27)
 
 * Fix unittest passing.
 * Fix Route::checkPartAsArgument missing type vvariable.
+
 
 
 v1.0.7 (2017-06-27)
@@ -89,10 +105,12 @@ v1.0.7 (2017-06-27)
 * Made RouterInjectable injectable with $app.
 
 
+
 v1.0.6 (2017-06-27)
 ---------------------------------
 
 * Modify type of integer argument when validatet using digit.
+
 
 
 v1.0.5 (2017-04-24)
@@ -105,11 +123,13 @@ v1.0.5 (2017-04-24)
 * Add support for adding several path rules with one route->add().
 
 
+
 v1.0.4 (2017-04-13)
 ---------------------------------
 
 * Add support for path/** to match subpaths.
 * Fix composer validate PHP version in require-dev. 
+
 
 
 v1.0.3 (2017-03-26)
@@ -119,11 +139,13 @@ v1.0.3 (2017-03-26)
 * Support adding request method as string separated by |
 
 
+
 v1.0.2 (2017-03-26)
 ---------------------------------
 
 * Allow matching of several routehandlers having the same path.
 * Add testcases.
+
 
 
 v1.0.1 (2017-03-13)
@@ -132,6 +154,7 @@ v1.0.1 (2017-03-13)
 * Add arguments as part of route.
 * Arguments can be validated as alpha, alphanum, digit, hex.
 * Support different routes per request methods.
+
 
 
 v1.0.0 (2017-03-07)

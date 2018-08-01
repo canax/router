@@ -2,10 +2,12 @@
 
 namespace Anax\Route;
 
+use \PHPUnit\Framework\TestCase;
+
 /**
  * Routes.
  */
-class RouterTest extends \PHPUnit\Framework\TestCase
+class RouterTest extends TestCase
 {
     /**
      * Check that the route can return a value.

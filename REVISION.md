@@ -14,6 +14,13 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
+v2.0.0-alpha.* (2018-08-01)
+---------------------------------
+
+* Fix phpunit.
+
+
+
 v2.0.0-alpha.2 (2018-08-01)
 ---------------------------------
 

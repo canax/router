@@ -2,6 +2,7 @@
 
 namespace Anax\Route;
 
+use \PHPUnit\Framework\TestCase;
 use \Anax\Route\Exception\ForbiddenException;
 use \Anax\Route\Exception\InternalErrorException;
 use \Anax\Route\Exception\NotFoundException;
@@ -9,7 +10,7 @@ use \Anax\Route\Exception\NotFoundException;
 /**
  * Routes.
  */
-class RouterInjectableExceptionTest extends \PHPUnit\Framework\TestCase
+class RouterInjectableExceptionTest extends TestCase
 {
     /**
      * Test

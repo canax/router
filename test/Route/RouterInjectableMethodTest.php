@@ -2,10 +2,12 @@
 
 namespace Anax\Route;
 
+use \PHPUnit\Framework\TestCase;
+
 /**
  * Testcases.
  */
-class RouterInjectableMethodTest extends \PHPUnit\Framework\TestCase
+class RouterInjectableMethodTest extends TestCase
 {
     /**
      * Test shortcuts for adding route with specific request methdod.

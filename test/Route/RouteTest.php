@@ -2,11 +2,12 @@
 
 namespace Anax\Route;
 
+use \PHPUnit\Framework\TestCase;
+
 /**
  * Routes.
- *
  */
-class RouteTest extends \PHPUnit\Framework\TestCase
+class RouteTest extends TestCase
 {
     /**
      * Test

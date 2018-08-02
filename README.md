@@ -1,13 +1,18 @@
 Anax Router
 ==================================
 
-[![Join the chat at https://gitter.im/canax/router](https://badges.gitter.im/canax/router.svg)](https://gitter.im/canax/router?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Latest Stable Version](https://poser.pugx.org/anax/router/v/stable)](https://packagist.org/packages/anax/router)
+[![Join the chat at https://gitter.im/canax/router](https://badges.gitter.im/canax/router.svg)](https://gitter.im/canax/router?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/canax/router.svg?branch=master)](https://travis-ci.org/canax/router)
 [![CircleCI](https://circleci.com/gh/canax/router.svg?style=svg)](https://circleci.com/gh/canax/router)
+
 [![Build Status](https://scrutinizer-ci.com/g/canax/router/badges/build.png?b=master)](https://scrutinizer-ci.com/g/canax/router/build-status/master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/canax/router/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/canax/router/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/canax/router/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/canax/router/?branch=master)
+
+[![Maintainability](https://api.codeclimate.com/v1/badges/03322fa7864ad24a9b2a/maintainability)](https://codeclimate.com/github/canax/router/maintainability)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/03950aec85654aeeb443e9c6cb972d1c)](https://www.codacy.com/app/mosbth/router?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=canax/router&amp;utm_campaign=Badge_Grade)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/f525d26b-16a0-414e-b587-ce10728a380b/mini.png)](https://insight.sensiolabs.com/projects/f525d26b-16a0-414e-b587-ce10728a380b)
 
 Anax Router module.

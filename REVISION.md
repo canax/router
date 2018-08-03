@@ -14,7 +14,7 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
-v2.0.0-alpha.* (2018-08-03)
+v2.0.0-alpha.4 (2018-08-03)
 ---------------------------------
 
 * Rewrote src/Route/Router for newer configuration files.

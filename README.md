@@ -343,6 +343,17 @@ $router->handle("about", "DELETE");
 
 
 
+Dependency
+------------------
+
+These are the dependencies to other modules.
+
+| Module         | What    |
+|----------------|---------|
+| `anax/commons` | Using `t()` for i18n. |
+
+
+
 License
 ------------------
 

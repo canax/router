@@ -31,18 +31,22 @@ class Route
     /**
      * Set values for route.
      *
-     * @param null|string       $rule   for this route
-     * @param callable          $action callable to implement a controller for
-     *                                  the route
-     * @param null|string|array $method as request method to support
-     * @param null|string       $info   description of the route
+     * @param string|array           $method  as request method to support
+     * @param string                 $path    for this route
+     * @param string|array|callable  $handler for this path, callable or equal
+     * @param string                 $info    description of the route
      *
      * @return $this
      */
-    public function set($rule, $action = null, $method = null, $info = null)
+    public function set(
+        $method = null,
+        $path = null,
+        $handler = null,
+        string $info = null
+    ) : object
     {
-        $this->rule = $rule;
-        $this->action = $action;
+        $this->rule = $path;
+        $this->action = $handler;
         $this->info = $info;
 
         $this->method = $method;

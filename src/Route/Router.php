@@ -4,8 +4,6 @@ namespace Anax\Route;
 
 use Anax\DI\InjectionAwareInterface;
 use Anax\DI\InjectionAwareTrait;
-use Anax\Configure\ConfigureInterface;
-use Anax\Configure\Configure2Trait;
 use Anax\Route\Exception\ForbiddenException;
 use Anax\Route\Exception\NotFoundException;
 use Anax\Route\Exception\InternalErrorException;
@@ -15,13 +13,9 @@ use Anax\Route\Exception\ConfigurationException;
  * A container for routes.
  */
 class Router implements
-    InjectionAwareInterface,
-    ConfigureInterface
+    InjectionAwareInterface
 {
     use InjectionAwareTrait;
-    use Configure2Trait {
-        configure as protected configure2;
-    }
 
 
 
@@ -42,6 +36,179 @@ class Router implements
      */
     const DEVELOPMENT = 0;
     const PRODUCTION  = 1;
+
+
+
+    /**
+     * @var integer $mode current mode.
+     */
+    private $mode = self::DEVELOPMENT;
+
+
+
+    /**
+     * Set Router::DEVELOPMENT or Router::PRODUCTION mode.
+     *
+     * @param integer $mode which mode to set.
+     *
+     * @return self to enable chaining.
+     */
+    public function setMode(integer $mode) : object
+    {
+        $this->mode = $mode;
+        return $this;
+    }
+
+
+
+    /**
+     * Add routes from an array where the array looks like this:
+     * [
+     *      "mount" => null|string, // Where to mount the routes
+     *      "routes" => [           // All routes in this array
+     *          [
+     *              "info" => "Just say hi.",
+     *              "method" => null,
+     *              "path" => "hi",
+     *              "handler" => function () {
+     *                  return "Hi.";
+     *              },
+     *          ]
+     *      ]
+     * ]
+     *
+     * @throws ConfigurationException
+     *
+     * @param array $routes containing the routes to add.
+     *
+     * @return self to enable chaining.
+     */
+    public function addRoutes(array $routes) : object
+    {
+        $mount = null;
+        if (isset($routes["mount"])) {
+            $mount = rtrim($routes["mount"], "/");
+            if (!empty($mount)) {
+                $mount .= "/";
+            }
+        }
+
+        if (!(isset($routes["routes"]) && is_array($routes["routes"]))) {
+            throw new ConfigurationException(t("No routes found, missing key 'routes' in configuration array."));
+        }
+
+        foreach ($routes["routes"] as $route) {
+            if ($route["internal"] ?? false) {
+                $this->addInternalRoute(
+                    $route["path"],
+                    $route["handler"] ?? null
+                );
+                continue;
+            }
+
+            if (!array_key_exists("path", $route)) {
+                throw new ConfigurationException(t("Creating route but path is not defined for route."));
+            }
+
+            $this->addRoute(
+                $route["method"] ?? null,
+                $mount . $route["path"],
+                $route["handler"] ?? null,
+                $route["info"] ?? null
+            );
+        }
+
+        return $this;
+    }
+
+
+
+    /**
+     * Add a route with a request method, a path rule to match and an action
+     * as the callback. Adding several path rules (array) results in several
+     * routes being created.
+     *
+     * @param string|array           $method  as request method to support
+     * @param string                 $path    for this route
+     * @param string|array|callable  $handler for this path, callable or equal
+     * @param string                 $info    description of the route
+     *
+     * @return void.
+     */
+    protected function addRoute(
+        $method,
+        string $path = null,
+        $handler = null,
+        string $info = null
+    ) : void
+    {
+        $route = new Route();
+        $route->set($method, $path, $handler, $info);
+        $this->routes[] = $route;
+    }
+
+
+
+    /**
+     * Add an internal route to the router, this route is not exposed to the
+     * browser and the end user.
+     *
+     * @param string                 $path    for this route
+     * @param string|array|callable  $handler for this path, callable or equal
+     *
+     * @return void.
+     */
+    public function addInternalRoute(string $path, $handler) : void
+    {
+        $route = new Route();
+        $route->set($path, $handler);
+        $this->internalRoutes[$path] = $route;
+    }
+
+
+
+    /**
+     * Load route from an array contining route details.
+     *
+     * @throws ConfigurationException
+     *
+     * @param array $route details on the route.
+     *
+     * @return self
+     *
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     */
+    public function load(array $route) : object
+    {
+        var_dump($route);
+        
+        $mount = isset($route["mount"]) ? rtrim($route["mount"], "/") : null;
+
+        $config = $route;
+
+        // Include the config file and load its routes
+        $config = require($file);
+        $routes = isset($config["routes"]) ? $config["routes"] : [];
+        foreach ($routes as $route) {
+            $path = isset($mount)
+                ? $mount . "/" . $route["path"]
+                : $route["path"];
+
+            if (isset($route["internal"]) && $route["internal"]) {
+                $this->addInternal($path, $route["callable"]);
+                continue;
+            }
+
+            $this->any(
+                $route["requestMethod"],
+                $path,
+                $route["callable"],
+                $route["info"]
+            );
+        }
+
+        return $this;
+    }
 
 
 
@@ -121,7 +288,7 @@ class Router implements
         } catch (InternalErrorException $e) {
             $this->handleInternal("500");
         } catch (ConfigurationException $e) {
-            if ($this->getConfig("mode", Router::DEVELOPMENT) === Router::PRODUCTION) {
+            if ($this->mode === Router::PRODUCTION) {
                 $this->handleInternal("500");
             }
             throw $e;
@@ -148,89 +315,6 @@ class Router implements
         $route = $this->internalRoutes[$rule];
         $this->lastRoute = $rule;
         $route->handle($this->di);
-    }
-
-
-
-    /**
-     * Load routes from a config file, the file should return an array with
-     * details of the routes. These details are used to create the routes.
-     *
-     * @throws \Anax\Route\Exception\ConfigurationException
-     *
-     * @param array $route details on the route.
-     *
-     * @return self
-     *
-     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-     */
-    public function load($route)
-    {
-        $mount = isset($route["mount"]) ? rtrim($route["mount"], "/") : null;
-        if (!array_key_exists("mount", $route)) {
-            // To fix compatibility with new configuration
-            // where configuration item needs "mount" to be
-            // used and not ignored.
-            return $this;
-        }
-
-        $config = $route;
-        $file = isset($route["file"]) ? $route["file"] : null;
-        if ($file && !is_readable($file)) {
-            throw new ConfigurationException("Route configuration file '$file' is missing.");
-        }
-
-        // Include the config file and load its routes
-        $config = require($file);
-        $routes = isset($config["routes"]) ? $config["routes"] : [];
-        foreach ($routes as $route) {
-            $path = isset($mount)
-                ? $mount . "/" . $route["path"]
-                : $route["path"];
-
-            if (isset($route["internal"]) && $route["internal"]) {
-                $this->addInternal($path, $route["callable"]);
-                continue;
-            }
-
-            $this->any(
-                $route["requestMethod"],
-                $path,
-                $route["callable"],
-                $route["info"]
-            );
-        }
-
-        return $this;
-    }
-
-
-
-    /**
-     * Add a route with a request method, a path rule to match and an action
-     * as the callback. Adding several path rules (array) results in several
-     * routes being created.
-     *
-     * @param null|string|array    $method as a valid request method.
-     * @param null|string|array    $rule   path rule for this route.
-     * @param null|string|callable $action to implement a handler for the route.
-     * @param null|string          $info   about the route.
-     *
-     * @return class|array as new route(s), class if one added, else array.
-     */
-    public function any($method, $rule, $action, $info = null)
-    {
-        $rules = is_array($rule) ? $rule : [$rule];
-
-        $routes = [];
-        foreach ($rules as $val) {
-            $route = new Route();
-            $route->set($val, $action, $method, $info);
-            $routes[] = $route;
-            $this->routes[] = $route;
-        }
-
-        return count($routes) === 1 ? $routes[0] : $routes;
     }
 
 
@@ -336,25 +420,6 @@ class Router implements
     public function delete($rule, $action)
     {
         return $this->any(["DELETE"], $rule, $action);
-    }
-
-
-
-    /**
-     * Add an internal route to the router, this route is not exposed to the
-     * browser and the end user.
-     *
-     * @param string               $rule   for this route
-     * @param null|string|callable $action a callback handler for the route.
-     *
-     * @return class|array as new route(s), class if one added, else array.
-     */
-    public function addInternal($rule, $action)
-    {
-        $route = new Route();
-        $route->set($rule, $action);
-        $this->internalRoutes[$rule] = $route;
-        return $route;
     }
 
 

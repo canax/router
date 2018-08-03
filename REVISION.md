@@ -14,11 +14,19 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
+v2.0.0-alpha.* (2018-08-03)
+---------------------------------
+
+* Rewrote src/Route/Router for newer configuration files.
+
+
+
 v2.0.0-alpha.3 (2018-08-03)
 ---------------------------------
 
 * @deprecated src/Route/RouterInjectable and removed it.
 * Removed older route files.
+* Removed direct router dependency to anax/configure.
 
 
 

@@ -22,6 +22,7 @@
     "require": {
         "php": ">=7.2",
         "anax/common": "^2.0.0@alpha",
+        "anax/commons": "^2.0.0@alpha",
         "anax/di": "^2.0.0@alpha"
     }
 }

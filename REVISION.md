@@ -14,10 +14,11 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
-v2.0.0-alpha.* (2018-08-01)
+v2.0.0-alpha.3 (2018-08-03)
 ---------------------------------
 
 * Fix phpunit.
+* Use v2.0.0@alpha from anax/common to start work to remove it.
 
 
 

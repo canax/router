@@ -8,9 +8,7 @@
     "authors": [
         {
             "name": "Mikael Roos",
-            "email": "mos@dbwebb.se",
-            "homepage": "https://dbwebb.se",
-            "role": "Developer"
+            "email": "mos@dbwebb.se"
         }
     ],
     "support": {
@@ -23,7 +21,7 @@
     },
     "require": {
         "php": ">=7.2",
-        "anax/common": "^1.0",
+        "anax/common": "^2.0.0@alpha",
         "anax/di": "^2.0.0@alpha"
     }
 }

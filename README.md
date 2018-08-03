@@ -42,9 +42,9 @@ Usage
 ### Add some routes with handlers
 
 ```php
-use Anax\Route\RouterInjectable;
+use Anax\Route\Router;
 
-$router = new RouterInjectable();
+$router = new Router();
 
 $router->add("", function () {
     echo "home ";
@@ -72,7 +72,7 @@ $router->handle("about/me");
 Add multiple routes, through an array of rules, sharing a handler.
 
 ```php
-$router = new RouterInjectable();
+$router = new Router();
 
 $router->add(["info", "about"], function () {
     echo "info or about - ";
@@ -91,7 +91,7 @@ $router->handle("about");
 This route will match any path.
 
 ```php
-$router = new RouterInjectable();
+$router = new Router();
 
 $router->always(function () {
     echo "always ";
@@ -110,7 +110,7 @@ $router->handle("about");
 Add an internal route that is called when no route can be matched.
 
 ```php
-$router = new RouterInjectable();
+$router = new Router();
 
 $router->addInternal("404", function () {
     echo "404 ";
@@ -167,7 +167,7 @@ $router->handle("calculate");
 This route will match any item on the same level as `about/*`.
 
 ```php
-$router = new RouterInjectable();
+$router = new Router();
 
 $router->addInternal("404", function () {
     echo "404 ";
@@ -192,7 +192,7 @@ $router->handle("about/some/other"); // no match
 This route will match any item below `about/**`, even subdirs.
 
 ```php
-$router = new RouterInjectable();
+$router = new Router();
 
 $router->add("about/**", function () {
     echo "about ";
@@ -213,7 +213,7 @@ $router->handle("about/some/other");
 You can send a part of the route as an argument to the handler. This makes a route handler more flexible and dynamic.
 
 ```php
-$router = new RouterInjectable();
+$router = new Router();
 
 $router->addInternal("404", function () {
     echo "404 ";
@@ -235,7 +235,7 @@ $router->handle("about/some/other"); // not matched
 You can send multiple arguments.
 
 ```php
-$router = new RouterInjectable();
+$router = new Router();
 
 $router->add(
     "post/{year}/{month}/{day}",
@@ -257,7 +257,7 @@ $router->handle("post/1990/06/20");
 Apply type checking to the arguments to restrict a the routes being matched.
 
 ```php
-$router = new RouterInjectable();
+$router = new Router();
 
 $router->addInternal("404", function () {
     echo "404, ";
@@ -294,7 +294,7 @@ For type checking is digit, alpha, alphanum and hex supported (see [ctype](http:
 A route can be setup to match only one request method.
 
 ```php
-$router = new RouterInjectable();
+$router = new Router();
 
 $router->any(["GET"], "about", function () {
     echo "GET ";
@@ -323,7 +323,7 @@ $router->handle("about", "DELETE");
 A route can also match several request methods.
 
 ```php
-$router = new RouterInjectable();
+$router = new Router();
 
 $router->any(["GET", "POST"], "about", function () {
     echo "GET+POST ";

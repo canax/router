@@ -17,6 +17,14 @@ Notes for development v1.1.0*
 v2.0.0-alpha.3 (2018-08-03)
 ---------------------------------
 
+* @deprecated src/Route/RouterInjectable and removed it.
+* Removed older route files.
+
+
+
+v2.0.0-alpha.3 (2018-08-03)
+---------------------------------
+
 * Fix phpunit.
 * Use v2.0.0@alpha from anax/common to start work to remove it.
 

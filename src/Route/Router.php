@@ -4,12 +4,12 @@ namespace Anax\Route;
 
 use Anax\DI\InjectionAwareInterface;
 use Anax\DI\InjectionAwareTrait;
-use \Anax\Configure\ConfigureInterface;
-use \Anax\Configure\Configure2Trait;
-use \Anax\Route\Exception\ForbiddenException;
-use \Anax\Route\Exception\NotFoundException;
-use \Anax\Route\Exception\InternalErrorException;
-use \Anax\Route\Exception\ConfigurationException;
+use Anax\Configure\ConfigureInterface;
+use Anax\Configure\Configure2Trait;
+use Anax\Route\Exception\ForbiddenException;
+use Anax\Route\Exception\NotFoundException;
+use Anax\Route\Exception\InternalErrorException;
+use Anax\Route\Exception\ConfigurationException;
 
 /**
  * A container for routes.

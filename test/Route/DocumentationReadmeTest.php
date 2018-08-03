@@ -17,7 +17,7 @@ class DocumentationReadmeTest extends TestCase
      */
     public function testAddSomeRoutesWIthHandles()
     {
-        $router = new RouterInjectable();
+        $router = new Router();
 
         $router->add("", function () {
             echo "home ";
@@ -49,7 +49,7 @@ class DocumentationReadmeTest extends TestCase
      */
     public function testAddMultipleRoutesWithOneHandler()
     {
-        $router = new RouterInjectable();
+        $router = new Router();
 
         $router->add(["info", "about"], function () {
             echo "info or about - ";
@@ -72,7 +72,7 @@ class DocumentationReadmeTest extends TestCase
      */
     public function testAddDefaultRoute()
     {
-        $router = new RouterInjectable();
+        $router = new Router();
 
         $router->always(function () {
             echo "always ";
@@ -95,7 +95,7 @@ class DocumentationReadmeTest extends TestCase
      */
     public function testAddInternalRoutesForErrorHandling()
     {
-        $router = new RouterInjectable();
+        $router = new Router();
 
         $router->addInternal("404", function () {
             echo "404 ";
@@ -121,7 +121,7 @@ class DocumentationReadmeTest extends TestCase
      */
     public function testAddInternalRoute403()
     {
-        $router = new RouterInjectable();
+        $router = new Router();
 
         $router->addInternal("403", function () {
             echo "403 ";
@@ -147,7 +147,7 @@ class DocumentationReadmeTest extends TestCase
      */
     public function testAddInternalRoute500()
     {
-        $router = new RouterInjectable();
+        $router = new Router();
 
         $router->addInternal("500", function () {
             echo "500 ";
@@ -173,7 +173,7 @@ class DocumentationReadmeTest extends TestCase
      */
     public function testAddCommonRouteForSubPathOneStar()
     {
-        $router = new RouterInjectable();
+        $router = new Router();
 
         $router->addInternal("404", function () {
             echo "404 ";
@@ -201,7 +201,7 @@ class DocumentationReadmeTest extends TestCase
      */
     public function testAddCommonRouteForSubPathDoubleStar()
     {
-        $router = new RouterInjectable();
+        $router = new Router();
 
         $router->addInternal("404", function () {
             echo "404 ";
@@ -229,7 +229,7 @@ class DocumentationReadmeTest extends TestCase
      */
     public function testRouteWithArguments()
     {
-        $router = new RouterInjectable();
+        $router = new Router();
 
         $router->addInternal("404", function () {
             echo "404 ";
@@ -257,7 +257,7 @@ class DocumentationReadmeTest extends TestCase
      */
     public function testRouteWithMultipleArguments()
     {
-        $router = new RouterInjectable();
+        $router = new Router();
 
         $router->add(
             "post/{year}/{month}/{day}",
@@ -283,7 +283,7 @@ class DocumentationReadmeTest extends TestCase
      */
     public function testTypeCheckingOfArguments()
     {
-        $router = new RouterInjectable();
+        $router = new Router();
 
         $router->addInternal("404", function () {
             echo "404, ";
@@ -322,7 +322,7 @@ class DocumentationReadmeTest extends TestCase
      */
     public function testRoutePerRequestMethod()
     {
-        $router = new RouterInjectable();
+        $router = new Router();
 
         $router->any(["GET"], "about", function () {
             echo "GET ";
@@ -359,7 +359,7 @@ class DocumentationReadmeTest extends TestCase
      */
     public function testRoutePerMultipleRequestMethod()
     {
-        $router = new RouterInjectable();
+        $router = new Router();
 
         $router->any(["GET", "POST"], "about", function () {
             echo "GET+POST ";

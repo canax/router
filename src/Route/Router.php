@@ -4,10 +4,10 @@ namespace Anax\Route;
 
 use Anax\Commons\ContainerInjectableInterface;
 use Anax\Commons\ContainerInjectableTrait;
-use Anax\Route\Exception\ForbiddenException;
-use Anax\Route\Exception\NotFoundException;
-use Anax\Route\Exception\InternalErrorException;
 use Anax\Route\Exception\ConfigurationException;
+use Anax\Route\Exception\ForbiddenException;
+use Anax\Route\Exception\InternalErrorException;
+use Anax\Route\Exception\NotFoundException;
 
 /**
  * A router to hold and match routes.

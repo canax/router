@@ -106,7 +106,7 @@ class Route
      */
     public function handle(
         string $path = null,
-        ContainerInjectableInterface $di = null
+        ContainerInterface $di = null
     ) {
         if ($this->mount) {
             // Remove the mount path to get base for controller

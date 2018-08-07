@@ -27,7 +27,7 @@ class RouteHandler
         string $path = null,
         $action,
         array $arguments = [],
-        ContainerInjectableInterface $di = null
+        ContainerInterface $di = null
     ) {
         if (is_null($action)) {
             return;

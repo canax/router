@@ -15,6 +15,7 @@ v2.0.0-alpha.* (2018-08-07)
 ---------------------------------
 
 * Fix: Use correct interface for $di.
+* Removed dependency to $di for now.
 
 
 

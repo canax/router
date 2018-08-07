@@ -10,7 +10,7 @@ return [
             "shared" => true,
             "callback" => function () {
                 $router = new \Anax\Route\Router();
-                $router->setDI($this);
+                //$router->setDI($this);
 
                 // Load the configuration files
                 $cfg = $this->get("configuration");
@@ -28,10 +28,7 @@ return [
                 } catch (Exception $e) {
                     throw new Exception(
                         $e->getMessage()
-                        . t(
-                            " Configuration file: '@file'",
-                            ["@file" => $file]
-                        )
+                        . " Configuration file: '$file'"
                     );
                 }
 

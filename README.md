@@ -350,7 +350,8 @@ These are the dependencies to other modules.
 
 | Module         | What    |
 |----------------|---------|
-| `anax/commons` | Using `t()` for i18n. |
+| `anax/commons` | Using Anax\\Commons\\ContainerInjectableInterface. |
+| `anax/commons` | Using Anax\\Commons\\ContainerInjectableTrait. |
 
 
 

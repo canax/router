@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Configuration file for DI container.
  */
@@ -15,8 +16,6 @@ return [
                 // Load the configuration files
                 $cfg = $this->get("configuration");
                 $config = $cfg->load("router");
-                echo "ROUTER CONFIG";
-                var_dump($config);
 
                 // Add routes from configuration file
                 $file = null;
@@ -38,8 +37,9 @@ return [
                 }
 
                 // Set DEVELOPMENT/PRODUCTION mode, if defined
-                if (isset($config["mode"])) {
-                    $router->setMode($config["mode"]);
+                $mode = $config["config"]["mode"];
+                if (isset($mode)) {
+                    $router->setMode($mode);
                 } else if (defined("ANAX_PRODUCTION")) {
                     $router->setMode(\Anax\Route\Router::PRODUCTION);
                 }

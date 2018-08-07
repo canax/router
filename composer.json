@@ -21,8 +21,14 @@
     },
     "require": {
         "php": ">=7.2",
-        "anax/common": "^2.0.0@alpha",
         "anax/commons": "^2.0.0@alpha",
+        "psr/container": "^1.0"
+    },
+    "suggest": {
+        "anax/di": "^2.0.0@alpha"
+    },
+    "require-dev": {
+        "anax/configure": "^2.0.0@alpha",
         "anax/di": "^2.0.0@alpha"
     }
 }

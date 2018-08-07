@@ -10,16 +10,13 @@ use \PHPUnit\Framework\TestCase;
 class RouteArgumentTest extends TestCase
 {
     /**
-     * Test
-     *
-     * @return void
+     * Match route with one argument
      */
-    public function testRouteWithArguments()
+    public function testRouteWithOneArgument()
     {
         $route = new Route();
 
-        //
-        $route->set("search/{arg1}", function ($arg1) {
+        $route->set(null, null, "search/{arg1}", function ($arg1) {
             return $arg1;
         });
 
@@ -29,10 +26,18 @@ class RouteArgumentTest extends TestCase
 
         $this->assertTrue($route->match("search/1"));
         $this->assertEquals("1", $route->handle());
+    }
 
 
-        //
-        $route->set("search/{arg1}/{arg2}", function ($arg1, $arg2) {
+
+    /**
+     * Match route with two arguments
+     */
+    public function testRouteWithTwoArguments()
+    {
+        $route = new Route();
+
+        $route->set(null, null, "search/{arg1}/{arg2}", function ($arg1, $arg2) {
             return "$arg1$arg2";
         });
 
@@ -42,9 +47,18 @@ class RouteArgumentTest extends TestCase
 
         $this->assertTrue($route->match("search/1/2"));
         $this->assertEquals("12", $route->handle());
+    }
 
-        //
-        $route->set("search/{arg1}/what/{arg2}", function ($arg1, $arg2) {
+
+
+    /**
+     * Match route with two arguments, separated in path.
+     */
+    public function testRouteWithTwoArgumentsSeparated()
+    {
+        $route = new Route();
+
+        $route->set(null, null, "search/{arg1}/what/{arg2}", function ($arg1, $arg2) {
             return "$arg1$arg2";
         });
 
@@ -61,9 +75,7 @@ class RouteArgumentTest extends TestCase
 
 
     /**
-     * Test
-     *
-     * @return void
+     * Try argument validation.
      */
     public function testRouteArgumentValidate()
     {
@@ -74,31 +86,38 @@ class RouteArgumentTest extends TestCase
         $hex = "abcdefABCDEF" . $digit;
 
         //
-        $route->set("{arg1:digit}", null);
+        $route->set(null, null, "{arg1:digit}", null);
         $this->assertFalse($route->match($alpha));
         $this->assertFalse($route->match($alphanum));
         $this->assertTrue($route->match($digit));
         $this->assertFalse($route->match($hex));
 
         //
-        $route->set("{arg1:alpha}", null);
+        $route->set(null, null, "{arg1:alpha}", null);
         $this->assertTrue($route->match($alpha));
         $this->assertFalse($route->match($alphanum));
         $this->assertFalse($route->match($digit));
         $this->assertFalse($route->match($hex));
 
         //
-        $route->set("{arg1:alphanum}", null);
+        $route->set(null, null, "{arg1:alphanum}", null);
         $this->assertTrue($route->match($alpha));
         $this->assertTrue($route->match($alphanum));
         $this->assertTrue($route->match($digit));
         $this->assertTrue($route->match($hex));
 
         //
-        $route->set("{arg1:hex}", null);
+        $route->set(null, null, "{arg1:hex}", null);
         $this->assertFalse($route->match($alpha));
         $this->assertFalse($route->match($alphanum));
         $this->assertTrue($route->match($digit));
         $this->assertTrue($route->match($hex));
+
+        // Missing/wrong index
+        $route->set(null, null, "{arg1:none}", null);
+        $this->assertFalse($route->match($alpha));
+        $this->assertFalse($route->match($alphanum));
+        $this->assertFalse($route->match($digit));
+        $this->assertFalse($route->match($hex));
     }
 }

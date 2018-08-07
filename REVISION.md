@@ -14,6 +14,15 @@ Notes for development v1.1.0*
 * (Use regexp to match route).
 
 
+
+v2.0.0-alpha.5 (2018-08-07)
+---------------------------------
+
+* Rewrote major parts of Router and Route.
+* Move anax/di to require-dev.
+
+
+
 v2.0.0-alpha.4 (2018-08-03)
 ---------------------------------
 

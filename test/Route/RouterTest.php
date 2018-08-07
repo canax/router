@@ -95,7 +95,7 @@ class RouterTest extends TestCase
     {
         $router = new Router();
 
-        $router->addInternal("404", function () {
+        $router->addInternalRoute("404", function () {
             echo "404 ";
         });
 
@@ -125,7 +125,7 @@ class RouterTest extends TestCase
     {
         $router = new Router();
 
-        $router->addInternal("404", function () {
+        $router->addInternalRoute("404", function () {
             echo "404 ";
         });
 

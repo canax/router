@@ -2,28 +2,32 @@
 
 namespace Anax\Route;
 
-use \Anax\Route\Exception\ConfigurationException;
+use Anax\Commons\ContainerInjectableInterface;
+use Anax\Route\Exception\ConfigurationException;
 
 /**
- * A container for routes.
- *
+ * Route to match a $path, mounted on $mount having a $handler to call.
  */
 class Route
 {
     /**
-     * @var string       $name      a name for this route.
-     * @var string       $info      description of route.
-     * @var string|array $method    the method(s) to support
-     * @var string       $rule      the path rule for this route
-     * @var callable     $action    the callback to handle this route
-     * @var null|array   $arguments arguments for the callback, extracted
-     *                              from path
+     * @var string       $name          a name for this route.
+     * @var string       $info          description of route.
+     * @var array        $method        the method(s) to support
+     * @var string       $methodMatched the matched method.
+     * @var string       $mount         where to mount the path
+     * @var string       $path          the path rule for this route
+     * @var callable     $handler       the callback to handle this route
+     * @var null|array   $arguments     arguments for the callback, extracted
+     *                                  from path
      */
     private $name;
     private $info;
     private $method;
-    private $rule;
-    private $action;
+    private $methodMatched;
+    private $mount;
+    private $path;
+    private $handler;
     private $arguments = [];
 
 
@@ -32,6 +36,7 @@ class Route
      * Set values for route.
      *
      * @param string|array           $method  as request method to support
+     * @param string                 $mount   where to mount the path
      * @param string                 $path    for this route
      * @param string|array|callable  $handler for this path, callable or equal
      * @param string                 $info    description of the route
@@ -40,13 +45,14 @@ class Route
      */
     public function set(
         $method = null,
+        $mount = null,
         $path = null,
         $handler = null,
         string $info = null
-    ) : object
-    {
-        $this->rule = $path;
-        $this->action = $handler;
+    ) : object {
+        $this->mount = rtrim($mount, "/");
+        $this->path = $path;
+        $this->handler = $handler;
         $this->info = $info;
 
         $this->method = $method;
@@ -63,145 +69,6 @@ class Route
 
 
     /**
-     * Check if part of route is a argument and optionally match type
-     * as a requirement {argument:type}.
-     *
-     * @param string $rulePart   the rule part to check.
-     * @param string $queryPart  the query part to check.
-     * @param array  &$args      add argument to args array if matched
-     *
-     * @return boolean
-     */
-    private function checkPartAsArgument($rulePart, $queryPart, &$args)
-    {
-        if (substr($rulePart, -1) == "}"
-            && !is_null($queryPart)
-        ) {
-            $part = substr($rulePart, 1, -1);
-            $pos = strpos($part, ":");
-            $type = null;
-            if ($pos !== false) {
-                $type = substr($part, $pos + 1);
-                if (! $this->checkPartMatchingType($queryPart, $type)) {
-                    return false;
-                }
-            }
-            $args[] = $this->typeConvertArgument($queryPart, $type);
-            return true;
-        }
-        return false;
-    }
-
-
-
-    /**
-     * Check if value is matching a certain type of values.
-     *
-     * @param string $value   the value to check.
-     * @param array  $type    the expected type to check against.
-     *
-     * @return boolean
-     */
-    private function checkPartMatchingType($value, $type)
-    {
-        switch ($type) {
-            case "digit":
-                return ctype_digit($value);
-                break;
-
-            case "hex":
-                return ctype_xdigit($value);
-                break;
-
-            case "alpha":
-                return ctype_alpha($value);
-                break;
-
-            case "alphanum":
-                return ctype_alnum($value);
-                break;
-
-            default:
-                return false;
-        }
-    }
-
-
-
-    /**
-     * Check if value is matching a certain type and do type
-     * conversion accordingly.
-     *
-     * @param string $value   the value to check.
-     * @param array  $type    the expected type to check against.
-     *
-     * @return boolean
-     */
-    private function typeConvertArgument($value, $type)
-    {
-        switch ($type) {
-            case "digit":
-                return (int) $value;
-                break;
-
-            default:
-                return $value;
-        }
-    }
-
-
-
-    /**
-     * Match part of rule and query.
-     *
-     * @param string $rulePart   the rule part to check.
-     * @param string $queryPart  the query part to check.
-     * @param array  &$args      add argument to args array if matched
-     *
-     * @return boolean
-     */
-    private function matchPart($rulePart, $queryPart, &$args)
-    {
-        $match = false;
-        $first = isset($rulePart[0]) ? $rulePart[0] : '';
-        switch ($first) {
-            case '*':
-                $match = true;
-                break;
-
-            case '{':
-                $match = $this->checkPartAsArgument($rulePart, $queryPart, $args);
-                break;
-
-            default:
-                $match = ($rulePart == $queryPart);
-                break;
-        }
-        return $match;
-    }
-
-
-
-    /**
-     * Check if the request method matches.
-     *
-     * @param string $method as request method
-     *
-     * @return boolean true if request method matches
-     */
-    public function matchRequestMethod($method)
-    {
-        if ($method && is_array($this->method) && !in_array($method, $this->method)
-            || (is_null($method) && !empty($this->method))
-        ) {
-            return false;
-        }
-        return true;
-    }
-
-
-
-    /**
      * Check if the route matches a query and request method.
      *
      * @param string $query  to match against
@@ -209,40 +76,22 @@ class Route
      *
      * @return boolean true if query matches the route
      */
-    public function match($query, $method = null)
+    public function match(string $query, string $method = null)
     {
-        if (!$this->matchRequestMethod($method)) {
-            return false;
-        }
+        $this->arguments = [];
+        $this->methodMatched = null;
 
-        // If any/default */** route, match anything
-        if (is_null($this->rule)
-            || in_array($this->rule, ["*", "**"])
-        ) {
-            return true;
-        }
+        $matcher = new RouteMatcher();
+        $res = $matcher->match(
+            $this->getAbsolutePath(),
+            $query,
+            $this->method,
+            $method
+        );
+        $this->arguments = $matcher->arguments;
+        $this->methodMatched = $matcher->methodMatched;
 
-        // Check all parts to see if they matches
-        $ruleParts  = explode('/', $this->rule);
-        $queryParts = explode('/', $query);
-        $ruleCount = max(count($ruleParts), count($queryParts));
-        $args = [];
-
-        for ($i = 0; $i < $ruleCount; $i++) {
-            $rulePart  = isset($ruleParts[$i])  ? $ruleParts[$i]  : null;
-            $queryPart = isset($queryParts[$i]) ? $queryParts[$i] : null;
-
-            if ($rulePart === "**") {
-                break;
-            }
-
-            if (!$this->matchPart($rulePart, $queryPart, $args)) {
-                return false;
-            }
-        }
-
-        $this->arguments = $args;
-        return true;
+        return $res;
     }
 
 
@@ -250,43 +99,25 @@ class Route
     /**
      * Handle the action for the route.
      *
-     * @param string $di container with services
+     * @param string                       $path the matched path
+     * @param ContainerInjectableInterface $di   container with services
      *
      * @return mixed
      */
-    public function handle($di = null)
-    {
-        if (is_callable($this->action)) {
-            return call_user_func($this->action, ...$this->arguments);
-        }
-
-        // Try to load service from app/di injected container
-        if ($di
-            && is_array($this->action)
-            && isset($this->action[0])
-            && isset($this->action[1])
-            && is_string($this->action[0])
-        ) {
-            if (!$di->has($this->action[0])) {
-                throw new ConfigurationException("Routehandler '{$this->action[0]}' not loaded in di.");
+    public function handle(
+        string $path = null,
+        ContainerInjectableInterface $di = null
+    ) {
+        if ($this->mount) {
+            // Remove the mount path to get base for controller
+            $len = strlen($this->mount);
+            if (substr($path, 0, $len) == $this->mount) {
+                $path = ltrim(substr($path, $len), "/");
             }
-
-            $service = $di->get($this->action[0]);
-            if (!is_callable([$service, $this->action[1]])) {
-                throw new ConfigurationException(
-                    "Routehandler '{$this->action[0]}' does not have a callable method '{$this->action[1]}'."
-                );
-            }
-
-            return call_user_func(
-                [$service, $this->action[1]],
-                ...$this->arguments
-            );
         }
 
-        if (!is_null($this->action)) {
-            throw new ConfigurationException("Routehandler '{$this->rule}' does not have a callable action.");
-        }
+        $handler = new RouteHandler();
+        return $handler->handle($this->methodMatched, $path, $this->handler, $this->arguments, $di);
     }
 
 
@@ -319,13 +150,33 @@ class Route
 
 
     /**
-     * Get the rule for the route.
+     * Get the path for the route.
      *
      * @return string
      */
-    public function getRule()
+    public function getPath()
     {
-        return $this->rule;
+        return $this->path;
+    }
+
+
+
+    /**
+     * Get the absolute $path by adding $mount.
+     *
+     * @return string|null as absolute path for this route.
+     */
+    public function getAbsolutePath()
+    {
+        if (is_null($this->path)) {
+            return null;
+        }
+
+        if (empty($this->mount)) {
+            return $this->path;
+        }
+
+        return $this->mount . "/" . $this->path;
     }
 
 
@@ -337,10 +188,6 @@ class Route
      */
     public function getRequestMethod()
     {
-        if (is_array($this->method)) {
-            return implode("|", $this->method);
-        }
-
-        return $this->method;
+        return implode("|", $this->method);
     }
 }

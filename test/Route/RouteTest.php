@@ -10,13 +10,30 @@ use \PHPUnit\Framework\TestCase;
 class RouteTest extends TestCase
 {
     /**
+     * Provider http methods.
+     */
+    public function httpMethodsProvider()
+    {
+        return [
+            ["GET"],
+            ["POST"],
+            ["PUT"],
+            ["PATCH"],
+            ["DELETE"],
+            ["OPTIONS"],
+        ];
+    }
+
+
+
+    /**
      * Test
      */
     public function testHomeRoute()
     {
         $route = new Route();
         
-        $route->set("", null);
+        $route->set(null, null, "", null);
         $this->assertTrue($route->match(""));
         $this->assertFalse($route->match("-"));
     }
@@ -30,7 +47,7 @@ class RouteTest extends TestCase
     {
         $route = new Route();
 
-        $route->set("*", null);
+        $route->set(null, null, "*", null);
         $this->assertTrue($route->match(""));
         $this->assertTrue($route->match("controller"));
         $this->assertTrue($route->match("controller/action"));
@@ -45,7 +62,7 @@ class RouteTest extends TestCase
     {
         $route = new Route();
         
-        $route->set("doc", null);
+        $route->set(null, null, "doc", null);
         $this->assertFalse($route->match("doc/index"));
         $this->assertFalse($route->match("doc/index2"));
         $this->assertTrue($route->match("doc"));
@@ -53,7 +70,7 @@ class RouteTest extends TestCase
         $this->assertFalse($route->match("docs"));
         $this->assertTrue($route->match("doc"));
 
-        $route->set("doc/index", null);
+        $route->set(null, null, "doc/index", null);
         $this->assertFalse($route->match("doc"));
         $this->assertFalse($route->match("doc/inde"));
         $this->assertFalse($route->match("doc/indexx"));
@@ -69,14 +86,14 @@ class RouteTest extends TestCase
     {
         $route = new Route();
 
-        $route->set("doc/*", null);
+        $route->set(null, null, "doc/*", null);
         $this->assertFalse($route->match("docs"));
         $this->assertTrue($route->match("doc"));
         $this->assertTrue($route->match("doc/"));
         $this->assertTrue($route->match("doc/index"));
         $this->assertFalse($route->match("doc/index/index"));
 
-        $route->set("doc/*/index", null);
+        $route->set(null, null, "doc/*/index", null);
         $this->assertFalse($route->match("doc"));
         $this->assertFalse($route->match("doc/index"));
         $this->assertFalse($route->match("doc/index/index1"));
@@ -93,14 +110,14 @@ class RouteTest extends TestCase
     {
         $route = new Route();
 
-        $route->set("doc/**", null);
+        $route->set(null, null, "doc/**", null);
         $this->assertFalse($route->match("docs"));
         $this->assertTrue($route->match("doc"));
         $this->assertTrue($route->match("doc/"));
         $this->assertTrue($route->match("doc/index"));
         $this->assertTrue($route->match("doc/index/index"));
 
-        $route->set("doc/**/index", null);
+        $route->set(null, null, "doc/**/index", null);
         $this->assertFalse($route->match("docs"));
         $this->assertTrue($route->match("doc"));
         $this->assertTrue($route->match("doc/index"));
@@ -112,46 +129,35 @@ class RouteTest extends TestCase
 
 
     /**
-     * Test
+     * Try all request methods without requirements on method.
+     *
+     * @dataProvider httpMethodsProvider
      */
-    public function testRequestMethod()
+    public function testRequestMethodNoRequirements($method)
     {
         $route = new Route();
 
-        $route->set("", null);
+        $route->set(null, null, "");
         $this->assertTrue($route->match(""));
-        $this->assertTrue($route->match("", "GET"));
-        $this->assertTrue($route->match("", "POST"));
-        $this->assertTrue($route->match("", "PUT"));
-        $this->assertTrue($route->match("", "DELETE"));
+        $this->assertTrue($route->match("", $method));
+        $this->assertTrue($route->match("", "WHATEVER"));
+    }
 
-        $route->set("", null, ["GET"]);
-        $this->assertFalse($route->match(""));
-        $this->assertTrue($route->match("", "GET"));
-        $this->assertFalse($route->match("", "POST"));
-        $this->assertFalse($route->match("", "PUT"));
-        $this->assertFalse($route->match("", "DELETE"));
 
-        $route->set("", null, ["POST"]);
-        $this->assertFalse($route->match(""));
-        $this->assertFalse($route->match("", "GET"));
-        $this->assertTrue($route->match("", "POST"));
-        $this->assertFalse($route->match("", "PUT"));
-        $this->assertFalse($route->match("", "DELETE"));
 
-        $route->set("", null, ["PUT"]);
-        $this->assertFalse($route->match(""));
-        $this->assertFalse($route->match("", "GET"));
-        $this->assertFalse($route->match("", "POST"));
-        $this->assertTrue($route->match("", "PUT"));
-        $this->assertFalse($route->match("", "DELETE"));
+    /**
+     * Try all request methods with requirements on method.
+     *
+     * @dataProvider httpMethodsProvider
+     */
+    public function testRequestMethodWithRequirements($method)
+    {
+        $route = new Route();
 
-        $route->set("", null, ["DELETE"]);
+        $route->set($method, null, "");
         $this->assertFalse($route->match(""));
-        $this->assertFalse($route->match("", "GET"));
-        $this->assertFalse($route->match("", "POST"));
-        $this->assertFalse($route->match("", "PUT"));
-        $this->assertTrue($route->match("", "DELETE"));
+        $this->assertTrue($route->match("", $method));
+        $this->assertFalse($route->match("", "WHATEVER"));
     }
 
 
@@ -163,14 +169,18 @@ class RouteTest extends TestCase
     {
         $route = new Route();
 
-        $route->set("", null, null);
+        $route->set(null, null, "");
         $this->assertTrue($route->match(""));
 
-        $route->set("", null, "GET");
+        $route->set("GET", null, "");
         $this->assertTrue($route->match("", "GET"));
 
-        $route->set("", null, ["GET"]);
+        $route->set(["GET"], null, "");
         $this->assertTrue($route->match("", "GET"));
+
+        $route->set(["GET", "POST"], null, "");
+        $this->assertTrue($route->match("", "GET"));
+        $this->assertTrue($route->match("", "POST"));
     }
 
 
@@ -182,21 +192,21 @@ class RouteTest extends TestCase
     {
         $route = new Route();
 
-        $route->set("", null, "GET|POST");
+        $route->set("GET|POST", null, "");
         $this->assertFalse($route->match(""));
         $this->assertTrue($route->match("", "GET"));
         $this->assertTrue($route->match("", "POST"));
         $this->assertFalse($route->match("", "PUT"));
         $this->assertFalse($route->match("", "DELETE"));
 
-        $route->set("", null, "GET|POST | PUT | DEL");
+        $route->set("GET|POST | PUT | DEL", null, "");
         $this->assertFalse($route->match(""));
         $this->assertTrue($route->match("", "GET"));
         $this->assertTrue($route->match("", "POST"));
         $this->assertTrue($route->match("", "PUT"));
         $this->assertFalse($route->match("", "DELETE"));
 
-        $route->set("", null, "GET|POST | PUT | DELETE");
+        $route->set("GET|POST | PUT | DELETE", null, "");
         $this->assertFalse($route->match(""));
         $this->assertTrue($route->match("", "GET"));
         $this->assertTrue($route->match("", "POST"));
@@ -220,18 +230,68 @@ class RouteTest extends TestCase
         $this->assertTrue($route->match("whatever/any", "PUT"));
         $this->assertTrue($route->match("whatever/any", "DELETE"));
 
-        $route->set(null, null, "GET|POST");
+        $route->set("GET|POST", null, null);
         $this->assertFalse($route->match("whatever/any"));
         $this->assertTrue($route->match("whatever/any", "GET"));
         $this->assertTrue($route->match("whatever/any", "POST"));
         $this->assertFalse($route->match("whatever/any", "PUT"));
         $this->assertFalse($route->match("whatever/any", "DELETE"));
 
-        $route->set(null, null, "GET | POST | PUT | DELETE");
+        $route->set("GET | POST | PUT | DELETE", null, null);
         $this->assertFalse($route->match("whatever/any"));
         $this->assertTrue($route->match("whatever/any", "GET"));
         $this->assertTrue($route->match("whatever/any", "POST"));
         $this->assertTrue($route->match("whatever/any", "PUT"));
         $this->assertTrue($route->match("whatever/any", "DELETE"));
+    }
+
+
+
+    /**
+     * Check that info can be stored with route.
+     */
+    public function testRouteWithInfo()
+    {
+        $route = new Route();
+
+        $route->set(null, null, null, null, "Info");
+        $res = $route->getInfo();
+        $this->assertEquals("Info", $res);
+    }
+
+
+
+    /**
+     * Get the route path.
+     */
+    public function testGetRoutePath()
+    {
+        $route = new Route();
+
+        $route->set(null, "user", "create");
+        $res = $route->getPath();
+        $this->assertEquals("create", $res);
+    }
+
+
+
+    /**
+     * Get the request method supported by a route.
+     */
+    public function testGetRequestMethod()
+    {
+        $route = new Route();
+
+        $route->set("GET");
+        $res = $route->getRequestMethod();
+        $this->assertEquals("GET", $res);
+
+        $route->set(["GET"]);
+        $res = $route->getRequestMethod();
+        $this->assertEquals("GET", $res);
+
+        $route->set(["GET", "POST"]);
+        $res = $route->getRequestMethod();
+        $this->assertEquals("GET|POST", $res);
     }
 }

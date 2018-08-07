@@ -13,19 +13,28 @@ return [
             "info" => "403 Forbidden.",
             "internal" => true,
             "path" => "403",
-            "handler" => ["errorController", "page403"],
+            "handler" => function () {
+                http_response_code(403);
+                die("Anax 403: Forbidden");
+            },
         ],
         [
             "info" => "404 Page not found.",
             "internal" => true,
             "path" => "404",
-            "handler" => ["errorController", "page404"],
+            "handler" => function () {
+                http_response_code(404);
+                die("Anax 404: Not Found");
+            },
         ],
         [
             "info" => "500 Internal Server Error.",
             "internal" => true,
             "path" => "500",
-            "handler" => ["errorController", "page500"],
+            "handler" => function () {
+                http_response_code(500);
+                die("Anax 500: Internal Server Error");
+            },
         ],
     ]
 ];

@@ -7,7 +7,7 @@ use Anax\Route\Router;
  */
 return [
     //"mode" => Router::DEVELOPMENT, // default, verbose execeptions
-    //"mode" => Router::PRODUCTION,  // exceptions turn into 500
+    "mode" => Router::PRODUCTION,  // exceptions turn into 500
 
     // Path where to mount the routes, is added to each route path.
     "mount" => null,
@@ -20,8 +20,8 @@ return [
             "method" => null,
             "path" => "",
             "handler" => function () {
-                echo "200";
-                return "200";
+                echo "Hi 200";
+                return "HI 200";
             },
         ],
         // [

@@ -1,15 +1,10 @@
 Revision history
 =================================
 
-Notes for development v1.1.0*
+Notes for development v2.0.0*
 ---------------------------------
 
-* Rename add to any when adding routes without request method?
-* Rename RouterInjectable to Router.
-* Mark RouterInjectable as obsolete and implement it as extending Router.
-* Review the test suite.
 * Add route length (max, min) as a feature like type.
-* Add (MV)C as route and dispatch to controller, with before and after methods.
 * Add forward to enable forwarding to another route handler, like MVC triads.
 * (Use regexp to match route).
 

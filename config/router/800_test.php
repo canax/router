@@ -1,6 +1,7 @@
 <?php
 
 use Anax\Route\Exception\ForbiddenException;
+use Anax\Route\Exception\InternalErrorException;
 use Anax\Route\Exception\NotFoundException;
 
 /**
@@ -51,7 +52,7 @@ return [
             "info" => "Try internal 500.",
             "path" => "500",
             "handler" => function () {
-                throw new Exception();
+                throw new InternalErrorException();
             },
         ],
     ]

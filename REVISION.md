@@ -10,6 +10,13 @@ Notes for development v2.0.0*
 
 
 
+v2.0.0-alpha.7 (2018-08-08)
+---------------------------------
+
+* Fix: Testroute test/500 generate correct exception.
+
+
+
 v2.0.0-alpha.6 (2018-08-08)
 ---------------------------------
 

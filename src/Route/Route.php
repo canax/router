@@ -4,6 +4,7 @@ namespace Anax\Route;
 
 use Anax\Commons\ContainerInjectableInterface;
 use Anax\Route\Exception\ConfigurationException;
+use Psr\Container\ContainerInterface;
 
 /**
  * Route to match a $path, mounted on $mount having a $handler to call.
@@ -17,6 +18,7 @@ class Route
      * @var string       $methodMatched the matched method.
      * @var string       $mount         where to mount the path
      * @var string       $path          the path rule for this route
+     * @var string       $pathMatched   the matched path.
      * @var callable     $handler       the callback to handle this route
      * @var null|array   $arguments     arguments for the callback, extracted
      *                                  from path
@@ -27,6 +29,7 @@ class Route
     private $methodMatched;
     private $mount;
     private $path;
+    private $pathMatched;
     private $handler;
     private $arguments = [];
 
@@ -80,6 +83,7 @@ class Route
     {
         $this->arguments = [];
         $this->methodMatched = null;
+        $this->pathMatched = null;
 
         $matcher = new RouteMatcher();
         $res = $matcher->match(
@@ -90,6 +94,7 @@ class Route
         );
         $this->arguments = $matcher->arguments;
         $this->methodMatched = $matcher->methodMatched;
+        $this->pathMatched = $matcher->pathMatched;
 
         return $res;
     }
@@ -118,6 +123,27 @@ class Route
 
         $handler = new RouteHandler();
         return $handler->handle($this->methodMatched, $path, $this->handler, $this->arguments, $di);
+    }
+
+
+
+    /**
+     * Get the matched basename of the path, its the part without the mount
+     * point.
+     *
+     * @return string|null
+     */
+    public function getMatchedPath()
+    {
+        $path = $this->pathMatched;
+        if ($this->mount) {
+            $len = strlen($this->mount);
+            if (substr($path, 0, $len) == $this->mount) {
+                $path = ltrim(substr($path, $len), "/");
+            }
+        }
+
+        return $path;
     }
 
 
@@ -186,8 +212,10 @@ class Route
      *
      * @return string representing the request method supported
      */
-    public function getRequestMethod()
+    public function getRequestMethod() : string
     {
-        return implode("|", $this->method);
+        return is_array($this->method)
+            ? implode("|", $this->method)
+            : "";
     }
 }

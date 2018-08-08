@@ -2,7 +2,8 @@
 
 namespace Anax\Route;
 
-use \PHPUnit\Framework\TestCase;
+use Anax\DI\DI;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Try controller handlers.
@@ -187,5 +188,40 @@ class RouteHandlerControllerTest extends TestCase
         $this->assertTrue($route->match($path, "GET"));
         $res = $route->handle($path);
         $this->assertEquals("variadicAction collection:4", $res);
+    }
+
+
+
+    /**
+     * Try a user controller which can be injected with $di.
+     */
+    public function testControllerImplementsDiInterface()
+    {
+        $route = new Route();
+        $di = new DI();
+    
+        $route->set(null, "user", null, "Anax\Route\MockHandlerController");
+    
+        $path = "user/di";
+        $this->assertTrue($route->match($path, "GET"));
+        $res = $route->handle($path, $di);
+        $this->assertInstanceOf(DI::class, $res);
+    }
+
+
+
+    /**
+     * A controller can implement a catchAll() method.
+     */
+    public function testControllerMethodCatchAll()
+    {
+        $route = new Route();
+    
+        $route->set(null, "user", null, "Anax\Route\MockHandlerControllerCatchAll");
+    
+        $path = "user/whatever";
+        $this->assertTrue($route->match($path, "GET"));
+        $res = $route->handle($path);
+        $this->assertEquals("catchAll", $res);
     }
 }

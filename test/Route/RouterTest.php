@@ -161,4 +161,58 @@ class RouterTest extends TestCase
         $res = $router->handle("some/route");
         $this->assertEquals("all", $res);
     }
+
+
+
+    /**
+     * Provider of data to create routes.
+     */
+    public function routeDataProvider()
+    {
+        return [
+            [
+                null,
+                "",
+                "hit",
+                "",
+                ""
+            ],
+            [
+                null,
+                "index",
+                "index",
+                "index",
+                "index"
+            ],
+            [
+                "mount",
+                "index/here",
+                "index/here",
+                "mount/index/here",
+                "index/here"
+            ],
+        ];
+    }
+
+
+
+    /**
+     * Get the matched part of the query.
+     *
+     * @dataProvider routeDataProvider
+     */
+    public function testGetMatchedPath($mount, $path, $resp, $query, $match)
+    {
+        $router = new Router();
+
+        $router->addRoute(null, $mount, $path, function () use ($resp) {
+            return $resp;
+        });
+        $res = $router->handle($query);
+        $this->assertEquals($resp, $res);
+        $res = $router->getMatchedPath();
+        $this->assertEquals($match, $res);
+        $res = $router->getLastRoute();
+        $this->assertEquals($query, $res);
+    }
 }

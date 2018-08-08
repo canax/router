@@ -10,7 +10,7 @@ return [
             "shared" => true,
             "callback" => function () {
                 $router = new \Anax\Route\Router();
-                //$router->setDI($this);
+                $router->setDI($this);
 
                 // Load the configuration files
                 $cfg = $this->get("configuration");
@@ -33,7 +33,7 @@ return [
                 }
 
                 // Set DEVELOPMENT/PRODUCTION mode, if defined
-                $mode = $config["config"]["mode"];
+                $mode = $config["config"]["mode"] ?? null;
                 if (isset($mode)) {
                     $router->setMode($mode);
                 } else if (defined("ANAX_PRODUCTION")) {

@@ -19,9 +19,9 @@ class Router implements ContainerInjectableInterface
 
 
     /**
-     * @var array       $routes         all the routes.
-     * @var array       $internalRoutes all internal routes.
-     * @var null|string $lastRoute      last route that was matched and called.
+     * @var array  $routes         all the routes.
+     * @var array  $internalRoutes all internal routes.
+     * @var Route  $lastRoute      last route that was matched and called.
      */
     private $routes         = [];
     private $internalRoutes = [];
@@ -167,7 +167,7 @@ class Router implements ContainerInjectableInterface
      *
      * @return void.
      */
-    protected function addRoute(
+    public function addRoute(
         $method,
         $mount = null,
         $path = null,
@@ -228,7 +228,7 @@ class Router implements ContainerInjectableInterface
             $match = false;
             foreach ($this->routes as $route) {
                 if ($route->match($path, $method)) {
-                    $this->lastRoute = $route->getAbsolutePath();
+                    $this->lastRoute = $route;
                     $match = true;
                     $results = $route->handle($path, $this->di);
                     if ($results) {
@@ -258,20 +258,20 @@ class Router implements ContainerInjectableInterface
      * Handle an internal route, the internal routes are not exposed to the
      * end user.
      *
-     * @param string $rule for this route.
+     * @param string $path for this route.
      *
      * @throws \Anax\Route\Exception\NotFoundException
      *
      * @return void
      */
-    public function handleInternal($rule)
+    public function handleInternal($path)
     {
-        if (!isset($this->internalRoutes[$rule])) {
-            throw new NotFoundException("No internal route to handle: " . $rule);
+        if (!isset($this->internalRoutes[$path])) {
+            throw new NotFoundException("No internal route to handle: " . $path);
         }
-        $route = $this->internalRoutes[$rule];
-        $this->lastRoute = $rule;
-        return $route->handle($this->di);
+        $route = $this->internalRoutes[$path];
+        $this->lastRoute = $route;
+        return $route->handle(null, $this->di);
     }
 
 
@@ -312,7 +312,7 @@ class Router implements ContainerInjectableInterface
 
     /**
      * Add a route to the router by its path(s) and a callback for any
-     * request method (alias for any()).
+     * request method .
      *
      * @param string|array    $path    for this route.
      * @param string|callable $handler a callback handler for the route.
@@ -463,7 +463,19 @@ class Router implements ContainerInjectableInterface
      */
     public function getLastRoute()
     {
-        return $this->lastRoute;
+        return $this->lastRoute->getAbsolutePath();
+    }
+
+
+
+    /**
+     * Get the route for the last route that was handled.
+     *
+     * @return mixed
+     */
+    public function getMatchedPath()
+    {
+        return $this->lastRoute->getMatchedPath();
     }
 
 

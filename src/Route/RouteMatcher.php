@@ -11,12 +11,14 @@ use Anax\Route\Exception\ConfigurationException;
 class RouteMatcher
 {
     /**
-     * @var string       $methodMatched the matched method.
      * @var null|array   $arguments     arguments for the callback, extracted
      *                                  from path
+     * @var string       $methodMatched the matched method.
+     * @var string       $pathMatched   the matched path.
      */
-    public $methodMatched;
     public $arguments = [];
+    public $methodMatched;
+    public $pathMatched;
 
 
 
@@ -179,6 +181,7 @@ class RouteMatcher
     ) {
         $this->arguments = [];
         $this->methodMatched = null;
+        $this->pathMatched = null;
 
         if (!$this->matchRequestMethod($method, $methodSupported)) {
             return false;
@@ -189,6 +192,7 @@ class RouteMatcher
             || in_array($path, ["*", "**"])
         ) {
             $this->methodMatched = $method;
+            $this->pathMatched = $query;
             return true;
         }
 
@@ -213,6 +217,7 @@ class RouteMatcher
 
         $this->arguments = $args;
         $this->methodMatched = $method;
+        $this->pathMatched = $query;
         return true;
     }
 }

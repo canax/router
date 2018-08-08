@@ -14,8 +14,7 @@ return [
             "internal" => true,
             "path" => "403",
             "handler" => function () {
-                http_response_code(403);
-                die("Anax 403: Forbidden");
+                return ["Anax 403: Forbidden", 403];
             },
         ],
         [
@@ -23,8 +22,7 @@ return [
             "internal" => true,
             "path" => "404",
             "handler" => function () {
-                http_response_code(404);
-                die("Anax 404: Not Found");
+                return ["Anax 404: Not Found", 404];
             },
         ],
         [
@@ -32,8 +30,9 @@ return [
             "internal" => true,
             "path" => "500",
             "handler" => function () {
-                http_response_code(500);
-                die("Anax 500: Internal Server Error");
+                // echo "<pre>";
+                // debug_print_backtrace();
+                return ["Anax 500: Internal Server Error", 500];
             },
         ],
     ]

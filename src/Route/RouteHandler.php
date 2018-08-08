@@ -5,12 +5,20 @@ namespace Anax\Route;
 use Anax\Commons\ContainerInjectableInterface;
 use Anax\Route\Exception\ConfigurationException;
 use Anax\Route\Exception\NotFoundException;
+use Psr\Container\ContainerInterface;
 
 /**
  * Call a routes handler and return the results.
  */
 class RouteHandler
 {
+    /**
+     * @var ContainerInterface $di the dependency/service container.
+     */
+    protected $di;
+
+
+
     /**
      * Handle the action for a route and return the results.
      *
@@ -29,6 +37,8 @@ class RouteHandler
         array $arguments = [],
         ContainerInterface $di = null
     ) {
+        $this->di = $di;
+
         if (is_null($action)) {
             return;
         }
@@ -44,16 +54,16 @@ class RouteHandler
             }
         }
 
-        // if ($di
-        //     && is_array($action)
-        //     && isset($action[0])
-        //     && isset($action[1])
-        //     && is_string($action[0])
-        // ) {
-        //     // Try to load service from app/di injected container
-        //     return $this->handleUsingDi($action, $arguments, $di);
-        // }
-        //
+        if ($di
+            && is_array($action)
+            && isset($action[0])
+            && isset($action[1])
+            && is_string($action[0])
+        ) {
+            // Try to load service from app/di injected container
+            return $this->handleUsingDi($action, $arguments, $di);
+        }
+        
         throw new ConfigurationException("Handler for route does not seem to be a callable action.");
     }
 
@@ -78,11 +88,12 @@ class RouteHandler
         $args = explode("/", $path);
         $action = array_shift($args);
         $action = empty($action) ? "index" : $action;
-        $action1 = "${action}Action${method}";
-        $action2 = "${action}Action";
+        $action1 = "{$action}Action{$method}";
+        $action2 = "{$action}Action";
+        $action3 = "catchAll";
 
         $refl = null;
-        foreach ([$action1, $action2] as $action) {
+        foreach ([$action1, $action2, $action3] as $action) {
             try {
                 $refl = new \ReflectionMethod($class, $action);
                 if (!$refl->isPublic()) {
@@ -113,11 +124,20 @@ class RouteHandler
         $class = $callable[0];
         $action = $callable[1];
         $args = $callable[2];
-
         $obj = new $class();
-        $refl = new \ReflectionMethod($class, "initialize");
-        if ($refl->isPublic()) {
-            $obj->initialize();
+
+        $refl = new \ReflectionClass($class);
+        if ($this->di && $refl->implementsInterface("Anax\Commons\ContainerInjectableInterface")) {
+            $obj->setDI($this->di);
+        }
+
+        try {
+            $refl = new \ReflectionMethod($class, "initialize");
+            if ($refl->isPublic()) {
+                $obj->initialize();
+            }
+        } catch (\ReflectionException $e) {
+            ;
         }
 
         try {
@@ -157,8 +177,17 @@ class RouteHandler
             $refl = new \ReflectionMethod($action[0], $action[1]);
             if ($refl->isPublic() && !$refl->isStatic()) {
                 $obj = new $action[0]();
-                return $obj->{$action[1]}();
+                return $obj->{$action[1]}(...$arguments);
             }
+        }
+
+        // Add $di to param list, if defined by the callback
+        $refl = is_array($action)
+            ? new \ReflectionMethod($action[0], $action[1])
+            : new \ReflectionFunction($action);
+        $params = $refl->getParameters();
+        if (isset($params[0]) && $params[0]->getName() === "di") {
+            array_unshift($arguments, $this->di);
         }
 
         return call_user_func($action, ...$arguments);
@@ -166,34 +195,34 @@ class RouteHandler
 
 
 
-    // /**
-    //  * Load callable as a service from the $di container.
-    //  *
-    //  * @param string|array                 $action    base for the callable
-    //  * @param array                        $arguments optional arguments
-    //  * @param ContainerInjectableInterface $di        container with services
-    //  *
-    //  * @return mixed as the result from the route handler.
-    //  */
-    // protected function handleUsingDi(
-    //     $action,
-    //     array $arguments,
-    //     ContainerInjectableInterface $di
-    // ) {
-    //     if (!$di->has($action[0])) {
-    //         throw new ConfigurationException("Routehandler '{$action[0]}' not loaded in di.");
-    //     }
-    //
-    //     $service = $di->get($action[0]);
-    //     if (!is_callable([$service, $action[1]])) {
-    //         throw new ConfigurationException(
-    //             "Routehandler '{$action[0]}' does not have a callable method '{$action[1]}'."
-    //         );
-    //     }
-    //
-    //     return call_user_func(
-    //         [$service, $action[1]],
-    //         ...$arguments
-    //     );
-    // }
+    /**
+     * Load callable as a service from the $di container.
+     *
+     * @param string|array                 $action    base for the callable
+     * @param array                        $arguments optional arguments
+     * @param ContainerInjectableInterface $di        container with services
+     *
+     * @return mixed as the result from the route handler.
+     */
+    protected function handleUsingDi(
+        $action,
+        array $arguments,
+        ContainerInterface $di
+    ) {
+        if (!$di->has($action[0])) {
+            throw new ConfigurationException("Routehandler '{$action[0]}' not loaded in di.");
+        }
+    
+        $service = $di->get($action[0]);
+        if (!is_callable([$service, $action[1]])) {
+            throw new ConfigurationException(
+                "Routehandler '{$action[0]}' does not have a callable method '{$action[1]}'."
+            );
+        }
+    
+        return call_user_func(
+            [$service, $action[1]],
+            ...$arguments
+        );
+    }
 }

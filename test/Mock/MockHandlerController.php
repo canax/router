@@ -2,11 +2,21 @@
 
 namespace Anax\Route;
 
+use Anax\Commons\ContainerInjectableInterface;
+use Anax\Commons\ContainerInjectableTrait;
+
 /**
  * A mock handler as a controller.
  */
-class MockHandlerController
+class MockHandlerController implements ContainerInjectableInterface
 {
+    use ContainerInjectableTrait;
+
+    public function diAction()
+    {
+        return $this->di;
+    }
+
     public function initialize()
     {
         return "initialize";
@@ -55,5 +65,10 @@ class MockHandlerController
     public function variadicAction(...$collection)
     {
         return "variadicAction collection:" . count($collection);
+    }
+
+    private function privateAction()
+    {
+        return "privateAction";
     }
 }

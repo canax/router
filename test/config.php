@@ -27,4 +27,6 @@ define("ANAX_INSTALL_PATH", realpath(__DIR__ . "/.."));
 require ANAX_INSTALL_PATH . "/vendor/autoload.php";
 require __DIR__ . "/Mock/MockHandlerClassMethod.php";
 require __DIR__ . "/Mock/MockHandlerController.php";
+require __DIR__ . "/Mock/MockHandlerControllerCatchAll.php";
+require __DIR__ . "/Mock/MockHandlerDiService.php";
 require __DIR__ . "/Mock/functions.php";

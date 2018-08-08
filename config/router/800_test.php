@@ -8,10 +8,31 @@ use Anax\Route\Exception\NotFoundException;
  */
 return [
     // Path where to mount the routes, is added to each route path.
-    "mount" => "test/router",
+    "mount" => "test",
 
     // All routes in order
     "routes" => [
+        [
+            "info" => "Just say hi with a string.",
+            "path" => "hi",
+            "handler" => function () {
+                return "Hi.";
+            },
+        ],
+        [
+            "info" => "Say No! with status code 500.",
+            "path" => "no",
+            "handler" => function () {
+                return ["No!", 500];
+            },
+        ],
+        [
+            "info" => "Say Hi through JSON.",
+            "path" => "json",
+            "handler" => function () {
+                return [["message" => "Hi JSON"]];
+            },
+        ],
         [
             "info" => "Try internal 403.",
             "path" => "403",

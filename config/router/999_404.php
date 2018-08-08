@@ -9,7 +9,9 @@ return [
             "info" => "Catch all and send 404.",
             "method" => null,
             "path" => null,
-            "handler" => ["errorController", "page404"],
+            "handler" => function () {
+                return ["Anax 404: Not Found.", 404];
+            },
         ],
     ]
 ];

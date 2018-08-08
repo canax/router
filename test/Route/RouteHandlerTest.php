@@ -2,7 +2,9 @@
 
 namespace Anax\Route;
 
-use \PHPUnit\Framework\TestCase;
+use Anax\DI\DI;
+use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 
 /**
  * Try various type of handlers.
@@ -100,6 +102,24 @@ class RouteHandlerTest extends TestCase
         $route->set(null, null, null, ["Anax\Route\MockHandlerClassMethod", "static"]);
         $res = $route->handle();
         $this->assertEquals("handler", $res);
+    }
+
+
+
+    /**
+     * Inject $di into a handler which is an anonymous function.
+     */
+    public function testHandlerInjectDiIntoFunction()
+    {
+        $route = new Route();
+        $di = new DI();
+
+        $route->set(null, null, null, function ($di) {
+            return $di;
+        });
+
+        $res = $route->handle(null, $di);
+        $this->assertInstanceOf(ContainerInterface::class, $res);
     }
 
 

@@ -7,15 +7,15 @@ Notes for development v2.0.0*
 * Add route length (max, min) as a feature like type.
 * Add forward to enable forwarding to another route handler, like MVC triads.
 * (Use regexp to match route).
-* Should $di service be handler or not (remove dependency to $di)?
 
 
 
-v2.0.0-alpha.* (2018-08-07)
+v2.0.0-alpha.6 (2018-08-08)
 ---------------------------------
 
 * Fix: Use correct interface for $di.
-* Removed dependency to $di for now.
+* Add controller/action as handler.
+* Add sample routes.
 
 
 

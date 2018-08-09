@@ -13,10 +13,29 @@ class DiServiceTest extends TestCase
 {
     /**
      * Create the service from default config file.
+     */
+    public function testCreateDiService()
+    {
+        $di = new DIFactoryConfig();
+        $di->loadServices(ANAX_INSTALL_PATH . "/config/di");
+
+        $cfg = new Configuration();
+        $cfg->setBaseDirectories([ANAX_INSTALL_PATH . "/config"]);
+        $di->set("configuration", $cfg);
+
+        $router = $di->get("router");
+        $this->assertInstanceOf(Router::class, $router);
+    }
+
+
+
+    /**
+     * Create the service from default config file, check development mode
+     * is used.
      *
      * @expectedException \Exception
      */
-    public function testCreateDiService()
+    public function testCreateDiServiceDevelopmentMode()
     {
         $di = new DIFactoryConfig();
         $di->loadServices(ANAX_INSTALL_PATH . "/config/di");

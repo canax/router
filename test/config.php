@@ -27,11 +27,15 @@ define("ANAX_INSTALL_PATH", realpath(__DIR__ . "/.."));
  * Include autoloader.
  */
 require ANAX_INSTALL_PATH . "/vendor/autoload.php";
-require __DIR__ . "/Mock/MockHandlerClassMethod.php";
-require __DIR__ . "/Mock/MockHandlerController.php";
-require __DIR__ . "/Mock/MockHandlerControllerCatchAll.php";
-require __DIR__ . "/Mock/MockHandlerDiService.php";
-require __DIR__ . "/Mock/functions.php";
+
+
+
+/**
+ * Include others.
+ */
+foreach (glob(__DIR__ . "/Mock/*.php") as $file) {
+    require $file;
+}
 
 
 

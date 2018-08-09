@@ -10,6 +10,14 @@ Notes for development v2.0.0*
 
 
 
+v2.0.0-alpha.8 (2018-08-09)
+---------------------------------
+
+* Load routes from file, programming style.
+* Enhance test suite.
+
+
+
 v2.0.0-alpha.7 (2018-08-08)
 ---------------------------------
 

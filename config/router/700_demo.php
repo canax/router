@@ -14,7 +14,7 @@ return [
             "method" => null,
             "path" => "hi",
             "handler" => function () {
-                echo "Ho";
+                //echo "Ho";
                 return "Hi.";
             },
         ],

@@ -10,7 +10,7 @@ return [
             "method" => null,
             "path" => null,
             "handler" => function () {
-                return ["Anax 404: Not Found.", 404];
+                return ["Anax 404: Not Found", 404];
             },
         ],
     ]

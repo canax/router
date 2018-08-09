@@ -1,7 +1,9 @@
 <?php
 
+use Anax\DI\DIFactoryConfig;
+
 /**
- * Sample configuration file for Anax webroot.
+ * Configuration for tests.
  */
 
 
@@ -30,3 +32,11 @@ require __DIR__ . "/Mock/MockHandlerController.php";
 require __DIR__ . "/Mock/MockHandlerControllerCatchAll.php";
 require __DIR__ . "/Mock/MockHandlerDiService.php";
 require __DIR__ . "/Mock/functions.php";
+
+
+
+/**
+ * Create and expose $di for testing route/files.php.
+ */
+$di = new DIFactoryConfig();
+$di->loadServices(ANAX_INSTALL_PATH . "/test/config/di_empty_router.php");

@@ -35,6 +35,13 @@ return [
             },
         ],
         [
+            "info" => "Throw standard exception.",
+            "path" => "exception",
+            "handler" => function () {
+                throw new \Exception("Standard \Exception");
+            },
+        ],
+        [
             "info" => "Try internal 403.",
             "path" => "403",
             "handler" => function () {

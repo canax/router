@@ -29,6 +29,9 @@
     },
     "require-dev": {
         "anax/configure": "^2.0.0@alpha",
-        "anax/di": "^2.0.0@alpha"
+        "anax/di": "^2.0.0@alpha",
+        "anax/request": "^2.0.0@alpha",
+        "anax/session": "^2.0.0@alpha",
+        "phpunit/phpunit": "^7"
     }
 }

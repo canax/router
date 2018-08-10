@@ -10,6 +10,14 @@ Notes for development v2.0.0*
 
 
 
+v2.0.0-alpha.9 (2018-08-10)
+---------------------------------
+
+* Development routes without requirement on anax/{page,view}.
+* Unit testing of config/route/710_development.php.
+
+
+
 v2.0.0-alpha.8 (2018-08-09)
 ---------------------------------
 

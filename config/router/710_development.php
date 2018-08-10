@@ -15,18 +15,16 @@ return [
             "info" => "Development and debugging information.",
             "path" => "",
             "handler" => function ($di) {
-                $mount = "dev/";
-
                 echo <<<EOD
 <h1>Anax development utilities</h1>
 
 <p>Here is a set of utilities to use when learning, developing, testing and debugging Anax.</p>
 
 <ul>
-    <li><a href="${mount}di">DI (show loaded services in \$di)</a></li>
-    <li><a href="${mount}request">Request (show details on current request)</a></li>
-    <li><a href="${mount}router">Router (show loaded routes)</a></li>
-    <li><a href="${mount}session">Session (show session data)</a></li>
+    <li><a href="di">DI (show loaded services in \$di)</a></li>
+    <li><a href="request">Request (show details on current request)</a></li>
+    <li><a href="router">Router (show loaded routes)</a></li>
+    <li><a href="session">Session (show session data)</a></li>
 </ul>
 EOD;
                 return true;

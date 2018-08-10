@@ -10,6 +10,13 @@ Notes for development v2.0.0*
 
 
 
+v2.0.0-alpha.10 (2018-08-10)
+---------------------------------
+
+* Fix correct urls in route dev/index.
+
+
+
 v2.0.0-alpha.9 (2018-08-10)
 ---------------------------------
 

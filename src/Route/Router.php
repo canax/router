@@ -91,15 +91,11 @@ class Router implements ContainerInjectableInterface
         foreach ($routes["routes"] as $route) {
             if ($route["internal"] ?? false) {
                 $this->addInternalRoute(
-                    $route["path"],
+                    $route["path"] ?? null,
                     $route["handler"] ?? null,
                     $route["info"] ?? null
                 );
                 continue;
-            }
-
-            if (!(is_array($route) && array_key_exists("path", $route))) {
-                throw new ConfigurationException("Creating route but path is not defined for route.");
             }
 
             $mount = $this->createMountPath(
@@ -110,7 +106,7 @@ class Router implements ContainerInjectableInterface
             $this->addRoute(
                 $route["method"] ?? null,
                 $mount,
-                $route["path"],
+                $route["path"] ?? null,
                 $route["handler"] ?? null,
                 $route["info"] ?? null
             );
@@ -198,7 +194,7 @@ class Router implements ContainerInjectableInterface
      * @return void.
      */
     public function addInternalRoute(
-        string $path,
+        string $path = null,
         $handler,
         string $info = null
     ) : void {
@@ -266,10 +262,15 @@ class Router implements ContainerInjectableInterface
      */
     public function handleInternal($path)
     {
-        if (!isset($this->internalRoutes[$path])) {
+        $route = $this->internalRoutes[$path]
+            ?? $this->internalRoutes[null]
+            ?? null;
+
+        if (!$route) {
             throw new NotFoundException("No internal route to handle: " . $path);
         }
-        $route = $this->internalRoutes[$path];
+
+        $route->setMatchedPath($path);
         $this->lastRoute = $route;
         return $route->handle(null, $this->di);
     }

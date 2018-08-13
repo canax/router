@@ -21,9 +21,9 @@ class DiServiceRoutes700Test extends TestCase
         $router = $di->get("router");
         $this->assertInstanceOf(Router::class, $router);
 
-        $router->addRoutes(require ANAX_INSTALL_PATH . "/config/router/700_demo.php");
+        $router->addRoutes(require ANAX_INSTALL_PATH . "/config/router/700_example.php");
 
-        $res = $router->handle("demo/hi");
+        $res = $router->handle("example/hi");
         $this->assertEquals("Hi.", $res);
     }
 }

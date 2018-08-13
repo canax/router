@@ -87,6 +87,8 @@ class Route
 
         $matcher = new RouteMatcher();
         $res = $matcher->match(
+            $this->mount,
+            $this->path,
             $this->getAbsolutePath(),
             $query,
             $this->method,
@@ -164,6 +166,21 @@ class Route
 
 
     /**
+     * Set the path that matched this route.
+     *
+     * @param string $path to set
+     *
+     * @return $this
+     */
+    public function setMatchedPath($path)
+    {
+        $this->pathMatched = $path;
+        return $this;
+    }
+
+
+
+    /**
      * Get information of the route.
      *
      * @return null|string as route information.
@@ -194,7 +211,7 @@ class Route
      */
     public function getAbsolutePath()
     {
-        if (is_null($this->path)) {
+        if (is_null($this->mount) && is_null($this->path)) {
             return null;
         }
 

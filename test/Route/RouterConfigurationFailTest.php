@@ -46,17 +46,4 @@ class RouterConfigurationFailTest extends TestCase
         $router = new Router();
         $router->addRoutes(["routes" => 1]);
     }
-
-
-
-    /**
-     * Missing key "path" throws exception.
-     *
-     * @expectedException Anax\Route\Exception\ConfigurationException
-     */
-    public function testMissingRoutePath()
-    {
-        $router = new Router();
-        $router->addRoutes(["routes" => [1]]);
-    }
 }

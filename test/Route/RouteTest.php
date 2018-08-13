@@ -50,7 +50,7 @@ class RouteTest extends TestCase
         $route->set(null, null, "*", null);
         $this->assertTrue($route->match(""));
         $this->assertTrue($route->match("controller"));
-        $this->assertTrue($route->match("controller/action"));
+        $this->assertFalse($route->match("controller/action"));
     }
 
 

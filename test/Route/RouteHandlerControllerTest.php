@@ -67,7 +67,7 @@ class RouteHandlerControllerTest extends TestCase
     /**
      * Mount a user controller and use it.
      */
-    public function testUserController()
+    public function testUserControllerBasic()
     {
         $route = new Route();
 
@@ -82,12 +82,12 @@ class RouteHandlerControllerTest extends TestCase
         $this->assertTrue($route->match($path, "GET"));
         $res = $route->handle($path);
         $this->assertEquals("indexActionGET", $res);
-        
+
         $path = "user/create";
         $this->assertTrue($route->match($path, "GET"));
         $res = $route->handle($path);
         $this->assertEquals("createAction", $res);
-        
+
         $path = "user/list";
         $this->assertTrue($route->match($path, "GET"));
         $res = $route->handle($path);

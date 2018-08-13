@@ -166,7 +166,9 @@ class RouteMatcher
     /**
      * Check if the route matches a query and request method.
      *
-     * @param string $path            of the current route being matched.
+     * @param string $mount           of the current route being matched.
+     * @param string $relativePath    of the current route being matched.
+     * @param string $absolutePath    of the current route being matched.
      * @param string $query           to match against
      * @param array  $methodSupported as supported request method
      * @param string $method          as request method
@@ -174,7 +176,9 @@ class RouteMatcher
      * @return boolean true if query matches the route
      */
     public function match(
-        string $path = null,
+        string $mount = null,
+        string $relativePath = null,
+        string $absolutePath = null,
         string $query,
         array $methodSupported = null,
         string $method = null
@@ -187,9 +191,10 @@ class RouteMatcher
             return false;
         }
 
-        // If any/default */** route, match anything
-        if (is_null($path)
-            || in_array($path, ["*", "**"])
+        // Is a null path  - mounted on empty, or mount path matches
+        // initial query.
+        if (is_null($relativePath)
+            && (empty($mount) || substr_compare($query, $mount, 0, strlen($mount)) == 0)
         ) {
             $this->methodMatched = $method;
             $this->pathMatched = $query;
@@ -197,7 +202,7 @@ class RouteMatcher
         }
 
         // Check all parts to see if they matches
-        $ruleParts  = explode('/', $path);
+        $ruleParts  = explode('/', $absolutePath);
         $queryParts = explode('/', $query);
         $ruleCount = max(count($ruleParts), count($queryParts));
         $args = [];

@@ -143,6 +143,21 @@ class Route
 
 
     /**
+     * Set the path that matched this route.
+     *
+     * @param string $path to set
+     *
+     * @return $this
+     */
+    public function setMatchedPath($path)
+    {
+        $this->pathMatched = $path;
+        return $this;
+    }
+
+
+
+    /**
      * Get the matched basename of the path, its the part without the mount
      * point.
      *
@@ -173,21 +188,6 @@ class Route
     public function setName($name)
     {
         $this->name = $name;
-        return $this;
-    }
-
-
-
-    /**
-     * Set the path that matched this route.
-     *
-     * @param string $path to set
-     *
-     * @return $this
-     */
-    public function setMatchedPath($path)
-    {
-        $this->pathMatched = $path;
         return $this;
     }
 
@@ -247,5 +247,20 @@ class Route
         return is_array($this->method)
             ? implode("|", $this->method)
             : "";
+    }
+
+
+
+    /**
+     * Get the handler type as a informative string.
+     *
+     * @param ContainerInjectableInterface $di container with services
+     *
+     * @return string representing the handler.
+     */
+    public function getHandlerType(ContainerInterface $di = null) : string
+    {
+        $handler = new RouteHandler();
+        return $handler->getHandlerType($this->handler, $di);
     }
 }

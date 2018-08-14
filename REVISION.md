@@ -10,6 +10,13 @@ Notes for development v2.0.0*
 
 
 
+v2.0.0-alpha.14 (2018-08-14)
+---------------------------------
+
+* Add method to get type of route handler, Route::getHandlerType().
+
+
+
 v2.0.0-alpha.13 (2018-08-14)
 ---------------------------------
 

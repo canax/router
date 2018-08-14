@@ -70,6 +70,49 @@ class RouteHandler
 
 
     /**
+     * Get  an informative string representing the handler type.
+     *
+     * @param string|array                 $action    base for the callable.
+     * @param ContainerInjectableInterface $di        container with services.
+     *
+     * @return string as the type of handler.
+     */
+    public function getHandlerType(
+        $action,
+        ContainerInterface $di = null
+    ) {
+        if (is_null($action)) {
+            return "null";
+        }
+
+        if (is_callable($action)) {
+            return "callable";
+        }
+
+        if (is_string($action) && class_exists($action)) {
+            $callable = $this->isControllerAction(null, null, $action);
+            if ($callable) {
+                return "controller";
+            }
+        }
+
+        if ($di
+            && is_array($action)
+            && isset($action[0])
+            && isset($action[1])
+            && is_string($action[0])
+            && $di->has($action[0])
+            && is_callable([$di->get($action[0]), $action[1]])
+        ) {
+            return "di";
+        }
+
+        return "not found";
+    }
+
+
+
+    /**
      * Check if items can be used to call a controller action, verify
      * that the controller exists, the action has a class-method to call.
      *

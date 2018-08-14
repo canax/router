@@ -10,6 +10,13 @@ Notes for development v2.0.0*
 
 
 
+v2.0.0-alpha.* (2018-08-14)
+---------------------------------
+
+* Remove the 404 route, use internal instead.
+
+
+
 v2.0.0-alpha.11 (2018-08-13)
 ---------------------------------
 

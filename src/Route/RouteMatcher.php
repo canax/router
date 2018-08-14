@@ -194,7 +194,7 @@ class RouteMatcher
         // Is a null path  - mounted on empty, or mount path matches
         // initial query.
         if (is_null($relativePath)
-            && (empty($mount) || substr_compare($query, $mount, 0, strlen($mount)) == 0)
+            && (empty($mount) || strncmp($query, $mount, strlen($mount)) == 0)
         ) {
             $this->methodMatched = $method;
             $this->pathMatched = $query;

@@ -123,8 +123,21 @@ class Route
             }
         }
 
-        $handler = new RouteHandler();
-        return $handler->handle($this->methodMatched, $path, $this->handler, $this->arguments, $di);
+        try {
+            $handler = new RouteHandler();
+            return $handler->handle($this->methodMatched, $path, $this->handler, $this->arguments, $di);
+        } catch (ConfigurationException $e) {
+            throw new ConfigurationException(
+                $e->getMessage()
+                . " Route matched method='{$this->methodMatched}', mount='{$this->mount}', path='$path', handler='"
+                . (
+                    is_string($this->handler)
+                        ? "$this->handler"
+                        : "array/object"
+                )
+                . "'."
+            );
+        }
     }
 
 

@@ -10,6 +10,14 @@ Notes for development v2.0.0*
 
 
 
+v2.0.0-alpha.* (2018-08-14)
+---------------------------------
+
+* Rename route/ to router/.
+* Rmove router/999_404.php, dealt by with the internal route.
+
+
+
 v2.0.0-alpha.14 (2018-08-14)
 ---------------------------------
 

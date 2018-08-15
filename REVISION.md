@@ -10,7 +10,14 @@ Notes for development v2.0.0*
 
 
 
-v2.0.0-beta.* (2018-08-15)
+v2.0.0-beta.3 (2018-08-15)
+---------------------------------
+
+* Add get method for internal error messages.
+
+
+
+v2.0.0-beta.2 (2018-08-15)
 ---------------------------------
 
 * Improve support for when the controller accepts a request.

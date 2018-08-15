@@ -21,11 +21,13 @@ class Router implements ContainerInjectableInterface
     /**
      * @var array  $routes         all the routes.
      * @var array  $internalRoutes all internal routes.
-     * @var Route  $lastRoute      last route that was matched and called.
+     * @var Route  $lastRoute       last route that was matched and called.
+     * @var string $errorMessage    last error message for internal routes.
      */
     private $routes         = [];
     private $internalRoutes = [];
     private $lastRoute      = null;
+    private $errorMessage = null;
 
 
 
@@ -276,9 +278,11 @@ class Router implements ContainerInjectableInterface
             throw new NotFoundException("No internal route to handle: " . $path);
         }
 
+        $this->errorMessage = $message;
         if ($message) {
             $route->setArguments([$message]);
         }
+
         $route->setMatchedPath($path);
         $this->lastRoute = $route;
         return $route->handle(null, $this->di);
@@ -486,6 +490,18 @@ class Router implements ContainerInjectableInterface
     public function getMatchedPath()
     {
         return $this->lastRoute->getMatchedPath();
+    }
+
+
+
+    /**
+     * Get last error message supplied when handling internal routes.
+     *
+     * @return string as the error message, if any.
+     */
+    public function getErrorMessage() : ?string
+    {
+        return $this->errorMessage;
     }
 
 

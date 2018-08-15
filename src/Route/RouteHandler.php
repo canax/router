@@ -197,7 +197,7 @@ class RouteHandler
             && $refl->getNumberOfParameters() < count($args)
         ) {
             throw new NotFoundException(
-                "Controller method '$action' valid but to many parameters. Got "
+                "Controller '$class' with action method '$action' valid but to many parameters. Got "
                 . count($args)
                 . ", expected "
                 . $refl->getNumberOfParameters() . "."

@@ -2,7 +2,8 @@
 
 namespace Anax\Route;
 
-use \PHPUnit\Framework\TestCase;
+use Anax\DI\DIFactoryConfig;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Routes.
@@ -293,5 +294,77 @@ class RouteTest extends TestCase
         $route->set(["GET", "POST"]);
         $res = $route->getRequestMethod();
         $this->assertEquals("GET|POST", $res);
+    }
+
+
+
+    /**
+     * Get the absolute route path.
+     */
+    public function testGetAbsoluteRoutePath()
+    {
+        $route = new Route();
+
+        $route->set(null, null, null);
+        $res = $route->getAbsolutePath();
+        $this->assertNull($res);
+    }
+
+
+
+    /**
+     * Get the handler type of the route.
+     */
+    public function testGetHandlerType()
+    {
+        $route = new Route();
+
+        $route->set(null, null, null, null);
+        $res = $route->getHandlerType();
+        $this->assertEquals("null", $res);
+
+        $route->set(null, null, null, function () {
+            return "hi";
+        });
+        $res = $route->getHandlerType();
+        $this->assertEquals("callable", $res);
+
+        $route->set(null, null, null, ["\Anax\Route\MockHandlerClassMethod", "method"]);
+        $res = $route->getHandlerType();
+        $this->assertEquals("callable", $res);
+
+        $route->set(null, null, null, ["\Anax\Route\MockHandlerClassMethod", "static"]);
+        $res = $route->getHandlerType();
+        $this->assertEquals("callable", $res);
+
+        $route->set(null, null, null, "\Anax\Route\MockHandlerControllerCatchAll");
+        $res = $route->getHandlerType();
+        $this->assertEquals("controller", $res);
+
+        $route->set(null, null, null, "not found");
+        $res = $route->getHandlerType();
+        $this->assertEquals("not found", $res);
+    }
+
+
+
+    /**
+     * Get the handler type of the route, as di service.
+     */
+    public function testGetHandlerTypeAsDi()
+    {
+        $route = new Route();
+
+        $service = new MockHandlerClassMethod();
+        $di = new DIFactoryConfig();
+        $di->set("service", $service);
+
+        $route->set(null, null, null, ["service", "method"]);
+        $res = $route->getHandlerType($di);
+        $this->assertEquals("di", $res);
+
+        $route->set(null, null, null, ["service", "static"]);
+        $res = $route->getHandlerType($di);
+        $this->assertEquals("di", $res);
     }
 }

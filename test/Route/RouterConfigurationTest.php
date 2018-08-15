@@ -11,13 +11,37 @@ use Anax\Route\Exception\ConfigurationException;
 class RouterConfigurationTest extends TestCase
 {
     /**
-     * Overwrite definition of mount.
+     * Add mount to mount
      */
-    public function testConfigOverwriteMountDefinition()
+    public function testConfigAddMountToMount()
     {
         $router = new Router();
         $router->addRoutes([
             "mount" => "somewhere",
+            "routes" => [
+                [
+                    "mount" => "mount",
+                    "path" => "path",
+                    "handler" => function () {
+                        return "somewhere/mount/path";
+                    }
+                ]
+            ]
+        ]);
+        $res = $router->handle("somewhere/mount/path");
+        $this->assertEquals("somewhere/mount/path", $res);
+    }
+
+
+
+    /**
+     * Mountpoint through mount within route.
+     */
+    public function testConfigAddMountWithRoute()
+    {
+        $router = new Router();
+        $router->addRoutes([
+            "mount" => null,
             "routes" => [
                 [
                     "mount" => "mount",

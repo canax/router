@@ -224,7 +224,7 @@ class Route
      */
     public function getAbsolutePath()
     {
-        if (is_null($this->mount) && is_null($this->path)) {
+        if (empty($this->mount) && is_null($this->path)) {
             return null;
         }
 

@@ -11,15 +11,32 @@ use PHPUnit\Framework\TestCase;
 class DiServiceRoutes800Test extends TestCase
 {
     /**
+     * The dependency container.
+     */
+    protected $di;
+
+
+
+    /**
+     * Setup before each test.
+     */
+    protected function setUp()
+    {
+        $this->di = new DIFactoryConfig();
+        $this->di->loadServices(ANAX_INSTALL_PATH . "/test/config/di_empty_router.php");
+    
+        $router = $this->di->get("router");
+        $this->assertInstanceOf(Router::class, $router);
+    }
+
+
+
+    /**
      * Test a route.
      */
     public function testRouteHi()
     {
-        $di = new DIFactoryConfig();
-        $di->loadServices(ANAX_INSTALL_PATH . "/test/config/di_empty_router.php");
-    
-        $router = $di->get("router");
-        $this->assertInstanceOf(Router::class, $router);
+        $router = $this->di->get("router");
 
         $router->addRoutes(require ANAX_INSTALL_PATH . "/config/router/800_test.php");
 
@@ -34,12 +51,8 @@ class DiServiceRoutes800Test extends TestCase
      */
     public function testRouteNo()
     {
-        $di = new DIFactoryConfig();
-        $di->loadServices(ANAX_INSTALL_PATH . "/test/config/di_empty_router.php");
+        $router = $this->di->get("router");
     
-        $router = $di->get("router");
-        $this->assertInstanceOf(Router::class, $router);
-
         $router->addRoutes(require ANAX_INSTALL_PATH . "/config/router/800_test.php");
 
         $res = $router->handle("test/no");
@@ -55,17 +68,28 @@ class DiServiceRoutes800Test extends TestCase
      */
     public function testRouteJson()
     {
-        $di = new DIFactoryConfig();
-        $di->loadServices(ANAX_INSTALL_PATH . "/test/config/di_empty_router.php");
-    
-        $router = $di->get("router");
-        $this->assertInstanceOf(Router::class, $router);
+        $router = $this->di->get("router");
 
         $router->addRoutes(require ANAX_INSTALL_PATH . "/config/router/800_test.php");
 
         $res = $router->handle("test/json");
         $this->assertEquals(1, count($res));
         $this->assertArraySubset(["message" => "Hi JSON"], $res[0]);
+    }
+
+
+
+    /**
+     * Try the controller handler.
+     */
+    public function testRouteController()
+    {
+        $router = $this->di->get("router");
+
+        $router->addRoutes(require ANAX_INSTALL_PATH . "/config/router/800_test.php");
+
+        $res = $router->handle("test/controller");
+        $this->assertEquals("catchAll", $res);
     }
 
 
@@ -91,11 +115,7 @@ class DiServiceRoutes800Test extends TestCase
      */
     public function testRouteInternals($path, $res1, $res2)
     {
-        $di = new DIFactoryConfig();
-        $di->loadServices(ANAX_INSTALL_PATH . "/test/config/di_empty_router.php");
-    
-        $router = $di->get("router");
-        $this->assertInstanceOf(Router::class, $router);
+        $router = $this->di->get("router");
 
         $router->addRoutes(require ANAX_INSTALL_PATH . "/config/router/800_test.php");
         $router->addRoutes(require ANAX_INSTALL_PATH . "/config/router/900_internal.php");

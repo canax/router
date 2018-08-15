@@ -35,6 +35,11 @@ return [
             },
         ],
         [
+            "info" => "Sample controller.",
+            "mount" => "controller",
+            "handler" => "\Anax\Route\MockHandlerControllerCatchAll",
+        ],
+        [
             "info" => "Throw standard exception.",
             "path" => "exception",
             "handler" => function () {

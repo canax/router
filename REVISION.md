@@ -15,6 +15,7 @@ v2.0.0-alpha.* (2018-08-14)
 
 * Rename route/ to router/.
 * Rmove router/999_404.php, dealt by with the internal route.
+* Add test/controller to mount a controller.
 
 
 

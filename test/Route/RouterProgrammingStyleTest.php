@@ -28,7 +28,7 @@ class RouterProgrammingStyleTest extends TestCase
         $di->loadServices(ANAX_INSTALL_PATH . "/test/config/di_empty_router.php");
 
         // Include user defined routes using programming-style.
-        foreach (glob(ANAX_INSTALL_PATH . "/route/*.php") as $route) {
+        foreach (glob(ANAX_INSTALL_PATH . "/router/*.php") as $route) {
             require $route;
         }
 
@@ -42,7 +42,7 @@ class RouterProgrammingStyleTest extends TestCase
      */
     public function testLoadRoutes()
     {
-        foreach (glob(ANAX_INSTALL_PATH . "/route/*.php") as $route) {
+        foreach (glob(ANAX_INSTALL_PATH . "/router/*.php") as $route) {
             require $route;
             $this->assertTrue(true);
         }

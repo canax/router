@@ -2,10 +2,10 @@
 
 namespace Anax\Route;
 
-use \PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
- * Routes.
+ * The Router class.
  */
 class RouterTest extends TestCase
 {

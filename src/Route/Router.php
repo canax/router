@@ -127,11 +127,16 @@ class Router implements ContainerInjectableInterface
      *
      * @return string|null as mount path.
      */
-    public function createMountPath(
+    private function createMountPath(
         string $mount1 = null,
         string $mount2 = null
     ) {
         $mount = null;
+        if ($mount1 && $mount2) {
+            $mount = rtrim($mount1, "/") . "/" . rtrim($mount2, "/");
+            return $mount;
+        }
+
         if ($mount1) {
             $mount = $mount1;
         }
@@ -232,7 +237,7 @@ class Router implements ContainerInjectableInterface
                     }
                 }
             }
-
+// Use detailed exception messages in handleInternal
             return $this->handleInternal("404");
         } catch (ForbiddenException $e) {
             return $this->handleInternal("403");

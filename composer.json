@@ -1,7 +1,7 @@
 {
     "name": "anax/router",
     "type": "library",
-    "description": "Anax Router module.",
+    "description": "Anax Router module, route requests to handlers.",
     "keywords": ["boilerplate", "framework", "mvc", "micro", "education"],
     "homepage": "https://dbwebb.se/anax",
     "license": "MIT",

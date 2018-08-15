@@ -7,7 +7,7 @@ namespace Anax\Route;
  */
 class MockHandlerControllerCatchAll
 {
-    public function catchAll()
+    public function catchAll(...$args)
     {
         return "catchAll";
     }

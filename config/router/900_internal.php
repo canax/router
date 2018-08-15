@@ -13,26 +13,38 @@ return [
             "info" => "403 Forbidden.",
             "internal" => true,
             "path" => "403",
-            "handler" => function () {
-                return ["Anax 403: Forbidden", 403];
+            "handler" => function ($message = null) {
+                $html = "Anax 403: Forbidden";
+                if ($message && !defined("ANAX_PRODUCTION")) {
+                    $html .= "<br>$message";
+                }
+                return [$html, 403];
             },
         ],
         [
             "info" => "404 Page not found.",
             "internal" => true,
             "path" => "404",
-            "handler" => function () {
-                return ["Anax 404: Not Found", 404];
+            "handler" => function ($message = null) {
+                $html = "Anax 404: Not Found";
+                if ($message && !defined("ANAX_PRODUCTION")) {
+                    $html .= "<br>$message";
+                }
+                return [$html, 404];
             },
         ],
         [
             "info" => "500 Internal Server Error.",
             "internal" => true,
             "path" => "500",
-            "handler" => function () {
+            "handler" => function ($message = null) {
                 // echo "<pre>";
                 // debug_print_backtrace();
-                return ["Anax 500: Internal Server Error", 500];
+                $html = "Anax 500: Internal Server Error";
+                if ($message && !defined("ANAX_PRODUCTION")) {
+                    $html .= "<br>$message";
+                }
+                return [$html, 500];
             },
         ],
     ]

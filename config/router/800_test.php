@@ -50,21 +50,21 @@ return [
             "info" => "Try internal 403.",
             "path" => "403",
             "handler" => function () {
-                throw new ForbiddenException();
+                throw new ForbiddenException("Detailed error message.");
             },
         ],
         [
             "info" => "Try internal 404.",
             "path" => "404",
             "handler" => function () {
-                throw new NotFoundException();
+                throw new NotFoundException("Detailed error message.");
             },
         ],
         [
             "info" => "Try internal 500.",
             "path" => "500",
             "handler" => function () {
-                throw new InternalErrorException();
+                throw new InternalErrorException("Detailed error message.");
             },
         ],
     ]

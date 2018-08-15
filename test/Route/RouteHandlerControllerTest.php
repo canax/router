@@ -151,21 +151,6 @@ class RouteHandlerControllerTest extends TestCase
 
 
     /**
-     * Too many arguments is valid.
-     */
-    public function testToManyArguments()
-    {
-        $route = new Route();
-        $route->set(null, "user", null, "Anax\Route\MockHandlerController");
-        $path = "user/view/1/1";
-        $this->assertTrue($route->match($path, "GET"));
-        $res = $route->handle($path);
-        $this->assertEquals("viewAction id:1", $res);
-    }
-
-
-
-    /**
      * Try a user controller with variadic arguments.
      */
     public function testUserControllerWithVariadicArguments()

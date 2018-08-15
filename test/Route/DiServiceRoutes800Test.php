@@ -109,7 +109,7 @@ class DiServiceRoutes800Test extends TestCase
 
 
     /**
-     * Test routes.
+     * Test internal routes.
      *
      * @dataProvider internalRoutesProvider
      */
@@ -122,7 +122,8 @@ class DiServiceRoutes800Test extends TestCase
 
         $res = $router->handle($path);
         $this->assertEquals(2, count($res));
-        $this->assertEquals($res1, $res[0]);
+        $this->assertStringStartsWith($res1, $res[0]);
+        $this->assertStringEndsWith("Detailed error message.", $res[0]);
         $this->assertEquals($res2, $res[1]);
     }
 }

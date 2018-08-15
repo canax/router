@@ -28,6 +28,22 @@ class RouteHandlerControllerFailTest extends TestCase
 
 
     /**
+     * Too many arguments.
+     *
+     * @expectedException Anax\Route\Exception\NotFoundException
+     */
+    public function testToManyArguments()
+    {
+        $route = new Route();
+        $route->set(null, "user", null, "Anax\Route\MockHandlerController");
+        $path = "user/view/1/1";
+        $this->assertTrue($route->match($path, "GET"));
+        $route->handle($path);
+    }
+
+
+
+    /**
      * Typed arguments as integer.
      *
      * @expectedException Anax\Route\Exception\NotFoundException

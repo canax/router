@@ -131,7 +131,8 @@ class RouteHandler
         $args = explode("/", $path);
         $action = array_shift($args);
         $action = empty($action) ? "index" : $action;
-        $action1 = "{$action}Action{$method}";
+        $action = str_replace("-", "", $action);
+        $action1 = "{$action}Action" . ucfirst(strtolower($method));
         $action2 = "{$action}Action";
         $action3 = "catchAll";
 
@@ -181,6 +182,26 @@ class RouteHandler
             }
         } catch (\ReflectionException $e) {
             ;
+        }
+
+        $refl = new \ReflectionMethod($obj, $action);
+        $paramIsVariadic = false;
+        foreach ($refl->getParameters() as $param) {
+            if ($param->isVariadic()) {
+                $paramIsVariadic = true;
+                break;
+            }
+        }
+
+        if (!$paramIsVariadic
+            && $refl->getNumberOfParameters() < count($args)
+        ) {
+            throw new NotFoundException(
+                "Controller method '$action' valid but to many parameters. Got "
+                . count($args)
+                . ", expected "
+                . $refl->getNumberOfParameters() . "."
+            );
         }
 
         try {

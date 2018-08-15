@@ -237,19 +237,19 @@ class Router implements ContainerInjectableInterface
                     }
                 }
             }
-// Use detailed exception messages in handleInternal
-            return $this->handleInternal("404");
+
+            return $this->handleInternal("404", "No route could be matched by the router.");
         } catch (ForbiddenException $e) {
-            return $this->handleInternal("403");
+            return $this->handleInternal("403", $e->getMessage());
         } catch (NotFoundException $e) {
-            return $this->handleInternal("404");
+            return $this->handleInternal("404", $e->getMessage());
         } catch (InternalErrorException $e) {
-            return $this->handleInternal("500");
+            return $this->handleInternal("500", $e->getMessage());
         } catch (\Exception $e) {
             if ($this->mode === Router::DEVELOPMENT) {
                 throw $e;
             }
-            return $this->handleInternal("500");
+            return $this->handleInternal("500", $e->getMessage());
         }
     }
 
@@ -259,13 +259,14 @@ class Router implements ContainerInjectableInterface
      * Handle an internal route, the internal routes are not exposed to the
      * end user.
      *
-     * @param string $path for this route.
+     * @param string $path    for this route.
+     * @param string $message with additional details.
      *
      * @throws \Anax\Route\Exception\NotFoundException
      *
-     * @return void
+     * @return mixed from the route handler.
      */
-    public function handleInternal($path)
+    public function handleInternal(string $path, string $message = null)
     {
         $route = $this->internalRoutes[$path]
             ?? $this->internalRoutes[null]
@@ -275,6 +276,9 @@ class Router implements ContainerInjectableInterface
             throw new NotFoundException("No internal route to handle: " . $path);
         }
 
+        if ($message) {
+            $route->setArguments([$message]);
+        }
         $route->setMatchedPath($path);
         $this->lastRoute = $route;
         return $route->handle(null, $this->di);

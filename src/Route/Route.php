@@ -194,6 +194,21 @@ class Route
 
 
     /**
+     * Set the arguments of the route, these are sent to the route handler.
+     *
+     * @param array $args the arguments.
+     *
+     * @return $this
+     */
+    public function setArguments(array $args) : object
+    {
+        $this->arguments = $args;
+        return $this;
+    }
+
+
+
+    /**
      * Get information of the route.
      *
      * @return null|string as route information.

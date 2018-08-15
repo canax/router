@@ -10,7 +10,7 @@ Notes for development v2.0.0*
 
 
 
-v2.0.0-alpha.* (2018-08-14)
+v2.0.0-beta.1 (2018-08-15)
 ---------------------------------
 
 * Rename route/ to router/.

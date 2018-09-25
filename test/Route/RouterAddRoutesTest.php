@@ -129,16 +129,14 @@ class RouterAddRoutesTest extends TestCase
 
     /**
      * Add a route with a controller as callback.
-     *
-     * @dataProvider httpMethodsProvider
      */
-    public function testRouterAddController($method)
+    public function testRouterAddController()
     {
         $router = new Router();
 
-        $router->addController($method, null, "Anax\Route\MockHandlerController");
+        $router->addController(null, "Anax\Route\MockHandlerController");
 
-        $res = $router->handle("create", $method);
+        $res = $router->handle("create");
         $this->assertEquals("createAction", $res);
 
         $routes = $router->getAll();

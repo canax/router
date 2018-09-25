@@ -10,6 +10,13 @@ Notes for development v2.0.0*
 
 
 
+v2.0.0-beta.6 (2018-09-25)
+---------------------------------
+
+* Add support for app style controllers injecting app.
+
+
+
 v2.0.0-beta.5 (2018-08-15)
 ---------------------------------
 

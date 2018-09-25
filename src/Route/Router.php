@@ -293,16 +293,15 @@ class Router implements ContainerInjectableInterface
     /**
      * Add a route having a controller as a handler.
      *
-     * @param string|array    $method  as request method to support
-     * @param string|array    $mount   for this route.
-     * @param string|callable $handler a callback handler for the route.
-     * @param string          $info    description of the route
+     * @param string|array    $mount   point for this controller.
+     * @param string|callable $handler a callback handler for the controller.
+     * @param string          $info    description of the route.
      *
      * @return void.
      */
-    public function addController($method = null, $mount = null, $handler = null, $info = null)
+    public function addController($mount = null, $handler = null, $info = null)
     {
-        $this->addRoute($method, $mount, null, $handler, $info);
+        $this->addRoute(null, $mount, null, $handler, $info);
     }
 
 

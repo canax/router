@@ -171,8 +171,18 @@ class RouteHandler
         $obj = new $class();
 
         $refl = new \ReflectionClass($class);
-        if ($this->di && $refl->implementsInterface("Anax\Commons\ContainerInjectableInterface")) {
+        $diInterface = "Anax\Commons\ContainerInjectableInterface";
+        $appInterface = "Anax\Commons\AppInjectableInterface";
+
+        if ($this->di && $refl->implementsInterface($diInterface)) {
             $obj->setDI($this->di);
+        } elseif ($this->di && $refl->implementsInterface($appInterface)) {
+            if (!$this->di->has("app")) {
+                throw new ConfigurationException(
+                    "Controller '$class' implements AppInjectableInterface but \$app is not available in \$di."
+                );
+            }
+            $obj->setApp($this->di->get("app"));
         }
 
         try {

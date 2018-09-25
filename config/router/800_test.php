@@ -40,6 +40,11 @@ return [
             "handler" => "\Anax\Route\MockHandlerControllerCatchAll",
         ],
         [
+            "info" => "Sample controller app style.",
+            "mount" => "appstyle",
+            "handler" => "\Anax\Route\MockHandlerAppController",
+        ],
+        [
             "info" => "Throw standard exception.",
             "path" => "exception",
             "handler" => function () {

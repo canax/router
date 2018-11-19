@@ -10,6 +10,13 @@ Notes for development v2.0.0*
 
 
 
+v2.0.0-beta.7 (2018-11-19)
+---------------------------------
+
+* Add support for controller method catchAll) by request method.
+
+
+
 v2.0.0-beta.6 (2018-09-25)
 ---------------------------------
 

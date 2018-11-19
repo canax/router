@@ -209,4 +209,26 @@ class RouteHandlerControllerTest extends TestCase
         $res = $route->handle($path);
         $this->assertEquals("catchAll", $res);
     }
+
+
+
+    /**
+     * A controller can implement a catchAll() method that maps the the
+     * request method.
+     */
+    public function testControllerMethodCatchAllRequestMethod()
+    {
+        $route = new Route();
+    
+        $route->set(null, "user", null, "Anax\Route\MockHandlerControllerCatchAll");
+    
+        $path = "user/whatever";
+        $this->assertTrue($route->match($path, "POST"));
+        $res = $route->handle($path);
+        $this->assertEquals("catchAllPost", $res);
+
+        $this->assertTrue($route->match($path, "PUT"));
+        $res = $route->handle($path);
+        $this->assertEquals("catchAllPut", $res);
+    }
 }

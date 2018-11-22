@@ -138,14 +138,27 @@ class RouteHandler
         $action3 = "catchAll{$method}";
         $action4 = "catchAll";
 
-        $refl = null;
-        foreach ([$action1, $action2, $action3, $action4] as $target) {
+        foreach ([$action1, $action2] as $target) {
             try {
                 $refl = new \ReflectionMethod($class, $target);
                 if (!$refl->isPublic()) {
                     throw new NotFoundException("Controller method '$class::$target' is not a public method.");
                 }
 
+                return [$class, $target, $args];
+            } catch (\ReflectionException $e) {
+                ;
+            }
+        }
+
+        foreach ([$action3, $action4] as $target) {
+            try {
+                $refl = new \ReflectionMethod($class, $target);
+                if (!$refl->isPublic()) {
+                    throw new NotFoundException("Controller method '$class::$target' is not a public method.");
+                }
+
+                array_unshift($args, $action);
                 return [$class, $target, $args];
             } catch (\ReflectionException $e) {
                 ;

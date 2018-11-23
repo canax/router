@@ -44,6 +44,13 @@ class RouteHandler
         }
 
         if (is_callable($action)) {
+            if (is_array($action)
+                && is_string($action[0])
+                && class_exists($action[0])
+            ) {
+                $action[] = $arguments;
+                return $this->handleAsControllerAction($action);
+            }
             return $this->handleAsCallable($action, $arguments);
         }
 

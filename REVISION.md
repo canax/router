@@ -10,6 +10,13 @@ Notes for development v2.0.0*
 
 
 
+v2.0.0-beta.9 (2018-11-23)
+---------------------------------
+
+* Enable router to call [class, method] using specific path to control argument types.
+
+
+
 v2.0.0-beta.8 (2018-11-22)
 ---------------------------------
 

@@ -13,7 +13,7 @@ class RouterProgrammingStyleTest extends TestCase
     /**
      * A $di container.
      */
-    static private $di;
+    private static $di;
 
 
 

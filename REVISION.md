@@ -10,6 +10,13 @@ Notes for development v2.0.0*
 
 
 
+v2.0.0 (2019-04-01)
+---------------------------------
+
+* Release 2.0, documentation is still to be done.
+
+
+
 v2.0.0-beta.9 (2018-11-23)
 ---------------------------------
 

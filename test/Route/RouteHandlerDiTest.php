@@ -13,7 +13,7 @@ class RouteHandlerDiTest extends TestCase
     /**
      * A $di container.
      */
-    static private $di;
+    private static $di;
 
 
 

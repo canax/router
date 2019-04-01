@@ -13,7 +13,6 @@ Anax Router
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/03322fa7864ad24a9b2a/maintainability)](https://codeclimate.com/github/canax/router/maintainability)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/03950aec85654aeeb443e9c6cb972d1c)](https://www.codacy.com/app/mosbth/router?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=canax/router&amp;utm_campaign=Badge_Grade)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/f525d26b-16a0-414e-b587-ce10728a380b/mini.png)](https://insight.sensiolabs.com/projects/f525d26b-16a0-414e-b587-ce10728a380b)
 
 Anax Router module.
 
@@ -364,5 +363,5 @@ This software carries a MIT license. See [LICENSE.txt](LICENSE.txt) for details.
 
 ```
  .  
-..:  Copyright (c) 2013 - 2018 Mikael Roos, mos@dbwebb.se
+..:  Copyright (c) 2013 - 2019 Mikael Roos, mos@dbwebb.se
 ```

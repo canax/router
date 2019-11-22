@@ -253,4 +253,17 @@ class RouterTest extends TestCase
         $res = $router->getLastRoute();
         $this->assertEquals($query, $res);
     }
+
+
+
+    /**
+     * Get last error message.
+     */
+    public function testGetErrorMessage()
+    {
+        $router = new Router();
+
+        $res = $router->getErrorMessage();
+        $this->assertNull($res);
+    }
 }

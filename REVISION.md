@@ -14,6 +14,7 @@ v2.0.1 (2019-11-21)
 ---------------------------------
 
 * Upgrade to phpunit 8 (and rewrite some testcases).
+* Add support to use handlers as a class implementing __invoke.
 
 
 

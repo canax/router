@@ -59,6 +59,12 @@ class RouteHandler
             if ($callable) {
                 return $this->handleAsControllerAction($callable);
             }
+
+            $rc = new \ReflectionClass($action);
+            if ($rc->hasMethod("__invoke")) {
+                $obj = new $action;
+                return $obj();
+            }
         }
 
         if ($di

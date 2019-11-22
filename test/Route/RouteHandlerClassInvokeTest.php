@@ -18,9 +18,12 @@ class RouteHandlerClassInvokeTest extends TestCase
     {
         $route = new Route();
 
-        $path = "some/path";
-        $route->set(null, $path, null, "\Anax\Route\MockHandlerClassInvoke");
-        $this->assertTrue($route->match($path));
+        $mount = "some/path";
+        $path  = "some/path";
+        $route->set(null, $mount, null, "\Anax\Route\MockHandlerClassInvoke");
+
+        $res = $route->match($path);
+        $this->assertTrue($res);
 
         $res = $route->handle($path);
         $this->assertEquals("handler", $res);

@@ -195,19 +195,19 @@ class RouteMatcher
         // initial query.
         $queryParts = explode('/', $query);
 
-        echo "\nMATCHING: $query ($queryParts[0]) == $mount (" . strlen($mount) . ")";
+        //echo "\nMATCHING: $query ($queryParts[0]) == $mount (" . strlen($mount) . ")";
 
         //strcmp($queryParts[0], $mount) == 0
 
         if (is_null($relativePath) && (empty($mount) 
             || strncmp($query, $mount, strlen($mount)) == 0)
         ) {
-            echo "TRUE";
+            //echo "TRUE";
             $this->methodMatched = $method;
             $this->pathMatched = $query;
             return true;
         }
-        echo "FALSE";
+        //echo "FALSE";
 
         // Check all parts to see if they matches
         $ruleParts  = explode('/', $absolutePath);

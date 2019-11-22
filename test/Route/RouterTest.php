@@ -34,6 +34,44 @@ class RouterTest extends TestCase
 
 
     /**
+     * Check routes starting with same name d/ and dev/.
+     */
+    public function testRouterPathEqualNames()
+    {
+        $router = new Router();
+
+        $router->add("d", function () {
+            return "d";
+        });
+
+        $router->add("d/d", function () {
+            return "d/d";
+        });
+
+        $router->add("dev", function () {
+            return "dev";
+        });
+
+        $router->add("dev/dev", function () {
+            return "dev/dev";
+        });
+
+        $res = $router->handle("d");
+        $this->assertEquals("d", $res);
+
+        $res = $router->handle("d/d");
+        $this->assertEquals("d/d", $res);
+
+        $res = $router->handle("dev");
+        $this->assertEquals("dev", $res);
+
+        $res = $router->handle("dev/dev");
+        $this->assertEquals("dev/dev", $res);
+    }
+
+
+
+    /**
      * Check that all routes matching are called.
      */
     public function testRouterWithSeveralMatches()

@@ -32,11 +32,11 @@ class DiServiceTest extends TestCase
     /**
      * Create the service from default config file, check development mode
      * is used.
-     *
-     * @expectedException \Exception
      */
     public function testCreateDiServiceDevelopmentMode()
     {
+        $this->expectException("\Exception");
+
         $di = new DIFactoryConfig();
         $di->loadServices(ANAX_INSTALL_PATH . "/config/di");
 
@@ -78,11 +78,11 @@ class DiServiceTest extends TestCase
 
     /**
      * Config file with $mode set to development.
-     *
-     * @expectedException \Exception
      */
     public function testModeIsDevelopment()
     {
+        $this->expectException("\Exception");
+
         $di = new DIFactoryConfig();
         $di->loadServices(ANAX_INSTALL_PATH . "/config/di");
 

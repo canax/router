@@ -13,11 +13,11 @@ class DiServiceFailTest extends TestCase
 {
     /**
      * Router configuration file has error.
-     *
-     * @expectedException \Exception
      */
     public function testConfigurationFileHasError()
     {
+        $this->expectException("\Exception");
+
         $di = new DIFactoryConfig();
         $di->loadServices(ANAX_INSTALL_PATH . "/config/di");
 

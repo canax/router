@@ -20,7 +20,7 @@ class RouterProgrammingStyleTest extends TestCase
     /**
      * Setup a fixture for all tests.
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass() : void
     {
         global $di;
 
@@ -58,7 +58,7 @@ class RouterProgrammingStyleTest extends TestCase
         $router = self::$di->get("router");
     
         $res = $router->handle("");
-        $this->assertContains("index", $res);
+        $this->assertStringContainsString("index", $res);
     }
 
 

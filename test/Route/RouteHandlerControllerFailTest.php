@@ -13,11 +13,11 @@ class RouteHandlerControllerFailTest extends TestCase
 {
     /**
      * Too few arguments.
-     *
-     * @expectedException Anax\Route\Exception\NotFoundException
      */
     public function testToFewArguments()
     {
+        $this->expectException("\Anax\Route\Exception\NotFoundException");
+
         $route = new Route();
         $route->set(null, "user", null, "Anax\Route\MockHandlerController");
         $path = "user/view";
@@ -29,11 +29,11 @@ class RouteHandlerControllerFailTest extends TestCase
 
     /**
      * Too many arguments.
-     *
-     * @expectedException Anax\Route\Exception\NotFoundException
      */
     public function testToManyArguments()
     {
+        $this->expectException("\Anax\Route\Exception\NotFoundException");
+
         $route = new Route();
         $route->set(null, "user", null, "Anax\Route\MockHandlerController");
         $path = "user/view/1/1";
@@ -45,13 +45,13 @@ class RouteHandlerControllerFailTest extends TestCase
 
     /**
      * Typed arguments as integer.
-     *
-     * @expectedException Anax\Route\Exception\NotFoundException
      */
     public function testTypedArgumentsInteger()
     {
+        $this->expectException("\Anax\Route\Exception\NotFoundException");
+
         $route = new Route();
-    
+
         $route->set(null, "user", null, "Anax\Route\MockHandlerController");
 
         $path = "user/view/a";
@@ -63,11 +63,11 @@ class RouteHandlerControllerFailTest extends TestCase
 
     /**
      * Controller action is not a public method.
-     *
-     * @expectedException Anax\Route\Exception\NotFoundException
      */
     public function testControllerActionAsPrivateMethod()
     {
+        $this->expectException("\Anax\Route\Exception\NotFoundException");
+
         $route = new Route();
     
         $route->set(null, "user", null, "Anax\Route\MockHandlerController");
@@ -81,11 +81,11 @@ class RouteHandlerControllerFailTest extends TestCase
 
     /**
      * Try a user controller where the called action does not exists.
-     *
-     * @expectedException Anax\Route\Exception\ConfigurationException
      */
     public function testUserControllerActionDoesNotExists()
     {
+        $this->expectException("\Anax\Route\Exception\ConfigurationException");
+
         $route = new Route();
     
         $route->set(null, "user", null, "Anax\Route\MockHandlerController");

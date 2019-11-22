@@ -12,11 +12,11 @@ class RouterInternalFailTest extends TestCase
 {
     /**
      * When internal route is not found.
-     *
-     * @expectedException Anax\Route\Exception\NotFoundException
      */
     public function testInternalRouteIsMissing()
     {
+        $this->expectException("\Anax\Route\Exception\NotFoundException");
+
         $router = new Router();
         $router->handleInternal("403");
     }

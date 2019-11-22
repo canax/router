@@ -21,7 +21,7 @@ class RouteHandlerDiFailTest extends TestCase
     /**
      * Setup a fixture for all tests.
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass() : void
     {
         self::$di = new DIFactoryConfig();
         self::$di->loadServices([
@@ -42,11 +42,11 @@ class RouteHandlerDiFailTest extends TestCase
 
     /**
      * No such service in $di.
-     *
-     * @expectedException Anax\Route\Exception\ConfigurationException
      */
     public function testServiceDoesNotExists()
     {
+        $this->expectException("\Anax\Route\Exception\ConfigurationException");
+
         $route = new Route();
 
         $route->set(null, null, null, ["noservice", "index"]);
@@ -58,11 +58,11 @@ class RouteHandlerDiFailTest extends TestCase
 
     /**
      * The service does not have that method.
-     *
-     * @expectedException Anax\Route\Exception\ConfigurationException
      */
     public function testServiceWithNoMethod()
     {
+        $this->expectException("\Anax\Route\Exception\ConfigurationException");
+
         $route = new Route();
 
         $route->set(null, null, null, ["user", "nomethod"]);

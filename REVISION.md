@@ -13,7 +13,7 @@ Notes for development v2.0.0*
 v2.0.1 (2019-11-21)
 ---------------------------------
 
-* Upgrade to phpunit 8.
+* Upgrade to phpunit 8 (and rewrite some testcases).
 
 
 

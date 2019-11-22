@@ -20,7 +20,7 @@ class RouteHandlerDiTest extends TestCase
     /**
      * Setup a fixture for all tests.
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass() : void
     {
         self::$di = new DIFactoryConfig();
         self::$di->loadServices([

@@ -12,11 +12,11 @@ class RouteHandlerFailTest extends TestCase
 {
     /**
      * A route mest evaluate to a callable or null.
-     *
-     * @expectedException Anax\Route\Exception\ConfigurationException
      */
     public function testHandlerIsNotCallableNorNull()
     {
+        $this->expectException("\Anax\Route\Exception\ConfigurationException");
+
         $route = new Route();
 
         $route->set(null, null, null, "no handler");

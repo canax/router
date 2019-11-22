@@ -97,11 +97,11 @@ class RouterInternalTest extends TestCase
 
     /**
      * Internal route 500 throws exception during development.
-     *
-     * @expectedException \Exception
      */
     public function testInternal500Development()
     {
+        $this->expectException("\Exception");
+
         $router = new Router();
         $router->addInternalRoute(
             "500",

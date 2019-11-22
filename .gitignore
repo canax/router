@@ -1,4 +1,5 @@
-/.bin
-/build
-/vendor
+.phpunit.result.cache
+.bin/
+build/
 composer.lock
+vendor/

@@ -20,7 +20,7 @@ class DiServiceRoutes800Test extends TestCase
     /**
      * Setup before each test.
      */
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->di = new DIFactoryConfig();
         $this->di->loadServices(ANAX_INSTALL_PATH . "/test/config/di_empty_router.php");
@@ -74,7 +74,7 @@ class DiServiceRoutes800Test extends TestCase
 
         $res = $router->handle("test/json");
         $this->assertEquals(1, count($res));
-        $this->assertArraySubset(["message" => "Hi JSON"], $res[0]);
+        $this->assertEquals("Hi JSON", $res[0]["message"]);
     }
 
 

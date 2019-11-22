@@ -12,11 +12,11 @@ class RouteHandlerControllerAppStyleFailTest extends TestCase
 {
     /**
      * Call appAction but no $app in $di.
-     *
-     * @expectedException Anax\Route\Exception\ConfigurationException
      */
     public function testMethodAppActionWithoutAppInjectedIntoDi()
     {
+        $this->expectException("\Anax\Route\Exception\ConfigurationException");
+
         $route = new Route();
         $di = new DIMagic();
 

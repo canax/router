@@ -12,11 +12,11 @@ class RouterConfigurationFailTest extends TestCase
 {
     /**
      * Configuration item is not an array.
-     *
-     * @expectedException \TypeError
      */
     public function testConfigurationIsNotAnArray()
     {
+        $this->expectException("\TypeError");
+
         $router = new Router();
         $router->addRoutes(1);
     }
@@ -25,11 +25,11 @@ class RouterConfigurationFailTest extends TestCase
 
     /**
      * Missing key "routes" throws exception.
-     *
-     * @expectedException Anax\Route\Exception\ConfigurationException
      */
     public function testMissingRoute()
     {
+        $this->expectException("\Anax\Route\Exception\ConfigurationException");
+
         $router = new Router();
         $router->addRoutes([]);
     }
@@ -38,11 +38,11 @@ class RouterConfigurationFailTest extends TestCase
 
     /**
      * The route is not an array.
-     *
-     * @expectedException Anax\Route\Exception\ConfigurationException
      */
     public function testRouteIsNotAnArray()
     {
+        $this->expectException("\Anax\Route\Exception\ConfigurationException");
+
         $router = new Router();
         $router->addRoutes(["routes" => 1]);
     }

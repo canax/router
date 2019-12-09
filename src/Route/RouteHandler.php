@@ -60,10 +60,9 @@ class RouteHandler
                 return $this->handleAsControllerAction($callable);
             }
 
-            $rc = new \ReflectionClass($action);
-            if ($rc->hasMethod("__invoke")) {
-                $obj = new $action;
-                return $obj();
+            $isinvocable = $this->isInvocableClass($action);
+            if ($isinvocable) {
+                return $this->handleAsInvocableClass($action);
             }
         }
 
@@ -121,6 +120,94 @@ class RouteHandler
         }
 
         return "not found";
+    }
+
+
+
+    /**
+     * Check if action is a class with the magic method __invoke.
+     *
+     * @param string $action the proposed handler.
+     *
+     * @return boolean true if class has implemented __invoke, else false.
+     */
+    protected function isInvocableClass(string $action) : bool
+    {
+        $rc = new \ReflectionClass($action);
+        return $rc->hasMethod("__invoke");
+    }
+
+
+
+    /**
+     * Call the __invoke action with optional arguments and call
+     * initialisation methods if available.
+     *
+     * @param string $class as class that implements __invokable.
+     *
+     * @return mixed result from the handler.
+     */
+    protected function handleAsInvocableClass(string $class)
+    {
+        $obj = new $class();
+        // $class = $callable[0];
+        $action = "__invoke";
+        // $args = $callable[2];
+
+        $refl = new \ReflectionClass($class);
+        $diInterface = "Anax\Commons\ContainerInjectableInterface";
+        $appInterface = "Anax\Commons\AppInjectableInterface";
+
+        if ($this->di && $refl->implementsInterface($diInterface)) {
+            $obj->setDI($this->di);
+        } elseif ($this->di && $refl->implementsInterface($appInterface)) {
+            if (!$this->di->has("app")) {
+                throw new ConfigurationException(
+                    "Controller '$class' implements AppInjectableInterface but \$app is not available in \$di."
+                );
+            }
+            $obj->setApp($this->di->get("app"));
+        }
+
+        try {
+            $refl = new \ReflectionMethod($class, "initialize");
+            if ($refl->isPublic()) {
+                $obj->initialize();
+            }
+        } catch (\ReflectionException $e) {
+            ;
+        }
+
+        $refl = new \ReflectionMethod($obj, $action);
+        $paramIsVariadic = false;
+        foreach ($refl->getParameters() as $param) {
+            if ($param->isVariadic()) {
+                $paramIsVariadic = true;
+                break;
+            }
+        }
+
+        // if (!$paramIsVariadic
+        //     && $refl->getNumberOfParameters() < count($args)
+        // ) {
+        //     throw new NotFoundException(
+        //         "Controller '$class' with action method '$action' valid but to many parameters. Got "
+        //         . count($args)
+        //         . ", expected "
+        //         . $refl->getNumberOfParameters() . "."
+        //     );
+        // }
+
+        try {
+            //$res = $obj(...$args);
+            $res = $obj();
+        } catch (\ArgumentCountError $e) {
+            throw new NotFoundException($e->getMessage());
+        } catch (\TypeError $e) {
+            throw new NotFoundException($e->getMessage());
+        }
+
+        return $res;
     }
 
 

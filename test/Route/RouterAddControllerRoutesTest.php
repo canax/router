@@ -44,7 +44,7 @@ class RouterAddControllerRoutesTest extends TestCase
     /**
      * Add longer mountpoints.
      */
-    public function testRouterLogMountPoints()
+    public function testRouterLongMountPoints()
     {
         $router = new Router();
 

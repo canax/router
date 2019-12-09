@@ -176,12 +176,12 @@ class RouteMatcher
      * @return boolean true if query matches the route
      */
     public function match(
-        string $mount = null,
-        string $relativePath = null,
-        string $absolutePath = null,
-        string $query,
-        array $methodSupported = null,
-        string $method = null
+        ?string $mount,
+        ?string $relativePath,
+        ?string $absolutePath,
+        ?string $query,
+        ?array $methodSupported,
+        ?string $method
     ) {
         $this->arguments = [];
         $this->methodMatched = null;
@@ -193,25 +193,31 @@ class RouteMatcher
 
         // Is a null path  - mounted on empty, or mount path matches
         // initial query.
-        $queryParts = explode('/', $query);
-
-        //echo "\nMATCHING: $query ($queryParts[0]) == $mount (" . strlen($mount) . ")";
-
-        //strcmp($queryParts[0], $mount) == 0
-
-        if (is_null($relativePath) && (empty($mount) 
-            || strncmp($query, $mount, strlen($mount)) == 0)
+        $charsToMatch = strlen($mount);
+        $matchedQueryToMountPath = strncmp($query, $mount, $charsToMatch) === 0 ? true : false;
+        $nextChar = substr($query, $charsToMatch, 1);
+        if (is_null($relativePath)
+            && (
+                empty($mount)
+                || (
+                    $matchedQueryToMountPath && ($nextChar === "/" || $nextChar === "")
+                )
+            )
         ) {
-            //echo "TRUE";
+            $matchedChars = strlen($mount);
+            $nextChar = substr($query, $matchedChars, 1);
+            //var_dump($nextChar);
+            // echo "TRUE";
+            //echo "\nMATCHED: $query '$nextChar' == $mount (" . strlen($mount) . ")";
+
             $this->methodMatched = $method;
             $this->pathMatched = $query;
             return true;
         }
-        //echo "FALSE";
 
         // Check all parts to see if they matches
         $ruleParts  = explode('/', $absolutePath);
-        //$queryParts = explode('/', $query);
+        $queryParts = explode('/', $query);
         $ruleCount = max(count($ruleParts), count($queryParts));
         $args = [];
 

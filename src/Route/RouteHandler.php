@@ -31,8 +31,8 @@ class RouteHandler
      * @return mixed as the result from the route handler.
      */
     public function handle(
-        string $method = null,
-        string $path = null,
+        ?string $method,
+        ?string $path,
         $action,
         array $arguments = [],
         ContainerInterface $di = null
@@ -224,8 +224,8 @@ class RouteHandler
      * @return array with callable details.
      */
     protected function isControllerAction(
-        string $method = null,
-        string $path = null,
+        ?string $method,
+        ?string $path,
         string $class
     ) {
         $method = ucfirst(strtolower($method));

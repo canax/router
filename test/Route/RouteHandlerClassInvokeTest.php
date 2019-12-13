@@ -30,7 +30,7 @@ class RouteHandlerClassInvokeTest extends TestCase
 
         // $route->set(null, null, null, "\Anax\Route\MockHandlerClassInvoke");
         // $this->assertTrue($route->match(""));
-        // 
+        //
         // $res = $route->handle("");
         // $this->assertEquals("handler", $res);
     }
@@ -42,12 +42,12 @@ class RouteHandlerClassInvokeTest extends TestCase
     //  */
     // public function testClassInvokeArguments()
     // {
-    //     $route = new Route();    
-    // 
+    //     $route = new Route();
+    //
     //     $path = "arg1/2";
     //     $route->set(null, "{dataset:alphanum}/{id:digit}", null, "\Anax\Route\MockHandlerClassInvokeArguments");
     //     $this->assertTrue($route->match($path));
-    // 
+    //
     //     $res = $route->handle($path);
     //     $this->assertEquals("handler/$path", $res);
     // }
@@ -61,12 +61,12 @@ class RouteHandlerClassInvokeTest extends TestCase
     // {
     //     $route = new Route();
     //     $handler = new MockHandlerClassInvokeVariadic();
-    // 
+    //
     //     $route->set(null, null, null, $handler);
     //     $this->assertTrue($route->match(""));
     //     $res = $route->handle("");
     //     $this->assertEquals("handler/", $res);
-    // 
+    //
     //     $route->set(null, "{dataset:alphanum}/{id:digit}", null, $handler);
     //     $this->assertTrue($route->match("arg1/2"));
     //     $res = $route->handle("");

@@ -33,15 +33,15 @@ class RouteHandlerControllerInvokeTest extends TestCase
     // {
     //     $route = new Route();
     //     $handler = new MockHandlerControllerInvokeArguments();
-    // 
+    //
     //     $route->set(null, "{dataset:alphanum}/{id:digit}", null, $handler);
     //     $this->assertTrue($route->match("arg1/2"));
     //     $res = $route->handle("");
     //     $this->assertEquals("handler/arg1/2", $res);
     // }
-    // 
-    // 
-    // 
+    //
+    //
+    //
     // /**
     //  * A handler as a controller with __invoke and variadic argument.
     //  */
@@ -49,12 +49,12 @@ class RouteHandlerControllerInvokeTest extends TestCase
     // {
     //     $route = new Route();
     //     $handler = new MockHandlerControllerInvokeVariadic();
-    // 
+    //
     //     $route->set(null, null, null, $handler);
     //     $this->assertTrue($route->match(""));
     //     $res = $route->handle("");
     //     $this->assertEquals("handler/", $res);
-    // 
+    //
     //     $route->set(null, "{dataset:alphanum}/{id:digit}", null, $handler);
     //     $this->assertTrue($route->match("arg1/2"));
     //     $res = $route->handle("");

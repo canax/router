@@ -28,12 +28,12 @@ class DocumentationReadmeV2Test extends TestCase
     // public function testCreateHandlersAsAnonymousFunction()
     // {
     //     $router = new Router();
-    // 
+    //
     //     // Anonymous function, a closure
     //     $router->add("about", function () {
     //         return "about";
     //     });
-    // 
+    //
     //     $res = $router->handle("about");
     //     $this->assertEquals("about", $res);
     // }
@@ -46,24 +46,24 @@ class DocumentationReadmeV2Test extends TestCase
     // public function testCreateHandlersAsNamedFunction()
     // {
     //     $router = new Router();
-    // 
+    //
     //     //  How to check a variable to see if it can be called
     //     //  as a function.
-    // 
+    //
     //     //
     //     //  Simple variable containing a function
     //     //
-    // 
-    //     function someFunction() 
+    //
+    //     function someFunction()
     //     {
     //     }
-    // 
+    //
     //     $functionVariable = 'someFunction';
-    // 
+    //
     //     var_dump(is_callable($functionVariable, false, $callable_name));  // bool(true)
-    // 
+    //
     //     echo $callable_name, "\n";  // someFunction
-    // 
+    //
     //     exit;
     //     // Named function
     //     function aboutHandler()

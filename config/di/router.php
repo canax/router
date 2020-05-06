@@ -22,14 +22,19 @@ return [
                     $router->setMode(\Anax\Route\Router::PRODUCTION);
                 }
 
-                // Add routes from configuration file
+                // Add routes from configuration file/dir
                 $file = null;
                 try {
                     $file = $config["file"] ?? null;
-                    $router->addRoutes($config["config"] ?? []);
+                    $items = $config["config"] ?? [];
+                    if (!empty($items)) {
+                        $router->addRoutes($routes);
+                    }
+
                     foreach ($config["items"] ?? [] as $routes) {
                         $file = $routes["file"];
-                        $router->addRoutes($routes["config"]);
+                        $items = $routes["config"] ?? [];
+                        $router->addRoutes($items);
                     }
                 } catch (Exception $e) {
                     throw new Exception(

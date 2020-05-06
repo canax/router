@@ -14,9 +14,16 @@ v2.0.x (2019-12-13)
 ---------------------------------
 
 * Upgrade to phpunit 8 (and rewrite some testcases).
-* Add support to use handlers as a class implementing __invoke.
+* Add support to use handlers as a class implementing \__invoke.
 * Add route handler support for isInvocableClass and handleAsInvocableClass (without support for taking arguments).
 * Fix when mountpart d/ overlaps dev/.
+
+
+
+v2.0.1 (2020-05-06)
+---------------------------------
+
+* Enhance error handling in config/di/router.php and allow that config/router.php is missing and configuration only handled by config/router.
 
 
 
@@ -197,7 +204,7 @@ v2.0.0-alpha.2 (2018-08-01)
 
 * Set requirement of PHP 7.2 in composer.json.
 * Mark anax/common as obsolete and prepare to remove it and traces of $app constructions.
-* Move composer.json require anax/di to suggests, eventually try to remove dependency to real version. 
+* Move composer.json require anax/di to suggests, eventually try to remove dependency to real version.
 
 
 
@@ -315,14 +322,14 @@ v1.0.4 (2017-04-13)
 ---------------------------------
 
 * Add support for path/** to match subpaths.
-* Fix composer validate PHP version in require-dev. 
+* Fix composer validate PHP version in require-dev.
 
 
 
 v1.0.3 (2017-03-26)
 ---------------------------------
 
-* Extending support for default routes to partly include "\*\*" and null, matching any route. 
+* Extending support for default routes to partly include "\*\*" and null, matching any route.
 * Support adding request method as string separated by |
 
 

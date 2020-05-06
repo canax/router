@@ -28,7 +28,7 @@ return [
                     $file = $config["file"] ?? null;
                     $items = $config["config"] ?? [];
                     if (!empty($items)) {
-                        $router->addRoutes($routes);
+                        $router->addRoutes($items);
                     }
 
                     foreach ($config["items"] ?? [] as $routes) {

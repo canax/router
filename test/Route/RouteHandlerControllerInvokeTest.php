@@ -26,6 +26,22 @@ class RouteHandlerControllerInvokeTest extends TestCase
 
 
 
+    /**
+     * The method initialize() can return a response to prevent
+     * the controller action from being called.
+     */
+    public function testControllerMethodInitializeReturnsResponse()
+    {
+        $route = new Route();
+
+        $route->set(null, "user", null, "Anax\Route\MockHandlerClassInvokeInitialize");
+
+        $path = "user/view";
+        $this->assertTrue($route->match($path));
+        $res = $route->handle($path);
+        $this->assertEquals("initialize", $res);
+    }
+
     // /**
     //  * A handler as a controller with __invoke and arguments.
     //  */

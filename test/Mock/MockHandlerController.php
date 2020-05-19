@@ -19,7 +19,7 @@ class MockHandlerController implements ContainerInjectableInterface
 
     public function initialize()
     {
-        return "initialize";
+        //return "initialize";
     }
 
     public function indexAction()

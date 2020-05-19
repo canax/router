@@ -10,9 +10,10 @@ Notes for development v2.0.0*
 
 
 
-v2.0.x (2019-12-13)
+v2.1.0 (2020-05-19)
 ---------------------------------
 
+* The controller method initialize() can return a response, useful to deny access to a particular controller.
 * Upgrade to phpunit 8 (and rewrite some testcases).
 * Add support to use handlers as a class implementing \__invoke.
 * Add route handler support for isInvocableClass and handleAsInvocableClass (without support for taking arguments).

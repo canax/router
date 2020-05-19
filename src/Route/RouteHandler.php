@@ -75,7 +75,7 @@ class RouteHandler
             // Try to load service from app/di injected container
             return $this->handleUsingDi($action, $arguments, $di);
         }
-        
+
         throw new ConfigurationException("Handler for route does not seem to be a callable action.");
     }
 
@@ -172,7 +172,10 @@ class RouteHandler
         try {
             $refl = new \ReflectionMethod($class, "initialize");
             if ($refl->isPublic()) {
-                $obj->initialize();
+                $res = $obj->initialize();
+                if (!is_null($res)) {
+                    return $res;
+                }
             }
         } catch (\ReflectionException $e) {
             ;
@@ -303,7 +306,10 @@ class RouteHandler
         try {
             $refl = new \ReflectionMethod($class, "initialize");
             if ($refl->isPublic()) {
-                $obj->initialize();
+                $res = $obj->initialize();
+                if (!is_null($res)) {
+                    return $res;
+                }
             }
         } catch (\ReflectionException $e) {
             ;
@@ -401,14 +407,14 @@ class RouteHandler
         if (!$di->has($action[0])) {
             throw new ConfigurationException("Routehandler '{$action[0]}' not loaded in di.");
         }
-    
+
         $service = $di->get($action[0]);
         if (!is_callable([$service, $action[1]])) {
             throw new ConfigurationException(
                 "Routehandler '{$action[0]}' does not have a callable method '{$action[1]}'."
             );
         }
-    
+
         return call_user_func(
             [$service, $action[1]],
             ...$arguments

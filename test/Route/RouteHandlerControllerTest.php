@@ -102,7 +102,7 @@ class RouteHandlerControllerTest extends TestCase
     public function testUserControllerWithArguments()
     {
         $route = new Route();
-    
+
         $route->set(null, "user", null, "Anax\Route\MockHandlerController");
 
         $path = "user/view/1";
@@ -129,7 +129,7 @@ class RouteHandlerControllerTest extends TestCase
     public function testUserControllerWithTypedArguments()
     {
         $route = new Route();
-    
+
         $route->set(null, "user", null, "Anax\Route\MockHandlerController");
 
         $path = "user/view/1";
@@ -156,9 +156,9 @@ class RouteHandlerControllerTest extends TestCase
     public function testUserControllerWithVariadicArguments()
     {
         $route = new Route();
-    
+
         $route->set(null, "user", null, "Anax\Route\MockHandlerController");
-    
+
         $path = "user/variadic";
         $this->assertTrue($route->match($path, "GET"));
         $res = $route->handle($path);
@@ -184,9 +184,9 @@ class RouteHandlerControllerTest extends TestCase
     {
         $route = new Route();
         $di = new DI();
-    
+
         $route->set(null, "user", null, "Anax\Route\MockHandlerController");
-    
+
         $path = "user/di";
         $this->assertTrue($route->match($path, "GET"));
         $res = $route->handle($path, $di);
@@ -201,9 +201,9 @@ class RouteHandlerControllerTest extends TestCase
     public function testControllerMethodCatchAll()
     {
         $route = new Route();
-    
+
         $route->set(null, "user", null, "Anax\Route\MockHandlerControllerCatchAll");
-    
+
         $path = "user/whatever";
         $this->assertTrue($route->match($path, "GET"));
         $res = $route->handle($path);
@@ -219,9 +219,9 @@ class RouteHandlerControllerTest extends TestCase
     public function testControllerMethodCatchAllRequestMethod()
     {
         $route = new Route();
-    
+
         $route->set(null, "user", null, "Anax\Route\MockHandlerControllerCatchAll");
-    
+
         $path = "user/whatever";
         $this->assertTrue($route->match($path, "POST"));
         $res = $route->handle($path);
@@ -230,5 +230,23 @@ class RouteHandlerControllerTest extends TestCase
         $this->assertTrue($route->match($path, "PUT"));
         $res = $route->handle($path);
         $this->assertEquals("catchAllPut", $res);
+    }
+
+
+
+    /**
+     * The method initialize() can return a response to prevent
+     * the controller action from being called.
+     */
+    public function testControllerMethodInitializeReturnsResponse()
+    {
+        $route = new Route();
+
+        $route->set(null, "user", null, "Anax\Route\MockHandlerControllerInitialize");
+
+        $path = "user/view";
+        $this->assertTrue($route->match($path));
+        $res = $route->handle($path);
+        $this->assertEquals("initialize", $res);
     }
 }
